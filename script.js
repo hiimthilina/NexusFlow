@@ -160,3 +160,112 @@ document.getElementById('nextButton').addEventListener('click', () => {
   // Redirect to stage 2
   window.location.href = 'export.html';
 });
+
+// Additional JS for export.html
+
+document.addEventListener('DOMContentLoaded', () => {
+  const postState = JSON.parse(localStorage.getItem('postState'));
+  if (!postState) {
+    alert('No post data found. Please go back to Stage 1.');
+    window.location.href = 'index.html';
+    return;
+  }
+
+  // Load post data from Stage 1
+  const { heading, content, subInfo, category, headingFontSize, contentFontSize, subInfoFontSize, headingSpacing, contentSpacing } = postState;
+  
+  const scheme = colorSchemes[category];
+  const finalPreview = document.getElementById('finalPreview');
+  finalPreview.innerHTML = `
+    <h2 style="font-family: ${scheme.heading.font}; color: ${scheme.heading.color}; font-size: ${headingFontSize}px; margin-bottom: ${headingSpacing}px;">${heading}</h2>
+    <p style="font-family: ${scheme.content.font}; color: ${scheme.content.color}; font-size: ${contentFontSize}px; margin-bottom: ${contentSpacing}px;">${content}</p>
+    <small style="font-family: ${scheme.subInfo.font}; color: ${scheme.subInfo.color}; font-size: ${subInfoFontSize}px;">${subInfo}</small>
+  `;
+  finalPreview.style.backgroundColor = scheme.background;
+
+  // Background Image Controls
+  document.getElementById('loadFromUrl').addEventListener('click', loadFromUrl);
+  document.getElementById('loadFromFile').addEventListener('click', () => {
+    const file = document.getElementById('bgImageFile').files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        setBackgroundImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  document.getElementById('searchImages').addEventListener('click', searchImages);
+
+  document.getElementById('opacitySlider').addEventListener('input', updateBackgroundStyle);
+  document.getElementById('blurSlider').addEventListener('input', updateBackgroundStyle);
+
+  document.getElementById('exportButton').addEventListener('click', exportPost);
+
+  // Initialize background image if any was set
+  const bgImage = localStorage.getItem('bgImage');
+  if (bgImage) {
+    setBackgroundImage(bgImage);
+  }
+});
+
+function loadFromUrl() {
+  const url = document.getElementById('bgImageUrl').value;
+  if (url) setBackgroundImage(url);
+}
+
+function setBackgroundImage(src) {
+  const finalPreview = document.getElementById('finalPreview');
+  finalPreview.style.backgroundImage = `url(${src})`;
+  finalPreview.style.backgroundSize = 'cover';
+  finalPreview.style.backgroundPosition = 'center';
+  localStorage.setItem('bgImage', src);
+  updateBackgroundStyle();
+}
+
+function updateBackgroundStyle() {
+  const finalPreview = document.getElementById('finalPreview');
+  const opacity = document.getElementById('opacitySlider').value;
+  const blur = document.getElementById('blurSlider').value;
+  
+  finalPreview.style.opacity = opacity;
+  finalPreview.style.filter = `blur(${blur}px)`;
+}
+
+function searchImages() {
+  const query = document.getElementById('imageSearch').value;
+  const stockImagesDiv = document.getElementById('stockImages');
+  stockImagesDiv.innerHTML = ''; // Clear previous results
+
+  // Here you'd typically make an API call to Pexels or Pixabay, but for demo:
+  for (let i = 0; i < 5; i++) {
+    const img = document.createElement('img');
+    img.src = `https://via.placeholder.com/150x150?text=Image+${i+1}`;
+    img.style = 'width: 150px; height: 150px; margin-right: 10px;';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.style = 'position: absolute; top: 10px; right: 10px;';
+    checkbox.onclick = function() {
+      if (this.checked) {
+        setBackgroundImage(this.previousElementSibling.src);
+        document.getElementById('selectedImage').textContent = `Selected from Placeholder (${i+1})`;
+      }
+    };
+    const imgContainer = document.createElement('div');
+    imgContainer.style = 'position: relative; display: inline-block;';
+    imgContainer.appendChild(img);
+    imgContainer.appendChild(checkbox);
+    stockImagesDiv.appendChild(imgContainer);
+  }
+}
+
+function exportPost() {
+  html2canvas(document.getElementById('finalPreview')).then(canvas => {
+    const imgData = canvas.toDataURL("image/jpeg", 1.0);
+    const link = document.createElement('a');
+    link.download = 'post.jpg';
+    link.href = imgData;
+    link.click();
+  });
+}
