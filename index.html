@@ -127,5 +127,16 @@ Start your day with gratitude. Take 5 minutes every morning to write down 3 thin
   <button id="theme-toggle-btn">
     <img src="theme.png" alt="Theme Toggle Icon">
   </button>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+        console.log('Service Worker registered with scope:', registration.scope);
+      }).catch(function(err) {
+        console.log('Service Worker registration failed:', err);
+      });
+    }
+  </script>
 </body>
 </html>
