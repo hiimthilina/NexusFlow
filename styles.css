@@ -207,3 +207,22 @@ body.dark-theme .post-preview small {
   object-fit: cover;
   z-index: -1;
 }
+
+/* ... (Use the CSS from the previous response) ... */
+
+/* Next Button */
+#nextButton {
+  padding: 10px 20px;
+  margin: 20px 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  background-color: #3498db;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+#nextButton:hover {
+  background-color: #2980b9;
+}
