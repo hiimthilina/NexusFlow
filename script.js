@@ -15,7 +15,27 @@ const colorSchemes = {
     content: { font: 'Open Sans Regular', color: '#00529B' },
     subInfo: { font: 'Roboto Light', color: '#A6A6A6' }
   },
-  // ... other categories ...
+  guidance: {
+    name: 'Helpful Guidance',
+    background: '#E8F3E8',
+    heading: { font: 'Montserrat Bold', color: '#2E7D32' },
+    content: { font: 'Open Sans Regular', color: '#388E3C' },
+    subInfo: { font: 'Roboto Light', color: '#A6A6A6' }
+  },
+  filmmaking: {
+    name: 'Filmmaking',
+    background: '#FFEBEE',
+    heading: { font: 'Montserrat Bold', color: '#8B0000' },
+    content: { font: 'Open Sans Regular', color: '#B71C1C' },
+    subInfo: { font: 'Roboto Light', color: '#A6A6A6' }
+  },
+  ai: {
+    name: 'AI Technologies',
+    background: '#E3F2FD',
+    heading: { font: 'Montserrat Bold', color: '#1565C0' },
+    content: { font: 'Open Sans Regular', color: '#1E88E5' },
+    subInfo: { font: 'Roboto Light', color: '#A6A6A6' }
+  },
   about: {
     name: 'About Myself',
     background: '#FFF8E1',
