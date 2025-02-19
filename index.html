@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusFlow</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <script src="script.js" defer></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+  <div class="nexusflow-logo">
+    <img src="NexusFlow.png" alt="NexusFlow Logo">
+  </div>
+  <h2>Social Media Post Designer</h2>
+
+  <!-- Post Details Section -->
+  <div class="section">
+    <h2>Post Details</h2>
+    <form id="postForm">
+      <fieldset>
+        <legend>Enter Post Content</legend>
+        <div class="form-group">
+          <label for="headingInput">Heading:</label>
+          <input type="text" id="headingInput" name="heading" placeholder="Enter your Heading" value="🌱 Tip for a Better Life:">
+        </div>
+        <div class="form-group">
+          <label for="descriptionInput">Description:</label>
+          <textarea id="descriptionInput" name="description" placeholder="What do you think ?">
+Start your day with gratitude. Take 5 minutes every morning to write down 3 things you're grateful for. This simple practice can improve your mood and mindset throughout the day! ✨
+          </textarea>
+        </div>
+        <div class="form-group">
+          <label for="hashtagsInput">Hashtags:</label>
+          <input type="text" id="hashtagsInput" name="hashtags" placeholder="#hiimthilina ..." value="#SelfImprovement #Gratitude">
+        </div>
+        <div class="form-group">
+          <label for="backgroundImageInput">Background Image URL:</label>
+          <input type="url" id="backgroundImageInput" name="backgroundImage" placeholder="URL to Image">
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
+  <!-- Preset Section -->
+  <div class="section">
+    <h2>Presets</h2>
+    <div class="category-selector">
+      <button data-category="educational" id="educational-btn">Educational</button>
+      <button data-category="guidance" id="guidance-btn">Guidance</button>
+      <button data-category="filmmaking" id="filmmaking-btn">Filmmaking</button>
+      <button data-category="ai" id="ai-btn">AI & Tech</button>
+      <button data-category="about" id="about-btn">Myself</button>
+    </div>
+  </div>
+
+  <!-- Preset Details Section -->
+  <div class="section">
+    <h2>Preset Details</h2>
+    <div class="preset-details" id="presetDetails">Select a category to see its details.</div>
+  </div>
+
+  <!-- Font Size Adjustment Section -->
+  <div class="section">
+    <h2>Font Size Adjustment</h2>
+    <div class="font-size-slider">
+      <label for="headingFontSizeSlider">Heading Font Size:</label>
+      <input type="range" id="headingFontSizeSlider" min="16" max="40" value="24">
+      <div class="font-size-value" id="headingFontSizeValue" align="right">24px</div>
+    </div>
+    <div class="font-size-slider">
+      <label for="contentFontSizeSlider">Content Font Size:</label>
+      <input type="range" id="contentFontSizeSlider" min="12" max="32" value="18">
+      <div class="font-size-value" id="contentFontSizeValue" align="right">18px</div>
+    </div>
+    <div class="font-size-slider">
+      <label for="subInfoFontSizeSlider">Sub-Info Font Size:</label>
+      <input type="range" id="subInfoFontSizeSlider" min="10" max="24" value="14">
+      <div class="font-size-value" id="subInfoFontSizeValue" align="right">14px</div>
+    </div>
+  </div>
+
+  <!-- Spacing Adjustment Section -->
+  <div class="section">
+    <h2>Spacing Adjustment</h2>
+    <div class="spacing-slider">
+      <label for="headingSpacingSlider">Space After Heading:</label>
+      <input type="range" id="headingSpacingSlider" min="0" max="30" value="15">
+      <div class="font-size-value" id="headingSpacingValue" align="right">15px</div>
+    </div>
+    <div class="spacing-slider">
+      <label for="contentSpacingSlider">Space After Content:</label>
+      <input type="range" id="contentSpacingSlider" min="0" max="30" value="15">
+      <div class="font-size-value" id="contentSpacingValue" align="right">15px</div>
+    </div>
+  </div>
+
+  <!-- Post Preview Section -->
+  <div class="section">
+    <h2>Preview</h2>
+    <div class="post-preview" id="postPreview">
+      <h2 id="previewHeading">🌱 Tip for a Better Life:</h2>
+      <p id="previewContent">Start your day with gratitude. Take 5 minutes every morning to write down 3 things you're grateful for. This simple practice can improve your mood and mindset throughout the day! ✨</p>
+      <small id="previewSubInfo">#SelfImprovement #Gratitude</small>
+    </div>
+  </div>
+
+  <!-- Platform Selection -->
+  <div class="section">
+    <h2>Platform</h2>
+    <select id="platformSelect">
+      <option value="youtube">YouTube</option>
+      <option value="facebook">Facebook</option>
+      <option value="instagram">Instagram</option>
+      <option value="twitter">Twitter (X)</option>
+      <option value="tiktok">TikTok</option>
+      <option value="threads">Threads</option>
+      <option value="linkedin">LinkedIn</option>
+    </select>
+  </div>
+
+  <!-- Generate Button -->
+  <button id="generateButton">Generate Post</button>
+
+  <!-- Theme Toggle Button -->
+  <button id="theme-toggle-btn">
+    <img src="theme.png" alt="Theme Toggle Icon">
+  </button>
+</body>
+</html>
