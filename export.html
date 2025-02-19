@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusFlow - Export Post</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+<body>
+  <div class="nexusflow-logo">
+    <img src="NexusFlow.png" alt="NexusFlow Logo">
+  </div>
+  <h2>Social Media Post Designer - Stage 2: Export Post</h2>
+
+  <!-- Background Image Selection -->
+  <div class="section">
+    <h2>Background Image</h2>
+    <input type="url" id="bgImageUrl" placeholder="Image URL">
+    <button id="loadFromUrl">Load from URL</button>
+    <input type="file" id="bgImageFile" accept="image/*">
+    <button id="loadFromFile">Load from Device</button>
+    
+    <!-- Stock Image Search -->
+    <div>
+      <input type="text" id="imageSearch" placeholder="Search in Pexels/Pixabay">
+      <button id="searchImages">Search</button>
+    </div>
+    <div id="stockImages" style="overflow-x: auto; white-space: nowrap;">
+      <!-- Images will be dynamically added here -->
+    </div>
+    <div id="selectedImage">No image selected</div>
+  </div>
+
+  <!-- Background Image Adjustment -->
+  <div class="section">
+    <h2>Adjust Background</h2>
+    <input type="range" id="opacitySlider" min="0" max="1" step="0.1" value="0.5">
+    <label for="opacitySlider">Opacity</label>
+    <input type="range" id="blurSlider" min="0" max="10" value="5">
+    <label for="blurSlider">Blur</label>
+    <!-- Add more controls for positioning if needed -->
+  </div>
+
+  <!-- Platform Selection -->
+  <div class="section">
+    <h2>Platform</h2>
+    <select id="platformSelect">
+      <option value="youtube">YouTube</option>
+      <option value="facebook">Facebook</option>
+      <option value="instagram">Instagram</option>
+      <option value="twitter">Twitter (X)</option>
+      <option value="tiktok">TikTok</option>
+      <option value="threads">Threads</option>
+      <option value="linkedin">LinkedIn</option>
+    </select>
+  </div>
+
+  <!-- Final Post Preview -->
+  <div class="section">
+    <h2>Final Preview</h2>
+    <div class="post-preview" id="finalPreview">
+      <!-- Content will be dynamically inserted -->
+    </div>
+  </div>
+
+  <!-- Export Button -->
+  <button id="exportButton">Export as JPG</button>
+
+  <!-- Theme Toggle Button -->
+  <button id="theme-toggle-btn">
+    <img src="theme.png" alt="Theme Toggle Icon">
+  </button>
+
+  <script>
+    // Additional JS for this page will be here
+  </script>
+</body>
+</html>
