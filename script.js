@@ -51,7 +51,7 @@ function updatePostPreview() {
 
   previewHeading.textContent = document.getElementById('headingInput').value;
   previewContent.textContent = document.getElementById('descriptionInput').value;
-  previewSubInfo.textContent = document.getElementById('hashtagsInput').value;
+  previewSubInfo.textContent = document.getElementById('subInfoInput').value;
 
   // Update preset details
   document.getElementById('presetDetails').innerHTML = `
@@ -115,7 +115,7 @@ document.getElementById('contentSpacingSlider').addEventListener('input', (event
 // Event listeners for form inputs
 document.getElementById('headingInput').addEventListener('input', updatePostPreview);
 document.getElementById('descriptionInput').addEventListener('input', updatePostPreview);
-document.getElementById('hashtagsInput').addEventListener('input', updatePostPreview);
+document.getElementById('subInfoInput').addEventListener('input', updatePostPreview);
 
 // Initialize with default settings
 updatePostPreview();
@@ -142,94 +142,21 @@ themeToggleBtn.addEventListener('click', () => {
   }
 });
 
-// Generate Button functionality
-document.getElementById('generateButton').addEventListener('click', function() {
-  const postContent = generatePostContent();
-  const newTab = window.open();
-  newTab.document.write(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Generated Post</title>
-      <style>
-        body { margin: 0; padding: 20px; }
-        .post-in-new-tab { position: relative; overflow: hidden; }
-        #bgImage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
-        #controls { margin-top: 20px; }
-        input[type="range"] { width: 100%; }
-      </style>
-    </head>
-    <body>
-      ${postContent}
-      <div id="controls">
-        <input type="range" id="opacitySlider" min="0" max="1" step="0.1" value="0.5" onchange="updateBgStyle()">
-        <input type="range" id="blurSlider" min="0" max="10" value="5" onchange="updateBgStyle()">
-        <button onclick="zoomIn()">Zoom In</button>
-        <button onclick="zoomOut()">Zoom Out</button>
-        <button onclick="panLeft()">Pan Left</button>
-        <button onclick="panRight()">Pan Right</button>
-        <button onclick="panUp()">Pan Up</button>
-        <button onclick="panDown()">Pan Down</button>
-        <button onclick="crop()">Crop</button>
-        <button onclick="exportAsJPG()">Export as JPG</button>
-      </div>
-      <script>
-        function updateBgStyle() {
-          const bgImage = document.getElementById('bgImage');
-          if (bgImage) {
-            bgImage.style.opacity = document.getElementById('opacitySlider').value;
-            bgImage.style.filter = \`blur(\${document.getElementById('blurSlider').value}px)\`;
-          }
-        }
-        function zoomIn() { /* Implement Zoom In */ }
-        function zoomOut() { /* Implement Zoom Out */ }
-        function panLeft() { /* Implement Pan Left */ }
-        function panRight() { /* Implement Pan Right */ }
-        function panUp() { /* Implement Pan Up */ }
-        function panDown() { /* Implement Pan Down */ }
-        function crop() { /* Implement Crop */ }
-        function exportAsJPG() {
-          html2canvas(document.querySelector('.post-in-new-tab')).then(canvas => {
-            const imgData = canvas.toDataURL("image/jpeg", 1.0);
-            const link = document.createElement('a');
-            link.download = 'post.jpg';
-            link.href = imgData;
-            link.click();
-          });
-        }
-        updateBgStyle();
-      </script>
-    </body>
-    </html>
-  `);
-  newTab.document.close();
+// Next button functionality to move to Stage 2
+document.getElementById('nextButton').addEventListener('click', () => {
+  // Store current state for Stage 2
+  localStorage.setItem('postState', JSON.stringify({
+    heading: document.getElementById('headingInput').value,
+    content: document.getElementById('descriptionInput').value,
+    subInfo: document.getElementById('subInfoInput').value,
+    category: currentCategory,
+    headingFontSize: headingFontSize,
+    contentFontSize: contentFontSize,
+    subInfoFontSize: subInfoFontSize,
+    headingSpacing: headingSpacing,
+    contentSpacing: contentSpacing
+  }));
+  
+  // Redirect to stage 2
+  window.location.href = 'export.html';
 });
-
-function generatePostContent() {
-  const imageUrl = document.getElementById('backgroundImageInput').value;
-  const bgImageStyle = imageUrl ? ` background-image: url('${imageUrl}'); background-size: cover; background-position: center;` : '';
-  const platform = document.getElementById('platformSelect').value;
-  const recommendedSize = suggestResolution(platform);
-
-  return `
-    <div class="post-in-new-tab" style="width: ${recommendedSize.width}px; height: ${recommendedSize.height}px;${bgImageStyle}">
-      ${imageUrl ? `<img id="bgImage" src="${imageUrl}" style="opacity: 0.5; filter: blur(5px);">` : ''}
-      <h2 style="font-family: ${colorSchemes[currentCategory].heading.font}; color: ${colorSchemes[currentCategory].heading.color}; font-size: ${headingFontSize}px; margin-bottom: ${headingSpacing}px;">${document.getElementById('headingInput').value}</h2>
-      <p style="font-family: ${colorSchemes[currentCategory].content.font}; color: ${colorSchemes[currentCategory].content.color}; font-size: ${contentFontSize}px; margin-bottom: ${contentSpacing}px;">${document.getElementById('descriptionInput').value}</p>
-      <small style="font-family: ${colorSchemes[currentCategory].subInfo.font}; color: ${colorSchemes[currentCategory].subInfo.color}; font-size: ${subInfoFontSize}px;">${document.getElementById('hashtagsInput').value}</small>
-    </div>
-  `;
-}
-
-function suggestResolution(platform) {
-  const resolutions = {
-    'youtube': { width: 1200, height: 630 },
-    'facebook': { width: 1200, height: 630 },
-    'instagram': { width: 1080, height: 1080 },
-    'twitter': { width: 1024, height: 512 },
-    'tiktok': { width: 1080, height: 1920 },
-    'threads': { width: 1080, height: 1080 },
-    'linkedin': { width: 1200, height: 627 }
-  };
-  return resolutions[platform.toLowerCase()] || { width: 1200, height: 630 };
-}
