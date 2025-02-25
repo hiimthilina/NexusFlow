@@ -247,6 +247,60 @@ body.dark-theme .preset-info strong {
     color: #fff;
 }
 
+#final-preview-box {
+    padding: 20px;
+    min-height: 200px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background-size: cover; /* Default to cover for better fit */
+    background-position: center;
+}
+
+#background-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover; /* Default to cover */
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.middle-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background-color: rgba(255, 255, 255, 0.8); /* Default semi-transparent */
+    display: none;
+}
+
+.middle-layer.active {
+    display: block;
+}
+
+.image-management .layer-area {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px; /* Add spacing between buttons */
+    justify-content: space-between;
+}
+
+
+
 #postPreview, #final-preview-box {
     padding: 20px;
     min-height: 200px;
