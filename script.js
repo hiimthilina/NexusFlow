@@ -98,6 +98,7 @@ function updatePreset() {
         presetInfo.textContent = 'Select Preset to Display Details';
     }
     updatePreview();
+    updateFinalPreview();
 }
 
 function updatePreview() {
@@ -368,41 +369,43 @@ function updateFinalPreview() {
     const postPreview = document.getElementById('postPreview');
     const finalPreview = document.getElementById('final-preview-box');
 
-    // Copy content from post preview to final preview
     textLayer.innerHTML = postPreview.innerHTML;
 
-    // Handle background image
-    if (bgImage) {
+    if (bgImage && !middleLayerActive) {
         backgroundLayer.style.backgroundImage = `url(${bgImage})`;
+        finalPreview.style.background = 'none';
         if (activePlatform) {
             const adjustments = imageAdjustments[activePlatform];
             backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`;
             backgroundLayer.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
             backgroundLayer.style.opacity = adjustments.opacity / 100;
             backgroundLayer.style.filter = `blur(${adjustments.blur}px)`;
-            middleLayer.style.backgroundColor = currentPreset ? currentPreset.background : '#fff';
         } else {
-            backgroundLayer.style.backgroundSize = 'contain';
+            backgroundLayer.style.backgroundSize = 'cover';
             backgroundLayer.style.backgroundPosition = 'center';
             backgroundLayer.style.opacity = 1;
             backgroundLayer.style.filter = 'none';
         }
     } else {
         backgroundLayer.style.backgroundImage = 'none';
-        finalPreview.style.background = currentPreset ? currentPreset.background : '#fff';
+        if (middleLayerActive && currentPreset) {
+            middleLayer.style.backgroundColor = currentPreset.background;
+        } else {
+            middleLayer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+            finalPreview.style.background = currentPreset ? currentPreset.background : '#fff';
+        }
     }
 
-    // Set aspect ratio if platform is selected
     if (activePlatform) {
         setAspectRatio(activePlatform);
+    } else {
+        finalPreview.style.aspectRatio = 'auto';
     }
 
-    // Ensure preview fits properly
     finalPreview.style.padding = '20px';
     finalPreview.style.width = '100%';
     finalPreview.style.height = 'auto';
 
-    // Adjust text sizing
     const heading = textLayer.querySelector('h3');
     const content = textLayer.querySelector('p');
     const subInfo = textLayer.querySelector('span');
@@ -479,8 +482,3 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('descriptionInput').addEventListener('input', updatePreview);
     document.getElementById('hashtagsInput').addEventListener('input', updatePreview);
 });
-
-<div class="layer-area">
-    <label><button id="middle-layer-btn" onclick="toggleMiddleLayer()">Middle Layer</button></label>
-    <button onclick="clearImage('background')" class="clear-btn">Clear Image</button>
-</div>
