@@ -368,8 +368,10 @@ function updateFinalPreview() {
     const postPreview = document.getElementById('postPreview');
     const finalPreview = document.getElementById('final-preview-box');
 
+    // Copy content from post preview to final preview
     textLayer.innerHTML = postPreview.innerHTML;
 
+    // Handle background image
     if (bgImage) {
         backgroundLayer.style.backgroundImage = `url(${bgImage})`;
         if (activePlatform) {
@@ -380,23 +382,27 @@ function updateFinalPreview() {
             backgroundLayer.style.filter = `blur(${adjustments.blur}px)`;
             middleLayer.style.backgroundColor = currentPreset ? currentPreset.background : '#fff';
         } else {
-            backgroundLayer.style.backgroundSize = 'cover';
+            backgroundLayer.style.backgroundSize = 'contain';
             backgroundLayer.style.backgroundPosition = 'center';
             backgroundLayer.style.opacity = 1;
             backgroundLayer.style.filter = 'none';
         }
     } else {
         backgroundLayer.style.backgroundImage = 'none';
+        finalPreview.style.background = currentPreset ? currentPreset.background : '#fff';
     }
 
+    // Set aspect ratio if platform is selected
     if (activePlatform) {
         setAspectRatio(activePlatform);
     }
 
+    // Ensure preview fits properly
     finalPreview.style.padding = '20px';
     finalPreview.style.width = '100%';
     finalPreview.style.height = 'auto';
 
+    // Adjust text sizing
     const heading = textLayer.querySelector('h3');
     const content = textLayer.querySelector('p');
     const subInfo = textLayer.querySelector('span');
