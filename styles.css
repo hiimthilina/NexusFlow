@@ -259,6 +259,7 @@ body.dark-theme .preset-info strong {
     align-items: center;
     justify-content: center;
     width: 100%;
+    position: relative;
 }
 
 body.dark-theme #postPreview, body.dark-theme #final-preview-box {
@@ -267,9 +268,9 @@ body.dark-theme #postPreview, body.dark-theme #final-preview-box {
 }
 
 #final-preview-box {
-    position: relative;
     overflow: hidden;
-    background-size: cover;
+    background-size: contain;
+    background-repeat: no-repeat;
     background-position: center;
 }
 
@@ -280,7 +281,8 @@ body.dark-theme #postPreview, body.dark-theme #final-preview-box {
     width: 100%;
     height: 100%;
     z-index: -1;
-    background-size: cover;
+    background-size: contain;
+    background-repeat: no-repeat;
     background-position: center;
 }
 
