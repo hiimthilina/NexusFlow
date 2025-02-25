@@ -479,3 +479,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('descriptionInput').addEventListener('input', updatePreview);
     document.getElementById('hashtagsInput').addEventListener('input', updatePreview);
 });
+
+<div class="layer-area">
+    <label><button id="middle-layer-btn" onclick="toggleMiddleLayer()">Middle Layer</button></label>
+    <button onclick="clearImage('background')" class="clear-btn">Clear Image</button>
+</div>
