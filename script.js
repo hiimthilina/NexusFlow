@@ -1,10 +1,8 @@
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
     document.querySelectorAll('#sidebar ul li').forEach(li => li.classList.remove('active'));
-    const page = document.getElementById(pageId);
-    const li = document.querySelector(`#sidebar ul li[onclick="showPage('${pageId}')"]`);
-    if (page) page.classList.add('active');
-    if (li) li.classList.add('active');
+    document.getElementById(pageId).classList.add('active');
+    document.querySelector(`#sidebar ul li[onclick="showPage('${pageId}')"]`).classList.add('active');
     if (pageId === 'export') {
         updatePreview();
         updateFinalPreview();
@@ -15,24 +13,20 @@ function showPage(pageId) {
 
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
-    if (sidebar) {
-        sidebar.classList.toggle('visible');
-        sidebar.classList.toggle('hidden');
-    }
+    sidebar.classList.toggle('visible');
+    sidebar.classList.toggle('hidden');
 }
 
 function hideSidebar() {
     const sidebar = document.getElementById('sidebar');
-    if (sidebar) {
-        sidebar.classList.remove('visible');
-        sidebar.classList.add('hidden');
-    }
+    sidebar.classList.remove('visible');
+    sidebar.classList.add('hidden');
 }
 
 document.addEventListener('click', (e) => {
     const sidebar = document.getElementById('sidebar');
     const sideIcon = document.querySelector('.side-icon');
-    if (sidebar && sideIcon && !sidebar.contains(e.target) && !sideIcon.contains(e.target)) {
+    if (!sidebar.contains(e.target) && !sideIcon.contains(e.target)) {
         hideSidebar();
     }
 });
@@ -42,27 +36,53 @@ function toggleTheme() {
 }
 
 function clearInputs() {
-    const headingInput = document.getElementById('headingInput');
-    const descriptionInput = document.getElementById('descriptionInput');
-    const hashtagsInput = document.getElementById('hashtagsInput');
-    if (headingInput) headingInput.value = '';
-    if (descriptionInput) descriptionInput.value = '';
-    if (hashtagsInput) hashtagsInput.value = '';
+    document.getElementById('headingInput').value = '';
+    document.getElementById('descriptionInput').value = '';
+    document.getElementById('hashtagsInput').value = '';
     updatePreview();
 }
 
 function finishSubInfo() {
-    const hashtagsInput = document.getElementById('hashtagsInput');
-    if (hashtagsInput) hashtagsInput.blur();
+    document.getElementById('hashtagsInput').blur();
     updatePreview();
 }
 
 const presets = {
-    educational: { name: 'Educational Facts', background: '#E6F7FF', heading: { font: 'Montserrat Bold', color: '#003366', size: 24 }, content: { font: 'Open Sans Regular', color: '#00529B', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
-    guidance: { name: 'Helpful Guidance', background: '#E8F3E8', heading: { font: 'Montserrat Bold', color: '#2E7D32', size: 24 }, content: { font: 'Open Sans Regular', color: '#388E3C', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
-    filmmaking: { name: 'Filmmaking', background: '#FFEBEE', heading: { font: 'Montserrat Bold', color: '#8B0000', size: 24 }, content: { font: 'Open Sans Regular', color: '#B71C1C', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
-    'ai-tech': { name: 'AI Technologies', background: '#E3F2FD', heading: { font: 'Montserrat Bold', color: '#1565C0', size: 24 }, content: { font: 'Open Sans Regular', color: '#1E88E5', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
-    myself: { name: 'About Myself', background: '#FFF8E1', heading: { font: 'Montserrat Bold', color: '#6D4C41', size: 24 }, content: { font: 'Open Sans Regular', color: '#8D6E63', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } }
+    educational: {
+        name: 'Educational Facts',
+        background: '#E6F7FF',
+        heading: { font: 'Montserrat Bold', color: '#003366', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#00529B', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    },
+    guidance: {
+        name: 'Helpful Guidance',
+        background: '#E8F3E8',
+        heading: { font: 'Montserrat Bold', color: '#2E7D32', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#388E3C', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    },
+    filmmaking: {
+        name: 'Filmmaking',
+        background: '#FFEBEE',
+        heading: { font: 'Montserrat Bold', color: '#8B0000', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#B71C1C', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    },
+    'ai-tech': {
+        name: 'AI Technologies',
+        background: '#E3F2FD',
+        heading: { font: 'Montserrat Bold', color: '#1565C0', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#1E88E5', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    },
+    myself: {
+        name: 'About Myself',
+        background: '#FFF8E1',
+        heading: { font: 'Montserrat Bold', color: '#6D4C41', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#8D6E63', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    }
 };
 
 let currentPreset = null;
@@ -86,6 +106,7 @@ function updatePreset() {
     const presetValue = document.getElementById('preset').value;
     currentPreset = presetValue ? presets[presetValue] : null;
     const presetInfo = document.getElementById('preset-info');
+    
     if (currentPreset) {
         presetInfo.innerHTML = `
             <strong>Preset Name:</strong> ${currentPreset.name}<br>
@@ -105,51 +126,50 @@ function updatePreview() {
     const heading = document.getElementById('headingInput').value || 'Heading';
     const description = document.getElementById('descriptionInput').value || 'Description';
     const subInfo = document.getElementById('hashtagsInput').value || 'Sub-info';
+    
     const previewHeading = document.getElementById('previewHeading');
     const previewContent = document.getElementById('previewContent');
     const previewSubInfo = document.getElementById('previewSubInfo');
     const postPreview = document.getElementById('postPreview');
 
-    if (previewHeading && previewContent && previewSubInfo && postPreview) {
-        previewHeading.textContent = heading;
-        previewContent.textContent = description;
-        previewSubInfo.textContent = subInfo;
+    previewHeading.textContent = heading;
+    previewContent.textContent = description;
+    previewSubInfo.textContent = subInfo;
 
-        if (currentPreset) {
-            postPreview.style.background = currentPreset.background;
-            previewHeading.style.fontFamily = currentPreset.heading.font.split(' ')[0];
-            previewHeading.style.fontWeight = currentPreset.heading.font.includes('Bold') ? 'bold' : 'normal';
-            previewHeading.style.color = currentPreset.heading.color;
-            previewHeading.style.fontSize = fontValues.heading + 'px';
-            previewHeading.style.marginBottom = spaceValues.h2c + 'px';
+    if (currentPreset) {
+        postPreview.style.background = currentPreset.background;
+        previewHeading.style.fontFamily = currentPreset.heading.font.split(' ')[0];
+        previewHeading.style.fontWeight = currentPreset.heading.font.includes('Bold') ? 'bold' : 'normal';
+        previewHeading.style.color = currentPreset.heading.color;
+        previewHeading.style.fontSize = fontValues.heading + 'px';
+        previewHeading.style.marginBottom = spaceValues.h2c + 'px';
 
-            previewContent.style.fontFamily = currentPreset.content.font.split(' ')[0];
-            previewContent.style.color = currentPreset.content.color;
-            previewContent.style.fontSize = fontValues.content + 'px';
-            previewContent.style.textAlign = 'center';
-            previewContent.style.marginBottom = spaceValues.c2s + 'px';
+        previewContent.style.fontFamily = currentPreset.content.font.split(' ')[0];
+        previewContent.style.color = currentPreset.content.color;
+        previewContent.style.fontSize = fontValues.content + 'px';
+        previewContent.style.textAlign = 'center';
+        previewContent.style.marginBottom = spaceValues.c2s + 'px';
 
-            previewSubInfo.style.fontFamily = currentPreset.subInfo.font.split(' ')[0];
-            previewSubInfo.style.color = currentPreset.subInfo.color;
-            previewSubInfo.style.fontSize = fontValues.subInfo + 'px';
-        } else {
-            postPreview.style.background = '#fff';
-            previewHeading.style.fontFamily = 'Montserrat';
-            previewHeading.style.fontWeight = 'bold';
-            previewHeading.style.color = '#333';
-            previewHeading.style.fontSize = fontValues.heading + 'px';
-            previewHeading.style.marginBottom = spaceValues.h2c + 'px';
+        previewSubInfo.style.fontFamily = currentPreset.subInfo.font.split(' ')[0];
+        previewSubInfo.style.color = currentPreset.subInfo.color;
+        previewSubInfo.style.fontSize = fontValues.subInfo + 'px';
+    } else {
+        postPreview.style.background = '#fff';
+        previewHeading.style.fontFamily = 'Montserrat';
+        previewHeading.style.fontWeight = 'bold';
+        previewHeading.style.color = '#333';
+        previewHeading.style.fontSize = fontValues.heading + 'px';
+        previewHeading.style.marginBottom = spaceValues.h2c + 'px';
 
-            previewContent.style.fontFamily = 'Open Sans';
-            previewContent.style.color = '#333';
-            previewContent.style.fontSize = fontValues.content + 'px';
-            previewContent.style.textAlign = 'center';
-            previewContent.style.marginBottom = spaceValues.c2s + 'px';
+        previewContent.style.fontFamily = 'Open Sans';
+        previewContent.style.color = '#333';
+        previewContent.style.fontSize = fontValues.content + 'px';
+        previewContent.style.textAlign = 'center';
+        previewContent.style.marginBottom = spaceValues.c2s + 'px';
 
-            previewSubInfo.style.fontFamily = 'Roboto';
-            previewSubInfo.style.color = '#A6A6A6';
-            previewSubInfo.style.fontSize = fontValues.subInfo + 'px';
-        }
+        previewSubInfo.style.fontFamily = 'Roboto';
+        previewSubInfo.style.color = '#A6A6A6';
+        previewSubInfo.style.fontSize = fontValues.subInfo + 'px';
     }
 }
 
@@ -184,7 +204,7 @@ function showSlider(type) {
     const rangeSlider = document.getElementById('range-slider');
     const imgRange = document.getElementById('img-range');
     const newButton = document.querySelector(`button[onclick="showSlider('${type}')"]`);
-
+    
     if (activeButton === newButton && (sliderContainer.classList.contains('hidden') === false || imgSliderContainer.classList.contains('hidden') === false)) {
         hideSlider();
         return;
@@ -283,7 +303,6 @@ function adjustImage() {
 
 function updatePixelValues() {
     const fontTab = document.getElementById('font-tab');
-    const imageTab = document.getElementById('image-tab');
     if (fontTab) {
         fontTab.querySelectorAll('.px-value').forEach(span => {
             const label = span.previousElementSibling.textContent.toLowerCase();
@@ -294,6 +313,7 @@ function updatePixelValues() {
             else if (label === 'c2s') span.textContent = `${spaceValues.c2s}px`;
         });
     }
+    const imageTab = document.getElementById('image-tab');
     if (imageTab && activePlatform) {
         const adj = imageAdjustments[activePlatform];
         imageTab.querySelectorAll('.px-value').forEach(span => {
@@ -367,50 +387,49 @@ function updateFinalPreview() {
     const middleLayer = document.getElementById('middle-layer');
     const textLayer = document.getElementById('text-layer');
     const finalPreview = document.getElementById('final-preview-box');
-    const postPreview = document.getElementById('postPreview');
+    textLayer.innerHTML = document.getElementById('postPreview').innerHTML;
 
-    // Copy content from post preview
-    textLayer.innerHTML = postPreview.innerHTML;
-
-    // Handle background image display
-    if (bgImage && !middleLayerActive) {
+    // Always display the background image if it exists, regardless of platform
+    if (bgImage) {
         backgroundLayer.style.backgroundImage = `url(${bgImage})`;
-        finalPreview.style.background = 'none'; // Clear container background to show image
         if (activePlatform) {
             const adjustments = imageAdjustments[activePlatform];
-            backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`; // Scale adjustment
+            backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`;
             backgroundLayer.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
             backgroundLayer.style.opacity = adjustments.opacity / 100;
             backgroundLayer.style.filter = `blur(${adjustments.blur}px)`;
         } else {
-            backgroundLayer.style.backgroundSize = 'cover'; // Default to cover
+            backgroundLayer.style.backgroundSize = 'cover';
             backgroundLayer.style.backgroundPosition = 'center';
             backgroundLayer.style.opacity = 1;
             backgroundLayer.style.filter = 'none';
         }
-    } else {
-        backgroundLayer.style.backgroundImage = 'none';
         if (middleLayerActive && currentPreset) {
             middleLayer.style.backgroundColor = currentPreset.background;
-            finalPreview.style.background = 'none';
         } else {
             middleLayer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
-            finalPreview.style.background = currentPreset ? currentPreset.background : '#fff';
+        }
+    } else {
+        backgroundLayer.style.backgroundImage = 'none';
+        finalPreview.style.background = currentPreset ? currentPreset.background : '#fff';
+        if (middleLayerActive && currentPreset) {
+            middleLayer.style.backgroundColor = currentPreset.background;
+        } else {
+            middleLayer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
         }
     }
 
-    // Apply platform-specific aspect ratio
+    // Apply aspect ratio if a platform is selected
     if (activePlatform) {
         setAspectRatio(activePlatform);
     } else {
-        finalPreview.style.aspectRatio = '1/1'; // Default square if no platform selected
+        finalPreview.style.aspectRatio = '1/1'; // Default to square if no platform
     }
 
-    // Ensure proper sizing
+    finalPreview.style.padding = '20px';
     finalPreview.style.width = '100%';
     finalPreview.style.height = 'auto';
 
-    // Adjust text sizing
     const heading = textLayer.querySelector('h3');
     const content = textLayer.querySelector('p');
     const subInfo = textLayer.querySelector('span');
@@ -456,12 +475,23 @@ function exportPosts() {
         updateFinalPreview();
         const finalPreview = document.getElementById('final-preview-box');
         finalPreview.style.borderRadius = '0';
+        // Ensure the background image fills the canvas for export
+        if (bgImage) {
+            const adjustments = imageAdjustments[activePlatform];
+            finalPreview.style.backgroundImage = `url(${bgImage})`;
+            finalPreview.style.backgroundSize = `${100 + adjustments.scale}%`;
+            finalPreview.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
+            finalPreview.style.opacity = adjustments.opacity / 100;
+            finalPreview.style.filter = `blur(${adjustments.blur}px)`;
+        }
         html2canvas(finalPreview).then(canvas => {
             const link = document.createElement('a');
             link.download = `${heading}-${activePlatform}.jpg`;
             link.href = canvas.toDataURL('image/jpeg', 0.9);
             link.click();
             finalPreview.style.borderRadius = '15px';
+            // Reset background image to prevent interference
+            finalPreview.style.backgroundImage = 'none';
         });
     });
 }
