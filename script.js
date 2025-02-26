@@ -389,47 +389,41 @@ function updateFinalPreview() {
     const finalPreview = document.getElementById('final-preview-box');
     textLayer.innerHTML = document.getElementById('postPreview').innerHTML;
 
-    // Handle background image display
+    // Always display the background image if it exists, regardless of platform
     if (bgImage) {
         backgroundLayer.style.backgroundImage = `url(${bgImage})`;
-        backgroundLayer.style.backgroundSize = 'cover'; // Default to cover
-        backgroundLayer.style.backgroundPosition = 'center';
-        backgroundLayer.style.opacity = 1;
-        backgroundLayer.style.filter = 'none';
-
         if (activePlatform) {
             const adjustments = imageAdjustments[activePlatform];
-            backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`; // Apply scaling
+            backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`;
             backgroundLayer.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
             backgroundLayer.style.opacity = adjustments.opacity / 100;
             backgroundLayer.style.filter = `blur(${adjustments.blur}px)`;
+        } else {
+            backgroundLayer.style.backgroundSize = 'cover';
+            backgroundLayer.style.backgroundPosition = 'center';
+            backgroundLayer.style.opacity = 1;
+            backgroundLayer.style.filter = 'none';
+        }
+        if (middleLayerActive && currentPreset) {
+            middleLayer.style.backgroundColor = currentPreset.background;
+        } else {
+            middleLayer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
         }
     } else {
         backgroundLayer.style.backgroundImage = 'none';
         finalPreview.style.background = currentPreset ? currentPreset.background : '#fff';
+        if (middleLayerActive && currentPreset) {
+            middleLayer.style.backgroundColor = currentPreset.background;
+        } else {
+            middleLayer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+        }
     }
 
-    // Handle middle layer
-    if (middleLayerActive && currentPreset) {
-        middleLayer.style.backgroundColor = currentPreset.background;
-    } else {
-        middleLayer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
-    }
-
-    // Apply aspect ratio
+    // Apply aspect ratio if a platform is selected
     if (activePlatform) {
         setAspectRatio(activePlatform);
     } else {
-        finalPreview.style.aspectRatio = 'auto'; // Default to natural image ratio if no platform
-        if (bgImage) {
-            const img = new Image();
-            img.onload = () => {
-                finalPreview.style.aspectRatio = `${img.width}/${img.height}`;
-            };
-            img.src = bgImage;
-        } else {
-            finalPreview.style.aspectRatio = '1/1';
-        }
+        finalPreview.style.aspectRatio = '1/1'; // Default to square if no platform
     }
 
     finalPreview.style.padding = '20px';
@@ -481,26 +475,23 @@ function exportPosts() {
         updateFinalPreview();
         const finalPreview = document.getElementById('final-preview-box');
         finalPreview.style.borderRadius = '0';
-
-        // Ensure the image fills the canvas for export
+        // Ensure the background image fills the canvas for export
         if (bgImage) {
             const adjustments = imageAdjustments[activePlatform];
             finalPreview.style.backgroundImage = `url(${bgImage})`;
             finalPreview.style.backgroundSize = `${100 + adjustments.scale}%`;
             finalPreview.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
-            finalPreview.style.opacity = '1'; // Reset opacity for export
+            finalPreview.style.opacity = adjustments.opacity / 100;
             finalPreview.style.filter = `blur(${adjustments.blur}px)`;
-            finalPreview.style.backgroundColor = 'transparent';
         }
-
-        html2canvas(finalPreview, { scale: 2 }).then(canvas => { // Higher scale for better resolution
+        html2canvas(finalPreview).then(canvas => {
             const link = document.createElement('a');
             link.download = `${heading}-${activePlatform}.jpg`;
             link.href = canvas.toDataURL('image/jpeg', 0.9);
             link.click();
             finalPreview.style.borderRadius = '15px';
-            finalPreview.style.backgroundImage = 'none'; // Reset after export
-            updateFinalPreview(); // Restore preview state
+            // Reset background image to prevent interference
+            finalPreview.style.backgroundImage = 'none';
         });
     });
 }
