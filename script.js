@@ -366,22 +366,24 @@ function updateFinalPreview() {
     const backgroundLayer = document.getElementById('background-layer');
     const middleLayer = document.getElementById('middle-layer');
     const textLayer = document.getElementById('text-layer');
-    const postPreview = document.getElementById('postPreview');
     const finalPreview = document.getElementById('final-preview-box');
+    const postPreview = document.getElementById('postPreview');
 
+    // Copy content from post preview
     textLayer.innerHTML = postPreview.innerHTML;
 
+    // Handle background image display
     if (bgImage && !middleLayerActive) {
         backgroundLayer.style.backgroundImage = `url(${bgImage})`;
-        finalPreview.style.background = 'none';
+        finalPreview.style.background = 'none'; // Clear container background to show image
         if (activePlatform) {
             const adjustments = imageAdjustments[activePlatform];
-            backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`;
+            backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`; // Scale adjustment
             backgroundLayer.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
             backgroundLayer.style.opacity = adjustments.opacity / 100;
             backgroundLayer.style.filter = `blur(${adjustments.blur}px)`;
         } else {
-            backgroundLayer.style.backgroundSize = 'cover';
+            backgroundLayer.style.backgroundSize = 'cover'; // Default to cover
             backgroundLayer.style.backgroundPosition = 'center';
             backgroundLayer.style.opacity = 1;
             backgroundLayer.style.filter = 'none';
@@ -390,22 +392,25 @@ function updateFinalPreview() {
         backgroundLayer.style.backgroundImage = 'none';
         if (middleLayerActive && currentPreset) {
             middleLayer.style.backgroundColor = currentPreset.background;
+            finalPreview.style.background = 'none';
         } else {
             middleLayer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
             finalPreview.style.background = currentPreset ? currentPreset.background : '#fff';
         }
     }
 
+    // Apply platform-specific aspect ratio
     if (activePlatform) {
         setAspectRatio(activePlatform);
     } else {
-        finalPreview.style.aspectRatio = 'auto';
+        finalPreview.style.aspectRatio = '1/1'; // Default square if no platform selected
     }
 
-    finalPreview.style.padding = '20px';
+    // Ensure proper sizing
     finalPreview.style.width = '100%';
     finalPreview.style.height = 'auto';
 
+    // Adjust text sizing
     const heading = textLayer.querySelector('h3');
     const content = textLayer.querySelector('p');
     const subInfo = textLayer.querySelector('span');
