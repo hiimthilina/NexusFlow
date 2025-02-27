@@ -330,7 +330,7 @@ function loadBackground() {
     const file = document.getElementById('bg-image').files[0];
     if (file) {
         bgImage = URL.createObjectURL(file);
-        updateFinalPreview();
+        updateFinalPreview(); // Apply directly to final preview
     }
 }
 
@@ -364,7 +364,7 @@ function dropHandler(event) {
     const file = event.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
         bgImage = URL.createObjectURL(file);
-        updateFinalPreview();
+        updateFinalPreview(); // Apply directly to final preview
     }
 }
 
@@ -521,4 +521,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('headingInput').addEventListener('input', updatePreview);
     document.getElementById('descriptionInput').addEventListener('input', updatePreview);
     document.getElementById('hashtagsInput').addEventListener('input', updatePreview);
+
+    document.querySelectorAll('.platform label').forEach(label => {
+        label.addEventListener('click', (e) => {
+            const platform = label.querySelector('input').value;
+            setActivePlatform(platform);
+        });
+    });
 });
