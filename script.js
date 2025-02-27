@@ -5,6 +5,7 @@ function showPage(pageId) {
     document.getElementById(pageId).classList.add('active');
     document.querySelector(`#sidebar ul li[onclick="showPage('${pageId}')"]`).classList.add('active');
     hideSidebar();
+    updatePreview();
 }
 
 function toggleSidebar() {
@@ -46,41 +47,11 @@ function finishSubInfo() {
 
 // Presets and Global Variables
 const presets = {
-    educational: {
-        name: 'Educational Facts',
-        background: '#E6F7FF',
-        heading: { font: 'Montserrat Bold', color: '#003366', size: 24 },
-        content: { font: 'Open Sans Regular', color: '#00529B', size: 16 },
-        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
-    },
-    guidance: {
-        name: 'Helpful Guidance',
-        background: '#E8F3E8',
-        heading: { font: 'Montserrat Bold', color: '#2E7D32', size: 24 },
-        content: { font: 'Open Sans Regular', color: '#388E3C', size: 16 },
-        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
-    },
-    filmmaking: {
-        name: 'Filmmaking',
-        background: '#FFEBEE',
-        heading: { font: 'Montserrat Bold', color: '#8B0000', size: 24 },
-        content: { font: 'Open Sans Regular', color: '#B71C1C', size: 16 },
-        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
-    },
-    'ai-tech': {
-        name: 'AI Technologies',
-        background: '#E3F2FD',
-        heading: { font: 'Montserrat Bold', color: '#1565C0', size: 24 },
-        content: { font: 'Open Sans Regular', color: '#1E88E5', size: 16 },
-        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
-    },
-    myself: {
-        name: 'About Myself',
-        background: '#FFF8E1',
-        heading: { font: 'Montserrat Bold', color: '#6D4C41', size: 24 },
-        content: { font: 'Open Sans Regular', color: '#8D6E63', size: 16 },
-        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
-    }
+    educational: { name: 'Educational Facts', background: '#E6F7FF', heading: { font: 'Montserrat Bold', color: '#003366', size: 24 }, content: { font: 'Open Sans Regular', color: '#00529B', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
+    guidance: { name: 'Helpful Guidance', background: '#E8F3E8', heading: { font: 'Montserrat Bold', color: '#2E7D32', size: 24 }, content: { font: 'Open Sans Regular', color: '#388E3C', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
+    filmmaking: { name: 'Filmmaking', background: '#FFEBEE', heading: { font: 'Montserrat Bold', color: '#8B0000', size: 24 }, content: { font: 'Open Sans Regular', color: '#B71C1C', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
+    'ai-tech': { name: 'AI Technologies', background: '#E3F2FD', heading: { font: 'Montserrat Bold', color: '#1565C0', size: 24 }, content: { font: 'Open Sans Regular', color: '#1E88E5', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
+    myself: { name: 'About Myself', background: '#FFF8E1', heading: { font: 'Montserrat Bold', color: '#6D4C41', size: 24 }, content: { font: 'Open Sans Regular', color: '#8D6E63', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } }
 };
 
 let currentPreset = null;
@@ -95,6 +66,7 @@ let imageAdjustments = {
     linkedin: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
     threads: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 }
 };
+let defaultImageAdjustments = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
 let activePlatform = null;
 let bgImage = null;
 let middleLayerActive = false;
@@ -135,16 +107,23 @@ function updatePreview() {
     previewContent.textContent = description;
     previewSubInfo.textContent = subInfo;
 
+    const adjustments = activePlatform ? imageAdjustments[activePlatform] : defaultImageAdjustments;
     if (bgImage) {
         postPreview.style.backgroundImage = `url(${bgImage})`;
-        postPreview.style.backgroundSize = 'cover';
-        postPreview.style.backgroundPosition = 'center';
+        postPreview.style.backgroundSize = `${100 + adjustments.scale}%`;
+        postPreview.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
+        postPreview.style.opacity = adjustments.opacity / 100;
+        postPreview.style.filter = `blur(${adjustments.blur}px)`;
     } else if (currentPreset) {
         postPreview.style.backgroundImage = 'none';
         postPreview.style.background = currentPreset.background;
+        postPreview.style.opacity = 1;
+        postPreview.style.filter = 'none';
     } else {
         postPreview.style.backgroundImage = 'none';
         postPreview.style.background = '#fff';
+        postPreview.style.opacity = 1;
+        postPreview.style.filter = 'none';
     }
 
     if (currentPreset) {
@@ -184,9 +163,14 @@ function updatePreview() {
 
 // Slider and Customization Functions
 function switchCustomizeTab(tab) {
-    document.querySelectorAll('.customize .tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.customize .tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
+    });
     document.querySelectorAll('.customize .tab-content').forEach(content => content.classList.remove('active'));
-    document.querySelector(`.customize button[onclick="switchCustomizeTab('${tab}')"]`).classList.add('active');
+    const activeBtn = document.querySelector(`.customize button[onclick="switchCustomizeTab('${tab}')"]`);
+    activeBtn.classList.add('active');
+    activeBtn.setAttribute('aria-selected', 'true');
     document.getElementById(`${tab}-tab`).classList.add('active');
     hideSlider();
 }
@@ -198,7 +182,7 @@ function showSlider(type) {
     const imgRange = document.getElementById('img-range');
     const newButton = document.querySelector(`button[onclick="showSlider('${type}')"]`);
     
-    if (activeButton === newButton && (sliderContainer.classList.contains('hidden') === false || imgSliderContainer.classList.contains('hidden') === false)) {
+    if (activeButton === newButton && (!sliderContainer.classList.contains('hidden') || !imgSliderContainer.classList.contains('hidden'))) {
         hideSlider();
         return;
     }
@@ -218,19 +202,19 @@ function showSlider(type) {
         if (type === 'opacity') {
             imgRange.min = 0;
             imgRange.max = 100;
-            imgRange.value = activePlatform ? imageAdjustments[activePlatform].opacity : 100;
+            imgRange.value = activePlatform ? imageAdjustments[activePlatform].opacity : defaultImageAdjustments.opacity;
         } else if (type === 'blur') {
             imgRange.min = 0;
             imgRange.max = 20;
-            imgRange.value = activePlatform ? imageAdjustments[activePlatform].blur : 0;
+            imgRange.value = activePlatform ? imageAdjustments[activePlatform].blur : defaultImageAdjustments.blur;
         } else if (type === 'scale') {
             imgRange.min = -50;
             imgRange.max = 50;
-            imgRange.value = activePlatform ? imageAdjustments[activePlatform].scale : 0;
+            imgRange.value = activePlatform ? imageAdjustments[activePlatform].scale : defaultImageAdjustments.scale;
         } else if (type === 'horizontal' || type === 'vertical') {
             imgRange.min = -100;
             imgRange.max = 100;
-            imgRange.value = activePlatform ? imageAdjustments[activePlatform][type] : 0;
+            imgRange.value = activePlatform ? imageAdjustments[activePlatform][type] : defaultImageAdjustments[type];
         }
         document.getElementById('img-slider-value').textContent = imgRange.value + (type === 'opacity' ? '%' : 'px');
         highlightButton(type);
@@ -287,9 +271,14 @@ function adjustImage() {
     const value = document.getElementById('img-range').value;
     const type = activeButton.getAttribute('onclick').match(/'([^']+)'/)[1];
     document.getElementById('img-slider-value').textContent = value + (type === 'opacity' ? '%' : 'px');
-    if (activeButton && activePlatform) {
-        imageAdjustments[activePlatform][type] = parseInt(value);
+    if (activeButton) {
+        if (activePlatform) {
+            imageAdjustments[activePlatform][type] = parseInt(value);
+        } else {
+            defaultImageAdjustments[type] = parseInt(value);
+        }
         updateFinalPreview();
+        updatePreview();
         updatePixelValues();
     }
 }
@@ -307,8 +296,8 @@ function updatePixelValues() {
             else if (label === 'c2s') span.textContent = `${spaceValues.c2s}px`;
         });
     }
-    if (imageTab && activePlatform) {
-        const adj = imageAdjustments[activePlatform];
+    if (imageTab) {
+        const adj = activePlatform ? imageAdjustments[activePlatform] : defaultImageAdjustments;
         imageTab.querySelectorAll('.px-value').forEach(span => {
             const label = span.previousElementSibling.textContent.toLowerCase();
             if (label === 'opacity') span.textContent = `${adj.opacity}%`;
@@ -326,8 +315,10 @@ function resetAdjustments() {
     Object.keys(imageAdjustments).forEach(platform => {
         imageAdjustments[platform] = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
     });
+    defaultImageAdjustments = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
     middleLayerActive = false;
     document.getElementById('middle-layer-btn').classList.remove('active');
+    document.getElementById('middle-layer-btn').setAttribute('aria-pressed', 'false');
     document.getElementById('middle-layer').classList.remove('active');
     hideSlider();
     updatePreview();
@@ -339,18 +330,25 @@ function resetAdjustments() {
 function loadBackground() {
     const file = document.getElementById('bg-image').files[0];
     if (file) {
+        if (!file.type.startsWith('image/')) {
+            alert('Please upload a valid image file (e.g., JPG, PNG).');
+            document.getElementById('bg-image').value = '';
+            return;
+        }
+        if (bgImage) URL.revokeObjectURL(bgImage);
         bgImage = URL.createObjectURL(file);
-        updatePreview(); // Update both previews
+        updatePreview();
         updateFinalPreview();
     }
 }
 
 function clearImage(type) {
     if (type === 'background') {
+        if (bgImage) URL.revokeObjectURL(bgImage);
         bgImage = null;
         document.getElementById('bg-image').value = '';
         document.getElementById('background-layer').style.backgroundImage = 'none';
-        updatePreview(); // Update both previews
+        updatePreview();
         updateFinalPreview();
     }
 }
@@ -374,9 +372,14 @@ function dropHandler(event) {
     event.preventDefault();
     document.querySelector('.drop-zone').classList.remove('dragover');
     const file = event.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
+    if (file) {
+        if (!file.type.startsWith('image/')) {
+            alert('Please drop a valid image file (e.g., JPG, PNG).');
+            return;
+        }
+        if (bgImage) URL.revokeObjectURL(bgImage);
         bgImage = URL.createObjectURL(file);
-        updatePreview(); // Update both previews
+        updatePreview();
         updateFinalPreview();
     }
 }
@@ -385,6 +388,7 @@ function dropHandler(event) {
 function setActivePlatform(platform) {
     activePlatform = platform;
     updateFinalPreview();
+    updatePreview();
     updatePixelValues();
 }
 
@@ -394,6 +398,7 @@ function toggleMiddleLayer() {
     const btn = document.getElementById('middle-layer-btn');
     middleLayer.classList.toggle('active', middleLayerActive);
     btn.classList.toggle('active', middleLayerActive);
+    btn.setAttribute('aria-pressed', middleLayerActive);
     updateFinalPreview();
 }
 
@@ -404,25 +409,16 @@ function updateFinalPreview() {
     const finalPreview = document.getElementById('final-preview-box');
     const postPreview = document.getElementById('postPreview');
 
-    // Copy content from post preview
     textLayer.innerHTML = postPreview.innerHTML;
 
-    // Handle background image display
+    const adjustments = activePlatform ? imageAdjustments[activePlatform] : defaultImageAdjustments;
     if (bgImage && !middleLayerActive) {
         backgroundLayer.style.backgroundImage = `url(${bgImage})`;
-        finalPreview.style.background = 'none'; // Clear container background to show image
-        if (activePlatform) {
-            const adjustments = imageAdjustments[activePlatform];
-            backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`; // Scale adjustment
-            backgroundLayer.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
-            backgroundLayer.style.opacity = adjustments.opacity / 100;
-            backgroundLayer.style.filter = `blur(${adjustments.blur}px)`;
-        } else {
-            backgroundLayer.style.backgroundSize = 'cover'; // Default to cover
-            backgroundLayer.style.backgroundPosition = 'center';
-            backgroundLayer.style.opacity = 1;
-            backgroundLayer.style.filter = 'none';
-        }
+        finalPreview.style.background = 'none';
+        backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`;
+        backgroundLayer.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
+        backgroundLayer.style.opacity = adjustments.opacity / 100;
+        backgroundLayer.style.filter = `blur(${adjustments.blur}px)`;
     } else {
         backgroundLayer.style.backgroundImage = 'none';
         if (middleLayerActive && currentPreset) {
@@ -434,18 +430,15 @@ function updateFinalPreview() {
         }
     }
 
-    // Apply platform-specific aspect ratio
     if (activePlatform) {
         setAspectRatio(activePlatform);
     } else {
-        finalPreview.style.aspectRatio = '1/1'; // Default square if no platform selected
+        finalPreview.style.aspectRatio = '1/1';
     }
 
-    // Ensure proper sizing
     finalPreview.style.width = '100%';
     finalPreview.style.height = 'auto';
 
-    // Adjust text sizing
     const heading = textLayer.querySelector('h3');
     const content = textLayer.querySelector('p');
     const subInfo = textLayer.querySelector('span');
@@ -480,50 +473,55 @@ function toggleCheckAll() {
     checkboxes.forEach(cb => cb.checked = !allChecked);
 }
 
-function exportPosts() {
+async function exportPosts() {
     const checkboxes = document.querySelectorAll('input[name="platform"]:checked');
     if (checkboxes.length === 0) {
         alert('Please select at least one platform to export.');
         return;
     }
+    const exportBtn = document.getElementById('export-btn');
+    exportBtn.disabled = true;
+    exportBtn.textContent = 'Exporting...';
+    
     const heading = document.getElementById('headingInput').value || 'post';
-    checkboxes.forEach(cb => {
+    const finalPreview = document.getElementById('final-preview-box');
+    finalPreview.style.borderRadius = '0';
+
+    for (const cb of checkboxes) {
         activePlatform = cb.value;
         updateFinalPreview();
-        const finalPreview = document.getElementById('final-preview-box');
-        finalPreview.style.borderRadius = '0';
-        
-        setTimeout(() => {
-            html2canvas(finalPreview, { 
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        try {
+            const canvas = await html2canvas(finalPreview, { 
                 backgroundColor: null,
                 scale: 2 
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `${heading}-${activePlatform}.jpg`;
-                link.href = canvas.toDataURL('image/jpeg', 0.9);
-                link.click();
-                finalPreview.style.borderRadius = '15px';
-            }).catch(error => {
-                console.error('Error exporting post:', error);
-                alert('Failed to export the post. Check the console for details.');
             });
-        }, 100);
-    });
+            const link = document.createElement('a');
+            link.download = `${heading}-${activePlatform}.jpg`;
+            link.href = canvas.toDataURL('image/jpeg', 0.9);
+            link.click();
+        } catch (error) {
+            console.error('Error exporting post:', error);
+            alert(`Failed to export for ${activePlatform}. Check console for details.`);
+        }
+    }
+    finalPreview.style.borderRadius = '15px';
+    exportBtn.disabled = false;
+    exportBtn.textContent = 'Export Posts';
 }
 
 // Feedback Form Submission
 document.getElementById('feedback-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    fetch('https://your-backend-api.com/feedback', {
-        method: 'POST',
-        body: JSON.stringify(Object.fromEntries(formData)),
-        headers: { 'Content-Type': 'application/json' }
-    })
-    .then(response => response.json())
-    .then(data => alert('Feedback submitted successfully!'))
-    .catch(error => console.error('Error submitting feedback:', error));
-    e.target.reset();
+    const form = e.target;
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    const formData = new FormData(form);
+    console.log('Feedback submitted:', Object.fromEntries(formData));
+    alert('Feedback submitted successfully! (Note: This is a demo - feedback is logged to console, not sent to a server.)');
+    form.reset();
 });
 
 // Initialize on Load
@@ -541,4 +539,6 @@ document.addEventListener('DOMContentLoaded', () => {
             setActivePlatform(platform);
         });
     });
+
+    document.getElementById('bg-image').addEventListener('change', loadBackground);
 });
