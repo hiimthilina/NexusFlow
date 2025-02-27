@@ -3,11 +3,6 @@ function showPage(pageId) {
     document.querySelectorAll('#sidebar ul li').forEach(li => li.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
     document.querySelector(`#sidebar ul li[onclick="showPage('${pageId}')"]`).classList.add('active');
-    if (pageId === 'export') {
-        updatePreview();
-        updateFinalPreview();
-    }
-    hideSlider();
     hideSidebar();
 }
 
@@ -35,6 +30,7 @@ function toggleTheme() {
     document.body.classList.toggle('dark-theme');
 }
 
+// Post Details
 function clearInputs() {
     document.getElementById('headingInput').value = '';
     document.getElementById('descriptionInput').value = '';
@@ -47,6 +43,7 @@ function finishSubInfo() {
     updatePreview();
 }
 
+// Presets
 const presets = {
     educational: {
         name: 'Educational Facts',
@@ -89,13 +86,13 @@ let currentPreset = null;
 let fontValues = { heading: 24, content: 16, subInfo: 12 };
 let spaceValues = { h2c: 10, c2s: 10 };
 let imageAdjustments = {
-    youtube: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
-    facebook: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
-    instagram: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
-    tiktok: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
-    twitter: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
-    linkedin: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
-    threads: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 }
+    youtube: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
+    facebook: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
+    instagram: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
+    tiktok: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
+    twitter: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
+    linkedin: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
+    threads: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 }
 };
 let activePlatform = null;
 let bgImage = null;
@@ -111,9 +108,9 @@ function updatePreset() {
         presetInfo.innerHTML = `
             <strong>Preset Name:</strong> ${currentPreset.name}<br>
             <strong>Background Color:</strong> ${currentPreset.background}<br>
-            <strong>Heading Font:</strong> ${currentPreset.heading.font} <strong>Color:</strong> ${currentPreset.heading.color}<br>
-            <strong>Content Font:</strong> ${currentPreset.content.font} <strong>Color:</strong> ${currentPreset.content.color}<br>
-            <strong>Sub-Info Font:</strong> ${currentPreset.subInfo.font} <strong>Color:</strong> ${currentPreset.subInfo.color}
+            <strong>Heading Font:</strong> ${currentPreset.heading.font}     <strong>Color:</strong> ${currentPreset.heading.color}<br>
+            <strong>Content Font:</strong> ${currentPreset.content.font}   <strong>Color:</strong> ${currentPreset.content.color}<br>
+            <strong>Sub-Info Font:</strong> ${currentPreset.subInfo.font}       <strong>Color:</strong> ${currentPreset.subInfo.color}
         `;
     } else {
         presetInfo.textContent = 'Select Preset to Display Details';
@@ -173,31 +170,6 @@ function updatePreview() {
     }
 }
 
-function switchCustomizeTab(tab) {
-    document.querySelectorAll('.customize .tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.customize .tab-content').forEach(content => content.classList.remove('active'));
-    document.querySelector(`.customize button[onclick="switchCustomizeTab('${tab}')"]`).classList.add('active');
-    document.getElementById(`${tab}-tab`).classList.add('active');
-    hideSlider();
-}
-
-function loadBackground() {
-    const file = document.getElementById('bg-image').files[0];
-    if (file) {
-        bgImage = URL.createObjectURL(file);
-        updateFinalPreview();
-    }
-}
-
-function clearImage(type) {
-    if (type === 'background') {
-        bgImage = null;
-        document.getElementById('bg-image').value = '';
-        document.getElementById('background-layer').style.backgroundImage = 'none';
-        updateFinalPreview();
-    }
-}
-
 function showSlider(type) {
     const sliderContainer = document.getElementById('slider-container');
     const imgSliderContainer = document.getElementById('img-slider-container');
@@ -215,8 +187,6 @@ function showSlider(type) {
 
     if (type.includes('size') || type.includes('space')) {
         sliderContainer.classList.remove('hidden');
-        rangeSlider.min = 8;
-        rangeSlider.max = type.includes('size') ? 48 : 30;
         rangeSlider.value = getCurrentValue(type);
         document.getElementById('slider-value').textContent = rangeSlider.value + 'px';
         highlightButton(type);
@@ -225,19 +195,23 @@ function showSlider(type) {
         if (type === 'opacity') {
             imgRange.min = 0;
             imgRange.max = 100;
-            imgRange.value = activePlatform ? imageAdjustments[activePlatform].opacity : 100;
+            imgRange.value = getImageValue(type, activePlatform);
         } else if (type === 'blur') {
             imgRange.min = 0;
             imgRange.max = 20;
-            imgRange.value = activePlatform ? imageAdjustments[activePlatform].blur : 0;
+            imgRange.value = getImageValue(type, activePlatform);
+        } else if (type === 'resize') {
+            imgRange.min = -100;
+            imgRange.max = 100;
+            imgRange.value = getImageValue(type, activePlatform);
         } else if (type === 'scale') {
             imgRange.min = -50;
             imgRange.max = 50;
-            imgRange.value = activePlatform ? imageAdjustments[activePlatform].scale : 0;
+            imgRange.value = getImageValue(type, activePlatform);
         } else if (type === 'horizontal' || type === 'vertical') {
             imgRange.min = -100;
             imgRange.max = 100;
-            imgRange.value = activePlatform ? imageAdjustments[activePlatform][type] : 0;
+            imgRange.value = getImageValue(type, activePlatform);
         }
         document.getElementById('img-slider-value').textContent = imgRange.value + (type === 'opacity' ? '%' : 'px');
         highlightButton(type);
@@ -254,7 +228,7 @@ function hideSlider() {
 document.addEventListener('click', (e) => {
     const sliderContainer = document.getElementById('slider-container');
     const imgSliderContainer = document.getElementById('img-slider-container');
-    const isSliderButton = e.target.closest('.button-group button');
+    const isSliderButton = e.target.closest('.adjust-group button') || e.target.closest('.button-group button');
     if (!sliderContainer.contains(e.target) && !imgSliderContainer.contains(e.target) && !isSliderButton) {
         hideSlider();
     }
@@ -268,6 +242,11 @@ function getCurrentValue(type) {
     if (type === 'c2s-space') return spaceValues.c2s;
 }
 
+function getImageValue(type, platform) {
+    if (!platform) return type === 'opacity' ? 100 : 0;
+    return imageAdjustments[platform][type];
+}
+
 function highlightButton(type) {
     if (activeButton) activeButton.classList.remove('active');
     activeButton = document.querySelector(`button[onclick="showSlider('${type}')"]`);
@@ -277,6 +256,7 @@ function highlightButton(type) {
 function adjustValue() {
     const value = document.getElementById('range-slider').value;
     document.getElementById('slider-value').textContent = value + 'px';
+
     if (activeButton) {
         const type = activeButton.getAttribute('onclick').match(/'([^']+)'/)[1];
         if (type === 'heading-size') fontValues.heading = parseInt(value);
@@ -294,36 +274,23 @@ function adjustImage() {
     const value = document.getElementById('img-range').value;
     const type = activeButton.getAttribute('onclick').match(/'([^']+)'/)[1];
     document.getElementById('img-slider-value').textContent = value + (type === 'opacity' ? '%' : 'px');
+
     if (activeButton && activePlatform) {
         imageAdjustments[activePlatform][type] = parseInt(value);
         updateFinalPreview();
-        updatePixelValues();
+        updateImagePixelValues();
     }
 }
 
 function updatePixelValues() {
-    const fontTab = document.getElementById('font-tab');
-    if (fontTab) {
-        fontTab.querySelectorAll('.px-value').forEach(span => {
-            const label = span.previousElementSibling.textContent.toLowerCase();
-            if (label === 'heading') span.textContent = `${fontValues.heading}px`;
-            else if (label === 'content') span.textContent = `${fontValues.content}px`;
-            else if (label === 'sub-info') span.textContent = `${fontValues.subInfo}px`;
-            else if (label === 'h2c') span.textContent = `${spaceValues.h2c}px`;
-            else if (label === 'c2s') span.textContent = `${spaceValues.c2s}px`;
-        });
-    }
-    const imageTab = document.getElementById('image-tab');
-    if (imageTab && activePlatform) {
+    document.getElementById('font-value')?.textContent = `${fontValues.heading}px ${fontValues.content}px ${fontValues.subInfo}px`;
+    document.getElementById('space-value')?.textContent = `${spaceValues.h2c}px ${spaceValues.c2s}px`;
+}
+
+function updateImagePixelValues() {
+    if (activePlatform) {
         const adj = imageAdjustments[activePlatform];
-        imageTab.querySelectorAll('.px-value').forEach(span => {
-            const label = span.previousElementSibling.textContent.toLowerCase();
-            if (label === 'opacity') span.textContent = `${adj.opacity}%`;
-            else if (label === 'blur') span.textContent = `${adj.blur}px`;
-            else if (label === 'scale') span.textContent = `${adj.scale}`;
-            else if (label === 'horizontal') span.textContent = `${adj.horizontal}px`;
-            else if (label === 'vertical') span.textContent = `${adj.vertical}px`;
-        });
+        document.getElementById('img-value')?.textContent = `${adj.opacity}% ${adj.blur}px ${adj.resize}px ${adj.scale} ${adj.horizontal}px ${adj.vertical}px`;
     }
 }
 
@@ -331,7 +298,7 @@ function resetAdjustments() {
     fontValues = { heading: 24, content: 16, subInfo: 12 };
     spaceValues = { h2c: 10, c2s: 10 };
     Object.keys(imageAdjustments).forEach(platform => {
-        imageAdjustments[platform] = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
+        imageAdjustments[platform] = { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 };
     });
     middleLayerActive = false;
     document.getElementById('middle-layer-btn').classList.remove('active');
@@ -340,6 +307,19 @@ function resetAdjustments() {
     updatePreview();
     updateFinalPreview();
     updatePixelValues();
+    updateImagePixelValues();
+}
+
+function loadBackground() {
+    const file = document.getElementById('bg-image').files[0];
+    if (file) {
+        bgImage = URL.createObjectURL(file);
+        const backgroundLayer = document.getElementById('background-layer');
+        backgroundLayer.style.backgroundImage = `url(${bgImage})`;
+        backgroundLayer.style.backgroundSize = 'cover';
+        backgroundLayer.style.backgroundPosition = 'center';
+        updateFinalPreview();
+    }
 }
 
 function dragOver(event) {
@@ -363,6 +343,10 @@ function dropHandler(event) {
     const file = event.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
         bgImage = URL.createObjectURL(file);
+        const backgroundLayer = document.getElementById('background-layer');
+        backgroundLayer.style.backgroundImage = `url(${bgImage})`;
+        backgroundLayer.style.backgroundSize = 'cover';
+        backgroundLayer.style.backgroundPosition = 'center';
         updateFinalPreview();
     }
 }
@@ -370,7 +354,16 @@ function dropHandler(event) {
 function setActivePlatform(platform) {
     activePlatform = platform;
     updateFinalPreview();
-    updatePixelValues();
+    if (bgImage) {
+        const adjustments = imageAdjustments[platform];
+        const backgroundLayer = document.getElementById('background-layer');
+        backgroundLayer.style.backgroundImage = `url(${bgImage})`;
+        backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`;
+        backgroundLayer.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
+        backgroundLayer.style.opacity = adjustments.opacity / 100;
+        backgroundLayer.style.filter = `blur(${adjustments.blur}px)`;
+    }
+    updateImagePixelValues();
 }
 
 function toggleMiddleLayer() {
@@ -382,6 +375,31 @@ function toggleMiddleLayer() {
     updateFinalPreview();
 }
 
+function saveImageAdjustments() {
+    if (activePlatform && bgImage) {
+        updateFinalPreview();
+        const finalPreview = document.getElementById('final-preview-box');
+        finalPreview.style.backgroundImage = `url(${bgImage})`;
+        finalPreview.style.backgroundSize = 'cover';
+        finalPreview.style.backgroundPosition = 'center';
+        if (middleLayerActive) {
+            html2canvas(document.querySelector('#middle-layer'), { backgroundColor: null }).then(canvas => {
+                const textCanvas = document.createElement('canvas');
+                textCanvas.width = canvas.width;
+                textCanvas.height = canvas.height;
+                const ctx = textCanvas.getContext('2d');
+                ctx.drawImage(canvas, 0, 0);
+                html2canvas(document.querySelector('#text-layer')).then(textCanvasResult => {
+                    ctx.drawImage(textCanvasResult, 0, 0);
+                    finalPreview.style.backgroundImage = `url(${textCanvas.toDataURL()})`;
+                });
+            });
+        }
+    } else {
+        alert('Please select a platform and background image before saving adjustments.');
+    }
+}
+
 function updateFinalPreview() {
     const backgroundLayer = document.getElementById('background-layer');
     const middleLayer = document.getElementById('middle-layer');
@@ -389,60 +407,42 @@ function updateFinalPreview() {
     const finalPreview = document.getElementById('final-preview-box');
     textLayer.innerHTML = document.getElementById('postPreview').innerHTML;
 
-    // Always display the background image if it exists, regardless of platform
+    finalPreview.style.background = 'none'; // Ensure transparency
+
     if (bgImage) {
         backgroundLayer.style.backgroundImage = `url(${bgImage})`;
         if (activePlatform) {
             const adjustments = imageAdjustments[activePlatform];
-            backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`;
+            backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`; // Scale to fill
             backgroundLayer.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
             backgroundLayer.style.opacity = adjustments.opacity / 100;
             backgroundLayer.style.filter = `blur(${adjustments.blur}px)`;
+            middleLayer.style.backgroundColor = currentPreset ? currentPreset.background : '#fff';
+            setAspectRatio(activePlatform); // Apply platform ratio
         } else {
-            backgroundLayer.style.backgroundSize = 'cover';
+            backgroundLayer.style.backgroundSize = 'cover'; // Fill without platform
             backgroundLayer.style.backgroundPosition = 'center';
             backgroundLayer.style.opacity = 1;
             backgroundLayer.style.filter = 'none';
-        }
-        if (middleLayerActive && currentPreset) {
-            middleLayer.style.backgroundColor = currentPreset.background;
-        } else {
-            middleLayer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+            finalPreview.style.aspectRatio = '1/1'; // Default square
         }
     } else {
         backgroundLayer.style.backgroundImage = 'none';
         finalPreview.style.background = currentPreset ? currentPreset.background : '#fff';
-        if (middleLayerActive && currentPreset) {
-            middleLayer.style.backgroundColor = currentPreset.background;
+        if (activePlatform) {
+            setAspectRatio(activePlatform);
         } else {
-            middleLayer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+            finalPreview.style.aspectRatio = '1/1';
         }
-    }
-
-    // Apply aspect ratio if a platform is selected
-    if (activePlatform) {
-        setAspectRatio(activePlatform);
-    } else {
-        finalPreview.style.aspectRatio = '1/1'; // Default to square if no platform
     }
 
     finalPreview.style.padding = '20px';
     finalPreview.style.width = '100%';
     finalPreview.style.height = 'auto';
-
-    const heading = textLayer.querySelector('h3');
-    const content = textLayer.querySelector('p');
-    const subInfo = textLayer.querySelector('span');
-    if (heading) heading.style.fontSize = fontValues.heading + 'px';
-    if (heading) heading.style.marginBottom = spaceValues.h2c + 'px';
-    if (content) content.style.fontSize = fontValues.content + 'px';
-    if (content) content.style.marginBottom = spaceValues.c2s + 'px';
-    if (subInfo) subInfo.style.fontSize = fontValues.subInfo + 'px';
 }
 
 function setAspectRatio(platform) {
     const finalPreview = document.getElementById('final-preview-box');
-    const platformInfo = document.getElementById('platform-info');
     const ratios = {
         youtube: { ratio: '16:9', resolution: '1920x1080' },
         facebook: { ratio: '1:1', resolution: '1200x1200' },
@@ -454,7 +454,8 @@ function setAspectRatio(platform) {
     };
     const [width, height] = ratios[platform].ratio.split(':');
     finalPreview.style.aspectRatio = `${width}/${height}`;
-    platformInfo.textContent = `Aspect Ratio: ${ratios[platform].ratio}, Resolution: ${ratios[platform].resolution}`;
+    document.getElementById('platform-info').textContent = `Aspect Ratio: ${ratios[platform].ratio}, Resolution: ${ratios[platform].resolution}`;
+    updateImagePixelValues();
 }
 
 function toggleCheckAll() {
@@ -475,23 +476,24 @@ function exportPosts() {
         updateFinalPreview();
         const finalPreview = document.getElementById('final-preview-box');
         finalPreview.style.borderRadius = '0';
-        // Ensure the background image fills the canvas for export
-        if (bgImage) {
-            const adjustments = imageAdjustments[activePlatform];
-            finalPreview.style.backgroundImage = `url(${bgImage})`;
-            finalPreview.style.backgroundSize = `${100 + adjustments.scale}%`;
-            finalPreview.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
-            finalPreview.style.opacity = adjustments.opacity / 100;
-            finalPreview.style.filter = `blur(${adjustments.blur}px)`;
-        }
-        html2canvas(finalPreview).then(canvas => {
+
+        const ratios = {
+            youtube: { width: 1920, height: 1080 },
+            facebook: { width: 1200, height: 1200 },
+            instagram: { width: 1080, height: 1350 },
+            tiktok: { width: 1080, height: 1920 },
+            twitter: { width: 1200, height: 800 },
+            linkedin: { width: 1200, height: 1200 },
+            threads: { width: 1080, height: 1920 }
+        };
+        const { width, height } = ratios[activePlatform];
+
+        html2canvas(finalPreview, { width: width, height: height, scale: 1 }).then(canvas => {
             const link = document.createElement('a');
             link.download = `${heading}-${activePlatform}.jpg`;
             link.href = canvas.toDataURL('image/jpeg', 0.9);
             link.click();
             finalPreview.style.borderRadius = '15px';
-            // Reset background image to prevent interference
-            finalPreview.style.backgroundImage = 'none';
         });
     });
 }
@@ -513,7 +515,15 @@ document.getElementById('feedback-form')?.addEventListener('submit', (e) => {
 document.addEventListener('DOMContentLoaded', () => {
     updatePreview();
     updatePixelValues();
+
     document.getElementById('headingInput').addEventListener('input', updatePreview);
     document.getElementById('descriptionInput').addEventListener('input', updatePreview);
     document.getElementById('hashtagsInput').addEventListener('input', updatePreview);
+
+    document.querySelectorAll('.platform label').forEach(label => {
+        label.addEventListener('click', (e) => {
+            const platform = label.querySelector('input').value;
+            setActivePlatform(platform);
+        });
+    });
 });
