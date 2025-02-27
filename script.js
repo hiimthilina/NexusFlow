@@ -135,8 +135,19 @@ function updatePreview() {
     previewContent.textContent = description;
     previewSubInfo.textContent = subInfo;
 
-    if (currentPreset) {
+    if (bgImage) {
+        postPreview.style.backgroundImage = `url(${bgImage})`;
+        postPreview.style.backgroundSize = 'cover';
+        postPreview.style.backgroundPosition = 'center';
+    } else if (currentPreset) {
+        postPreview.style.backgroundImage = 'none';
         postPreview.style.background = currentPreset.background;
+    } else {
+        postPreview.style.backgroundImage = 'none';
+        postPreview.style.background = '#fff';
+    }
+
+    if (currentPreset) {
         previewHeading.style.fontFamily = currentPreset.heading.font.split(' ')[0];
         previewHeading.style.fontWeight = currentPreset.heading.font.includes('Bold') ? 'bold' : 'normal';
         previewHeading.style.color = currentPreset.heading.color;
@@ -153,7 +164,6 @@ function updatePreview() {
         previewSubInfo.style.color = currentPreset.subInfo.color;
         previewSubInfo.style.fontSize = fontValues.subInfo + 'px';
     } else {
-        postPreview.style.background = '#fff';
         previewHeading.style.fontFamily = 'Montserrat';
         previewHeading.style.fontWeight = 'bold';
         previewHeading.style.color = '#333';
@@ -330,7 +340,8 @@ function loadBackground() {
     const file = document.getElementById('bg-image').files[0];
     if (file) {
         bgImage = URL.createObjectURL(file);
-        updateFinalPreview(); // Apply directly to final preview
+        updatePreview(); // Update both previews
+        updateFinalPreview();
     }
 }
 
@@ -339,6 +350,7 @@ function clearImage(type) {
         bgImage = null;
         document.getElementById('bg-image').value = '';
         document.getElementById('background-layer').style.backgroundImage = 'none';
+        updatePreview(); // Update both previews
         updateFinalPreview();
     }
 }
@@ -364,7 +376,8 @@ function dropHandler(event) {
     const file = event.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
         bgImage = URL.createObjectURL(file);
-        updateFinalPreview(); // Apply directly to final preview
+        updatePreview(); // Update both previews
+        updateFinalPreview();
     }
 }
 
