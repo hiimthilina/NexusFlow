@@ -267,6 +267,7 @@ body.dark-theme #postPreview {
 }
 
 #final-preview-box {
+    position: relative;
     padding: 20px;
     min-height: 200px;
     border: 1px solid #ddd;
@@ -277,12 +278,12 @@ body.dark-theme #postPreview {
     align-items: center;
     justify-content: center;
     width: 100%;
-    position: relative;
     overflow: hidden;
-    background-color: transparent;
+    background: #fff;
 }
 
 body.dark-theme #final-preview-box {
+    background: #2c2c2c;
     border-color: #444;
 }
 
@@ -315,6 +316,7 @@ body.dark-theme #final-preview-box {
 
 #text-layer {
     z-index: 1;
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -343,6 +345,7 @@ body.dark-theme #final-preview-box {
 
 .tab-btn.active {
     background: #007BFF;
+    color: #fff;
 }
 
 .tab-content {
