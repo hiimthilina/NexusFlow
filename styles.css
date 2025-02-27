@@ -259,6 +259,9 @@ body.dark-theme .preset-info strong {
     align-items: center;
     justify-content: center;
     width: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
 }
 
 body.dark-theme #postPreview {
