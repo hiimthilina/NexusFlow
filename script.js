@@ -1,13 +1,9 @@
+// Navigation and Sidebar Functions
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
     document.querySelectorAll('#sidebar ul li').forEach(li => li.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
     document.querySelector(`#sidebar ul li[onclick="showPage('${pageId}')"]`).classList.add('active');
-    if (pageId === 'export') {
-        updatePreview();
-        updateFinalPreview();
-    }
-    hideSlider();
     hideSidebar();
 }
 
@@ -35,6 +31,7 @@ function toggleTheme() {
     document.body.classList.toggle('dark-theme');
 }
 
+// Post Details Functions
 function clearInputs() {
     document.getElementById('headingInput').value = '';
     document.getElementById('descriptionInput').value = '';
@@ -47,12 +44,43 @@ function finishSubInfo() {
     updatePreview();
 }
 
+// Presets and Global Variables
 const presets = {
-    educational: { name: 'Educational Facts', background: '#E6F7FF', heading: { font: 'Montserrat Bold', color: '#003366', size: 24 }, content: { font: 'Open Sans Regular', color: '#00529B', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
-    guidance: { name: 'Helpful Guidance', background: '#E8F3E8', heading: { font: 'Montserrat Bold', color: '#2E7D32', size: 24 }, content: { font: 'Open Sans Regular', color: '#388E3C', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
-    filmmaking: { name: 'Filmmaking', background: '#FFEBEE', heading: { font: 'Montserrat Bold', color: '#8B0000', size: 24 }, content: { font: 'Open Sans Regular', color: '#B71C1C', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
-    'ai-tech': { name: 'AI Technologies', background: '#E3F2FD', heading: { font: 'Montserrat Bold', color: '#1565C0', size: 24 }, content: { font: 'Open Sans Regular', color: '#1E88E5', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
-    myself: { name: 'About Myself', background: '#FFF8E1', heading: { font: 'Montserrat Bold', color: '#6D4C41', size: 24 }, content: { font: 'Open Sans Regular', color: '#8D6E63', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } }
+    educational: {
+        name: 'Educational Facts',
+        background: '#E6F7FF',
+        heading: { font: 'Montserrat Bold', color: '#003366', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#00529B', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    },
+    guidance: {
+        name: 'Helpful Guidance',
+        background: '#E8F3E8',
+        heading: { font: 'Montserrat Bold', color: '#2E7D32', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#388E3C', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    },
+    filmmaking: {
+        name: 'Filmmaking',
+        background: '#FFEBEE',
+        heading: { font: 'Montserrat Bold', color: '#8B0000', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#B71C1C', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    },
+    'ai-tech': {
+        name: 'AI Technologies',
+        background: '#E3F2FD',
+        heading: { font: 'Montserrat Bold', color: '#1565C0', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#1E88E5', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    },
+    myself: {
+        name: 'About Myself',
+        background: '#FFF8E1',
+        heading: { font: 'Montserrat Bold', color: '#6D4C41', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#8D6E63', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    }
 };
 
 let currentPreset = null;
@@ -72,6 +100,7 @@ let bgImage = null;
 let middleLayerActive = false;
 let activeButton = null;
 
+// Preset and Preview Functions
 function updatePreset() {
     const presetValue = document.getElementById('preset').value;
     currentPreset = presetValue ? presets[presetValue] : null;
@@ -143,29 +172,13 @@ function updatePreview() {
     }
 }
 
+// Slider and Customization Functions
 function switchCustomizeTab(tab) {
     document.querySelectorAll('.customize .tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.customize .tab-content').forEach(content => content.classList.remove('active'));
     document.querySelector(`.customize button[onclick="switchCustomizeTab('${tab}')"]`).classList.add('active');
     document.getElementById(`${tab}-tab`).classList.add('active');
     hideSlider();
-}
-
-function loadBackground() {
-    const file = document.getElementById('bg-image').files[0];
-    if (file) {
-        bgImage = URL.createObjectURL(file);
-        updateFinalPreview();
-    }
-}
-
-function clearImage(type) {
-    if (type === 'background') {
-        bgImage = null;
-        document.getElementById('bg-image').value = '';
-        document.getElementById('background-layer').style.backgroundImage = 'none';
-        updateFinalPreview();
-    }
 }
 
 function showSlider(type) {
@@ -273,6 +286,7 @@ function adjustImage() {
 
 function updatePixelValues() {
     const fontTab = document.getElementById('font-tab');
+    const imageTab = document.getElementById('image-tab');
     if (fontTab) {
         fontTab.querySelectorAll('.px-value').forEach(span => {
             const label = span.previousElementSibling.textContent.toLowerCase();
@@ -283,7 +297,6 @@ function updatePixelValues() {
             else if (label === 'c2s') span.textContent = `${spaceValues.c2s}px`;
         });
     }
-    const imageTab = document.getElementById('image-tab');
     if (imageTab && activePlatform) {
         const adj = imageAdjustments[activePlatform];
         imageTab.querySelectorAll('.px-value').forEach(span => {
@@ -312,6 +325,24 @@ function resetAdjustments() {
     updatePixelValues();
 }
 
+// Image Management Functions
+function loadBackground() {
+    const file = document.getElementById('bg-image').files[0];
+    if (file) {
+        bgImage = URL.createObjectURL(file);
+        updateFinalPreview();
+    }
+}
+
+function clearImage(type) {
+    if (type === 'background') {
+        bgImage = null;
+        document.getElementById('bg-image').value = '';
+        document.getElementById('background-layer').style.backgroundImage = 'none';
+        updateFinalPreview();
+    }
+}
+
 function dragOver(event) {
     event.preventDefault();
     document.querySelector('.drop-zone').classList.add('dragover');
@@ -337,6 +368,7 @@ function dropHandler(event) {
     }
 }
 
+// Platform and Final Preview Functions
 function setActivePlatform(platform) {
     activePlatform = platform;
     updateFinalPreview();
@@ -357,41 +389,50 @@ function updateFinalPreview() {
     const middleLayer = document.getElementById('middle-layer');
     const textLayer = document.getElementById('text-layer');
     const finalPreview = document.getElementById('final-preview-box');
-    textLayer.innerHTML = document.getElementById('postPreview').innerHTML;
+    const postPreview = document.getElementById('postPreview');
 
-    finalPreview.style.background = 'none'; // Ensure transparency
+    // Copy content from post preview
+    textLayer.innerHTML = postPreview.innerHTML;
 
-    if (bgImage) {
+    // Handle background image display
+    if (bgImage && !middleLayerActive) {
         backgroundLayer.style.backgroundImage = `url(${bgImage})`;
+        finalPreview.style.background = 'none'; // Clear container background to show image
         if (activePlatform) {
             const adjustments = imageAdjustments[activePlatform];
-            backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`; // Scale to fill
+            backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`; // Scale adjustment
             backgroundLayer.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
             backgroundLayer.style.opacity = adjustments.opacity / 100;
             backgroundLayer.style.filter = `blur(${adjustments.blur}px)`;
-            middleLayer.style.backgroundColor = currentPreset ? currentPreset.background : '#fff';
-            setAspectRatio(activePlatform); // Apply platform-specific aspect ratio
         } else {
-            backgroundLayer.style.backgroundSize = 'cover'; // Default fill
+            backgroundLayer.style.backgroundSize = 'cover'; // Default to cover
             backgroundLayer.style.backgroundPosition = 'center';
             backgroundLayer.style.opacity = 1;
             backgroundLayer.style.filter = 'none';
-            finalPreview.style.aspectRatio = '1/1'; // Default square
         }
     } else {
         backgroundLayer.style.backgroundImage = 'none';
-        finalPreview.style.background = currentPreset ? currentPreset.background : '#fff';
-        if (activePlatform) {
-            setAspectRatio(activePlatform);
+        if (middleLayerActive && currentPreset) {
+            middleLayer.style.backgroundColor = currentPreset.background;
+            finalPreview.style.background = 'none';
         } else {
-            finalPreview.style.aspectRatio = '1/1';
+            middleLayer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+            finalPreview.style.background = currentPreset ? currentPreset.background : '#fff';
         }
     }
 
-    finalPreview.style.padding = '20px';
+    // Apply platform-specific aspect ratio
+    if (activePlatform) {
+        setAspectRatio(activePlatform);
+    } else {
+        finalPreview.style.aspectRatio = '1/1'; // Default square if no platform selected
+    }
+
+    // Ensure proper sizing
     finalPreview.style.width = '100%';
     finalPreview.style.height = 'auto';
 
+    // Adjust text sizing
     const heading = textLayer.querySelector('h3');
     const content = textLayer.querySelector('p');
     const subInfo = textLayer.querySelector('span');
@@ -419,6 +460,7 @@ function setAspectRatio(platform) {
     platformInfo.textContent = `Aspect Ratio: ${ratios[platform].ratio}, Resolution: ${ratios[platform].resolution}`;
 }
 
+// Export Functions
 function toggleCheckAll() {
     const checkboxes = document.querySelectorAll('input[name="platform"]');
     const allChecked = Array.from(checkboxes).every(cb => cb.checked);
@@ -437,29 +479,26 @@ function exportPosts() {
         updateFinalPreview();
         const finalPreview = document.getElementById('final-preview-box');
         finalPreview.style.borderRadius = '0';
-
-        // Define platform resolutions
-        const ratios = {
-            youtube: { width: 1920, height: 1080 },
-            facebook: { width: 1200, height: 1200 },
-            instagram: { width: 1080, height: 1350 },
-            tiktok: { width: 1080, height: 1920 },
-            twitter: { width: 1200, height: 800 },
-            linkedin: { width: 1200, height: 1200 },
-            threads: { width: 1080, height: 1920 }
-        };
-        const { width, height } = ratios[activePlatform];
-
-        html2canvas(finalPreview, { width: width, height: height, scale: 1 }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = `${heading}-${activePlatform}.jpg`;
-            link.href = canvas.toDataURL('image/jpeg', 0.9);
-            link.click();
-            finalPreview.style.borderRadius = '15px';
-        });
+        
+        setTimeout(() => {
+            html2canvas(finalPreview, { 
+                backgroundColor: null,
+                scale: 2 
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `${heading}-${activePlatform}.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.9);
+                link.click();
+                finalPreview.style.borderRadius = '15px';
+            }).catch(error => {
+                console.error('Error exporting post:', error);
+                alert('Failed to export the post. Check the console for details.');
+            });
+        }, 100);
     });
 }
 
+// Feedback Form Submission
 document.getElementById('feedback-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -474,9 +513,11 @@ document.getElementById('feedback-form')?.addEventListener('submit', (e) => {
     e.target.reset();
 });
 
+// Initialize on Load
 document.addEventListener('DOMContentLoaded', () => {
     updatePreview();
     updatePixelValues();
+
     document.getElementById('headingInput').addEventListener('input', updatePreview);
     document.getElementById('descriptionInput').addEventListener('input', updatePreview);
     document.getElementById('hashtagsInput').addEventListener('input', updatePreview);
