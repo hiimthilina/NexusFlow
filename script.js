@@ -5,7 +5,7 @@ function showPage(pageId) {
     document.getElementById(pageId).classList.add('active');
     document.querySelector(`#sidebar ul li[onclick="showPage('${pageId}')"]`).classList.add('active');
     hideSidebar();
-    updatePreview();
+    updatePreview(); // Added to ensure preview updates when switching pages
 }
 
 function toggleSidebar() {
@@ -47,26 +47,55 @@ function finishSubInfo() {
 
 // Presets and Global Variables
 const presets = {
-    educational: { name: 'Educational Facts', background: '#E6F7FF', heading: { font: 'Montserrat Bold', color: '#003366', size: 24 }, content: { font: 'Open Sans Regular', color: '#00529B', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
-    guidance: { name: 'Helpful Guidance', background: '#E8F3E8', heading: { font: 'Montserrat Bold', color: '#2E7D32', size: 24 }, content: { font: 'Open Sans Regular', color: '#388E3C', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
-    filmmaking: { name: 'Filmmaking', background: '#FFEBEE', heading: { font: 'Montserrat Bold', color: '#8B0000', size: 24 }, content: { font: 'Open Sans Regular', color: '#B71C1C', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
-    'ai-tech': { name: 'AI Technologies', background: '#E3F2FD', heading: { font: 'Montserrat Bold', color: '#1565C0', size: 24 }, content: { font: 'Open Sans Regular', color: '#1E88E5', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } },
-    myself: { name: 'About Myself', background: '#FFF8E1', heading: { font: 'Montserrat Bold', color: '#6D4C41', size: 24 }, content: { font: 'Open Sans Regular', color: '#8D6E63', size: 16 }, subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 } }
+    educational: {
+        name: 'Educational Facts',
+        background: '#E6F7FF',
+        heading: { font: 'Montserrat Bold', color: '#003366', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#00529B', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    },
+    guidance: {
+        name: 'Helpful Guidance',
+        background: '#E8F3E8',
+        heading: { font: 'Montserrat Bold', color: '#2E7D32', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#388E3C', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    },
+    filmmaking: {
+        name: 'Filmmaking',
+        background: '#FFEBEE',
+        heading: { font: 'Montserrat Bold', color: '#8B0000', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#B71C1C', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    },
+    'ai-tech': {
+        name: 'AI Technologies',
+        background: '#E3F2FD',
+        heading: { font: 'Montserrat Bold', color: '#1565C0', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#1E88E5', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    },
+    myself: {
+        name: 'About Myself',
+        background: '#FFF8E1',
+        heading: { font: 'Montserrat Bold', color: '#6D4C41', size: 24 },
+        content: { font: 'Open Sans Regular', color: '#8D6E63', size: 16 },
+        subInfo: { font: 'Roboto Light', color: '#A6A6A6', size: 12 }
+    }
 };
 
 let currentPreset = null;
 let fontValues = { heading: 24, content: 16, subInfo: 12 };
 let spaceValues = { h2c: 10, c2s: 10 };
 let imageAdjustments = {
-    youtube: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
-    facebook: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
-    instagram: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
-    tiktok: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
-    twitter: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
-    linkedin: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
-    threads: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 }
+    youtube: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
+    facebook: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
+    instagram: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
+    tiktok: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
+    twitter: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
+    linkedin: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
+    threads: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 }
 };
-let defaultImageAdjustments = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
 let activePlatform = null;
 let bgImage = null;
 let middleLayerActive = false;
@@ -90,7 +119,7 @@ function updatePreset() {
         presetInfo.textContent = 'Select Preset to Display Details';
     }
     updatePreview();
-    updateFinalPreview();
+    updateFinalPreview(); // Added to sync final preview with preset changes
 }
 
 function updatePreview() {
@@ -107,26 +136,11 @@ function updatePreview() {
     previewContent.textContent = description;
     previewSubInfo.textContent = subInfo;
 
-    const adjustments = activePlatform ? imageAdjustments[activePlatform] : defaultImageAdjustments;
-    if (bgImage) {
-        postPreview.style.backgroundImage = `url(${bgImage})`;
-        postPreview.style.backgroundSize = `${100 + adjustments.scale}%`;
-        postPreview.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
-        postPreview.style.opacity = adjustments.opacity / 100;
-        postPreview.style.filter = `blur(${adjustments.blur}px)`;
-    } else if (currentPreset) {
-        postPreview.style.backgroundImage = 'none';
-        postPreview.style.background = currentPreset.background;
-        postPreview.style.opacity = 1;
-        postPreview.style.filter = 'none';
-    } else {
-        postPreview.style.backgroundImage = 'none';
-        postPreview.style.background = '#fff';
-        postPreview.style.opacity = 1;
-        postPreview.style.filter = 'none';
-    }
-
     if (currentPreset) {
+        postPreview.style.background = currentPreset.background;
+        postPreview.style.backgroundImage = bgImage ? `url(${bgImage})` : 'none'; // Added to show bgImage if present
+        postPreview.style.backgroundSize = 'cover';
+        postPreview.style.backgroundPosition = 'center';
         previewHeading.style.fontFamily = currentPreset.heading.font.split(' ')[0];
         previewHeading.style.fontWeight = currentPreset.heading.font.includes('Bold') ? 'bold' : 'normal';
         previewHeading.style.color = currentPreset.heading.color;
@@ -143,6 +157,10 @@ function updatePreview() {
         previewSubInfo.style.color = currentPreset.subInfo.color;
         previewSubInfo.style.fontSize = fontValues.subInfo + 'px';
     } else {
+        postPreview.style.background = '#fff';
+        postPreview.style.backgroundImage = bgImage ? `url(${bgImage})` : 'none'; // Added to show bgImage if present
+        postPreview.style.backgroundSize = 'cover';
+        postPreview.style.backgroundPosition = 'center';
         previewHeading.style.fontFamily = 'Montserrat';
         previewHeading.style.fontWeight = 'bold';
         previewHeading.style.color = '#333';
@@ -162,19 +180,6 @@ function updatePreview() {
 }
 
 // Slider and Customization Functions
-function switchCustomizeTab(tab) {
-    document.querySelectorAll('.customize .tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-        btn.setAttribute('aria-selected', 'false');
-    });
-    document.querySelectorAll('.customize .tab-content').forEach(content => content.classList.remove('active'));
-    const activeBtn = document.querySelector(`.customize button[onclick="switchCustomizeTab('${tab}')"]`);
-    activeBtn.classList.add('active');
-    activeBtn.setAttribute('aria-selected', 'true');
-    document.getElementById(`${tab}-tab`).classList.add('active');
-    hideSlider();
-}
-
 function showSlider(type) {
     const sliderContainer = document.getElementById('slider-container');
     const imgSliderContainer = document.getElementById('img-slider-container');
@@ -182,7 +187,7 @@ function showSlider(type) {
     const imgRange = document.getElementById('img-range');
     const newButton = document.querySelector(`button[onclick="showSlider('${type}')"]`);
     
-    if (activeButton === newButton && (!sliderContainer.classList.contains('hidden') || !imgSliderContainer.classList.contains('hidden'))) {
+    if (activeButton === newButton && (sliderContainer.classList.contains('hidden') === false || imgSliderContainer.classList.contains('hidden') === false)) {
         hideSlider();
         return;
     }
@@ -193,7 +198,7 @@ function showSlider(type) {
     if (type.includes('size') || type.includes('space')) {
         sliderContainer.classList.remove('hidden');
         rangeSlider.min = 8;
-        rangeSlider.max = type.includes('size') ? 48 : 30;
+        rangeSlider.max = type.includes('size') ? 48 : 30; // Added range limits
         rangeSlider.value = getCurrentValue(type);
         document.getElementById('slider-value').textContent = rangeSlider.value + 'px';
         highlightButton(type);
@@ -202,19 +207,23 @@ function showSlider(type) {
         if (type === 'opacity') {
             imgRange.min = 0;
             imgRange.max = 100;
-            imgRange.value = activePlatform ? imageAdjustments[activePlatform].opacity : defaultImageAdjustments.opacity;
+            imgRange.value = getImageValue(type, activePlatform);
         } else if (type === 'blur') {
             imgRange.min = 0;
             imgRange.max = 20;
-            imgRange.value = activePlatform ? imageAdjustments[activePlatform].blur : defaultImageAdjustments.blur;
+            imgRange.value = getImageValue(type, activePlatform);
+        } else if (type === 'resize') {
+            imgRange.min = -100;
+            imgRange.max = 100;
+            imgRange.value = getImageValue(type, activePlatform);
         } else if (type === 'scale') {
             imgRange.min = -50;
             imgRange.max = 50;
-            imgRange.value = activePlatform ? imageAdjustments[activePlatform].scale : defaultImageAdjustments.scale;
+            imgRange.value = getImageValue(type, activePlatform);
         } else if (type === 'horizontal' || type === 'vertical') {
             imgRange.min = -100;
             imgRange.max = 100;
-            imgRange.value = activePlatform ? imageAdjustments[activePlatform][type] : defaultImageAdjustments[type];
+            imgRange.value = getImageValue(type, activePlatform);
         }
         document.getElementById('img-slider-value').textContent = imgRange.value + (type === 'opacity' ? '%' : 'px');
         highlightButton(type);
@@ -231,7 +240,7 @@ function hideSlider() {
 document.addEventListener('click', (e) => {
     const sliderContainer = document.getElementById('slider-container');
     const imgSliderContainer = document.getElementById('img-slider-container');
-    const isSliderButton = e.target.closest('.button-group button');
+    const isSliderButton = e.target.closest('.button-group button'); // Adjusted to match common class
     if (!sliderContainer.contains(e.target) && !imgSliderContainer.contains(e.target) && !isSliderButton) {
         hideSlider();
     }
@@ -243,6 +252,11 @@ function getCurrentValue(type) {
     if (type === 'subinfo-size') return fontValues.subInfo;
     if (type === 'h2c-space') return spaceValues.h2c;
     if (type === 'c2s-space') return spaceValues.c2s;
+}
+
+function getImageValue(type, platform) {
+    if (!platform) return type === 'opacity' ? 100 : 0;
+    return imageAdjustments[platform][type];
 }
 
 function highlightButton(type) {
@@ -262,7 +276,7 @@ function adjustValue() {
         else if (type === 'h2c-space') spaceValues.h2c = parseInt(value);
         else if (type === 'c2s-space') spaceValues.c2s = parseInt(value);
         updatePreview();
-        updateFinalPreview();
+        updateFinalPreview(); // Added to sync final preview
         updatePixelValues();
     }
 }
@@ -271,21 +285,15 @@ function adjustImage() {
     const value = document.getElementById('img-range').value;
     const type = activeButton.getAttribute('onclick').match(/'([^']+)'/)[1];
     document.getElementById('img-slider-value').textContent = value + (type === 'opacity' ? '%' : 'px');
-    if (activeButton) {
-        if (activePlatform) {
-            imageAdjustments[activePlatform][type] = parseInt(value);
-        } else {
-            defaultImageAdjustments[type] = parseInt(value);
-        }
+    if (activeButton && activePlatform) {
+        imageAdjustments[activePlatform][type] = parseInt(value);
         updateFinalPreview();
-        updatePreview();
-        updatePixelValues();
+        updateImagePixelValues();
     }
 }
 
 function updatePixelValues() {
     const fontTab = document.getElementById('font-tab');
-    const imageTab = document.getElementById('image-tab');
     if (fontTab) {
         fontTab.querySelectorAll('.px-value').forEach(span => {
             const label = span.previousElementSibling.textContent.toLowerCase();
@@ -296,12 +304,17 @@ function updatePixelValues() {
             else if (label === 'c2s') span.textContent = `${spaceValues.c2s}px`;
         });
     }
-    if (imageTab) {
-        const adj = activePlatform ? imageAdjustments[activePlatform] : defaultImageAdjustments;
+}
+
+function updateImagePixelValues() {
+    const imageTab = document.getElementById('image-tab');
+    if (imageTab && activePlatform) {
+        const adj = imageAdjustments[activePlatform];
         imageTab.querySelectorAll('.px-value').forEach(span => {
             const label = span.previousElementSibling.textContent.toLowerCase();
             if (label === 'opacity') span.textContent = `${adj.opacity}%`;
             else if (label === 'blur') span.textContent = `${adj.blur}px`;
+            else if (label === 'resize') span.textContent = `${adj.resize}px`;
             else if (label === 'scale') span.textContent = `${adj.scale}`;
             else if (label === 'horizontal') span.textContent = `${adj.horizontal}px`;
             else if (label === 'vertical') span.textContent = `${adj.vertical}px`;
@@ -313,17 +326,19 @@ function resetAdjustments() {
     fontValues = { heading: 24, content: 16, subInfo: 12 };
     spaceValues = { h2c: 10, c2s: 10 };
     Object.keys(imageAdjustments).forEach(platform => {
-        imageAdjustments[platform] = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
+        imageAdjustments[platform] = { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 };
     });
-    defaultImageAdjustments = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
     middleLayerActive = false;
     document.getElementById('middle-layer-btn').classList.remove('active');
-    document.getElementById('middle-layer-btn').setAttribute('aria-pressed', 'false');
     document.getElementById('middle-layer').classList.remove('active');
+    bgImage = null; // Added to clear background image
+    document.getElementById('bg-image').value = ''; // Reset file input
+    document.getElementById('background-layer').style.backgroundImage = 'none';
     hideSlider();
     updatePreview();
     updateFinalPreview();
     updatePixelValues();
+    updateImagePixelValues();
 }
 
 // Image Management Functions
@@ -335,20 +350,9 @@ function loadBackground() {
             document.getElementById('bg-image').value = '';
             return;
         }
-        if (bgImage) URL.revokeObjectURL(bgImage);
+        if (bgImage) URL.revokeObjectURL(bgImage); // Added to prevent memory leak
         bgImage = URL.createObjectURL(file);
-        updatePreview();
-        updateFinalPreview();
-    }
-}
-
-function clearImage(type) {
-    if (type === 'background') {
-        if (bgImage) URL.revokeObjectURL(bgImage);
-        bgImage = null;
-        document.getElementById('bg-image').value = '';
-        document.getElementById('background-layer').style.backgroundImage = 'none';
-        updatePreview();
+        updatePreview(); // Added to show image in preview
         updateFinalPreview();
     }
 }
@@ -372,15 +376,13 @@ function dropHandler(event) {
     event.preventDefault();
     document.querySelector('.drop-zone').classList.remove('dragover');
     const file = event.dataTransfer.files[0];
-    if (file) {
-        if (!file.type.startsWith('image/')) {
-            alert('Please drop a valid image file (e.g., JPG, PNG).');
-            return;
-        }
-        if (bgImage) URL.revokeObjectURL(bgImage);
+    if (file && file.type.startsWith('image/')) {
+        if (bgImage) URL.revokeObjectURL(bgImage); // Added to prevent memory leak
         bgImage = URL.createObjectURL(file);
-        updatePreview();
+        updatePreview(); // Added to show image in preview
         updateFinalPreview();
+    } else {
+        alert('Please drop a valid image file (e.g., JPG, PNG).');
     }
 }
 
@@ -388,8 +390,7 @@ function dropHandler(event) {
 function setActivePlatform(platform) {
     activePlatform = platform;
     updateFinalPreview();
-    updatePreview();
-    updatePixelValues();
+    updateImagePixelValues();
 }
 
 function toggleMiddleLayer() {
@@ -398,8 +399,31 @@ function toggleMiddleLayer() {
     const btn = document.getElementById('middle-layer-btn');
     middleLayer.classList.toggle('active', middleLayerActive);
     btn.classList.toggle('active', middleLayerActive);
-    btn.setAttribute('aria-pressed', middleLayerActive);
     updateFinalPreview();
+}
+
+function saveImageAdjustments() {
+    if (activePlatform && bgImage) {
+        updateFinalPreview();
+        const finalPreview = document.getElementById('final-preview-box');
+        if (middleLayerActive) {
+            html2canvas(document.querySelector('#middle-layer'), { backgroundColor: null }).then(canvas => {
+                const textCanvas = document.createElement('canvas');
+                textCanvas.width = canvas.width;
+                textCanvas.height = canvas.height;
+                const ctx = textCanvas.getContext('2d');
+                ctx.drawImage(canvas, 0, 0);
+                html2canvas(document.querySelector('#text-layer')).then(textCanvasResult => {
+                    ctx.drawImage(textCanvasResult, 0, 0);
+                    finalPreview.style.backgroundImage = `url(${textCanvas.toDataURL()})`;
+                    bgImage = textCanvas.toDataURL(); // Update bgImage with combined result
+                    updatePreview(); // Sync preview with saved adjustments
+                });
+            });
+        }
+    } else {
+        alert('Please select a platform and background image before saving adjustments.');
+    }
 }
 
 function updateFinalPreview() {
@@ -407,37 +431,31 @@ function updateFinalPreview() {
     const middleLayer = document.getElementById('middle-layer');
     const textLayer = document.getElementById('text-layer');
     const finalPreview = document.getElementById('final-preview-box');
-    const postPreview = document.getElementById('postPreview');
-
-    textLayer.innerHTML = postPreview.innerHTML;
-
-    const adjustments = activePlatform ? imageAdjustments[activePlatform] : defaultImageAdjustments;
-    if (bgImage && !middleLayerActive) {
+    
+    textLayer.innerHTML = document.getElementById('postPreview').innerHTML;
+    
+    if (bgImage && activePlatform) {
+        const adjustments = imageAdjustments[activePlatform];
         backgroundLayer.style.backgroundImage = `url(${bgImage})`;
-        finalPreview.style.background = 'none';
         backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`;
         backgroundLayer.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
         backgroundLayer.style.opacity = adjustments.opacity / 100;
         backgroundLayer.style.filter = `blur(${adjustments.blur}px)`;
+        middleLayer.style.backgroundColor = middleLayerActive && currentPreset ? currentPreset.background : 'transparent'; // Adjusted for clarity
+        finalPreview.style.background = 'none'; // Ensure container doesn't override background
     } else {
         backgroundLayer.style.backgroundImage = 'none';
-        if (middleLayerActive && currentPreset) {
-            middleLayer.style.backgroundColor = currentPreset.background;
-            finalPreview.style.background = 'none';
-        } else {
-            middleLayer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
-            finalPreview.style.background = currentPreset ? currentPreset.background : '#fff';
-        }
+        middleLayer.style.backgroundColor = currentPreset ? currentPreset.background : '#fff';
+        finalPreview.style.background = currentPreset ? currentPreset.background : '#fff';
     }
-
-    if (activePlatform) {
-        setAspectRatio(activePlatform);
-    } else {
-        finalPreview.style.aspectRatio = '1/1';
-    }
-
+    
+    finalPreview.style.padding = '20px';
     finalPreview.style.width = '100%';
     finalPreview.style.height = 'auto';
+    
+    if (activePlatform) {
+        setAspectRatio(activePlatform);
+    }
 
     const heading = textLayer.querySelector('h3');
     const content = textLayer.querySelector('p');
@@ -450,6 +468,7 @@ function updateFinalPreview() {
 }
 
 function setAspectRatio(platform) {
+    activePlatform = platform;
     const finalPreview = document.getElementById('final-preview-box');
     const platformInfo = document.getElementById('platform-info');
     const ratios = {
@@ -473,61 +492,49 @@ function toggleCheckAll() {
     checkboxes.forEach(cb => cb.checked = !allChecked);
 }
 
-async function exportPosts() {
+function exportPosts() {
     const checkboxes = document.querySelectorAll('input[name="platform"]:checked');
     if (checkboxes.length === 0) {
         alert('Please select at least one platform to export.');
         return;
     }
-    const exportBtn = document.getElementById('export-btn');
-    exportBtn.disabled = true;
-    exportBtn.textContent = 'Exporting...';
-    
     const heading = document.getElementById('headingInput').value || 'post';
-    const finalPreview = document.getElementById('final-preview-box');
-    finalPreview.style.borderRadius = '0';
-
-    for (const cb of checkboxes) {
+    checkboxes.forEach(cb => {
         activePlatform = cb.value;
         updateFinalPreview();
-        await new Promise(resolve => requestAnimationFrame(resolve));
-        try {
-            const canvas = await html2canvas(finalPreview, { 
-                backgroundColor: null,
-                scale: 2 
+        const finalPreview = document.getElementById('final-preview-box');
+        finalPreview.style.borderRadius = '0';
+        
+        setTimeout(() => { // Added timeout to ensure rendering completes
+            html2canvas(finalPreview, { backgroundColor: null, scale: 2 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `${heading}-${activePlatform}.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.9);
+                link.click();
+                finalPreview.style.borderRadius = '15px';
+            }).catch(error => {
+                console.error('Export failed:', error);
+                alert('Failed to export the post. Check console for details.');
             });
-            const link = document.createElement('a');
-            link.download = `${heading}-${activePlatform}.jpg`;
-            link.href = canvas.toDataURL('image/jpeg', 0.9);
-            link.click();
-        } catch (error) {
-            console.error('Error exporting post:', error);
-            alert(`Failed to export for ${activePlatform}. Check console for details.`);
-        }
-    }
-    finalPreview.style.borderRadius = '15px';
-    exportBtn.disabled = false;
-    exportBtn.textContent = 'Export Posts';
+        }, 100);
+    });
 }
 
 // Feedback Form Submission
 document.getElementById('feedback-form')?.addEventListener('submit', (e) => {
     e.preventDefault();
-    const form = e.target;
-    if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
-    }
-    const formData = new FormData(form);
+    const formData = new FormData(e.target);
+    // Simulate submission for testing since backend URL is placeholder
     console.log('Feedback submitted:', Object.fromEntries(formData));
-    alert('Feedback submitted successfully! (Note: This is a demo - feedback is logged to console, not sent to a server.)');
-    form.reset();
+    alert('Feedback submitted successfully! (Demo mode - logged to console)');
+    e.target.reset();
 });
 
 // Initialize on Load
 document.addEventListener('DOMContentLoaded', () => {
     updatePreview();
     updatePixelValues();
+    updateImagePixelValues();
 
     document.getElementById('headingInput').addEventListener('input', updatePreview);
     document.getElementById('descriptionInput').addEventListener('input', updatePreview);
