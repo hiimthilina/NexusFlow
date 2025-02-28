@@ -409,14 +409,6 @@ function hexToRgb(hex) {
     } : { r: 0, g: 0, b: 0 };
 }
 
-function updateBorderColor(color) {
-    const border = activePlatform ? textBorder[activePlatform] : defaultTextBorder;
-    border.color = color;
-    updatePreview();
-    updateFinalPreview();
-    updatePixelValues();
-}
-
 // Image Management Functions
 function loadBackground() {
     const file = document.getElementById('bg-image').files[0];
@@ -720,10 +712,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Set default platform to Instagram for 4:5 aspect ratio
     setActivePlatform('instagram');
 
-    // Add event listener for text border button
+    // Add event listener for text border button (assuming HTML has a button with id="text-border-btn")
     document.getElementById('text-border-btn')?.addEventListener('click', toggleTextBorder);
 
-    // Add event listener for color picker
+    // Add event listener for color picker (assuming HTML has a color input with id="border-color")
     document.getElementById('border-color')?.addEventListener('change', (e) => updateBorderColor(e.target.value));
 });
 
