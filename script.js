@@ -58,15 +58,15 @@ let currentPreset = null;
 let fontValues = { heading: 24, content: 16, subInfo: 12 };
 let spaceValues = { h2c: 10, c2s: 10 };
 let imageAdjustments = {
-    youtube: { opacity: 100, blur: 0 },
-    facebook: { opacity: 100, blur: 0 },
-    instagram: { opacity: 100, blur: 0 },
-    tiktok: { opacity: 100, blur: 0 },
-    twitter: { opacity: 100, blur: 0 },
-    linkedin: { opacity: 100, blur: 0 },
-    threads: { opacity: 100, blur: 0 }
+    youtube: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
+    facebook: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
+    instagram: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
+    tiktok: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
+    twitter: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
+    linkedin: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
+    threads: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 }
 };
-let defaultImageAdjustments = { opacity: 100, blur: 0 };
+let defaultImageAdjustments = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
 let activePlatform = null;
 let bgImage = null;
 let middleLayerActive = false;
@@ -110,8 +110,8 @@ function updatePreview() {
     const adjustments = activePlatform ? imageAdjustments[activePlatform] : defaultImageAdjustments;
     if (bgImage) {
         postPreview.style.backgroundImage = `url(${bgImage})`;
-        postPreview.style.backgroundSize = 'cover';
-        postPreview.style.backgroundPosition = 'center';
+        postPreview.style.backgroundSize = `${100 + adjustments.scale}%`;
+        postPreview.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
         postPreview.style.opacity = adjustments.opacity / 100;
         postPreview.style.filter = `blur(${adjustments.blur}px)`;
     } else if (currentPreset) {
@@ -208,7 +208,7 @@ function showSlider(type) {
         rangeSlider.value = getCurrentValue(type);
         document.getElementById('slider-value').textContent = rangeSlider.value + 'px';
         highlightButton(type);
-    } else if (type === 'opacity' || type === 'blur') {
+    } else {
         imgSliderContainer.classList.remove('hidden');
         if (type === 'opacity') {
             imgRange.min = 0;
@@ -218,11 +218,17 @@ function showSlider(type) {
             imgRange.min = 0;
             imgRange.max = 20;
             imgRange.value = activePlatform ? imageAdjustments[activePlatform].blur : defaultImageAdjustments.blur;
+        } else if (type === 'scale') {
+            imgRange.min = -50;
+            imgRange.max = 50;
+            imgRange.value = activePlatform ? imageAdjustments[activePlatform].scale : defaultImageAdjustments.scale;
+        } else if (type === 'horizontal' || type === 'vertical') {
+            imgRange.min = -100;
+            imgRange.max = 100;
+            imgRange.value = activePlatform ? imageAdjustments[activePlatform][type] : defaultImageAdjustments[type];
         }
         document.getElementById('img-slider-value').textContent = imgRange.value + (type === 'opacity' ? '%' : 'px');
         highlightButton(type);
-    } else {
-        console.warn(`Slider type '${type}' is not supported.`);
     }
 }
 
@@ -238,7 +244,7 @@ document.addEventListener('click', (e) => {
     const imgSliderContainer = document.getElementById('img-slider-container');
     const isSliderButton = e.target.closest('.button-group button');
     if (!sliderContainer.contains(e.target) && !imgSliderContainer.contains(e.target) && !isSliderButton) {
-        hideSidebar();
+        hideSlider();
     }
 });
 
@@ -307,6 +313,9 @@ function updatePixelValues() {
             const label = span.previousElementSibling.textContent.toLowerCase();
             if (label === 'opacity') span.textContent = `${adj.opacity}%`;
             else if (label === 'blur') span.textContent = `${adj.blur}px`;
+            else if (label === 'scale') span.textContent = `${adj.scale}`;
+            else if (label === 'horizontal') span.textContent = `${adj.horizontal}px`;
+            else if (label === 'vertical') span.textContent = `${adj.vertical}px`;
         });
     }
 }
@@ -315,9 +324,9 @@ function resetAdjustments() {
     fontValues = { heading: 24, content: 16, subInfo: 12 };
     spaceValues = { h2c: 10, c2s: 10 };
     Object.keys(imageAdjustments).forEach(platform => {
-        imageAdjustments[platform] = { opacity: 100, blur: 0 };
+        imageAdjustments[platform] = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
     });
-    defaultImageAdjustments = { opacity: 100, blur: 0 };
+    defaultImageAdjustments = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
     middleLayerActive = false;
     document.getElementById('middle-layer-btn').classList.remove('active');
     document.getElementById('middle-layer-btn').setAttribute('aria-pressed', 'false');
@@ -418,8 +427,8 @@ function updateFinalPreview() {
     const adjustments = activePlatform ? imageAdjustments[activePlatform] : defaultImageAdjustments;
     if (bgImage && !middleLayerActive) {
         backgroundLayer.style.backgroundImage = `url(${bgImage})`;
-        backgroundLayer.style.backgroundSize = 'cover';
-        backgroundLayer.style.backgroundPosition = 'center';
+        backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`;
+        backgroundLayer.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
         backgroundLayer.style.opacity = adjustments.opacity / 100;
         backgroundLayer.style.filter = `blur(${adjustments.blur}px)`;
         finalPreview.style.background = 'none';
@@ -500,8 +509,8 @@ async function exportPosts() {
         const adjustments = activePlatform ? imageAdjustments[activePlatform] : defaultImageAdjustments;
         if (bgImage && !middleLayerActive) {
             finalPreview.style.backgroundImage = backgroundLayer.style.backgroundImage;
-            finalPreview.style.backgroundSize = 'cover';
-            finalPreview.style.backgroundPosition = 'center';
+            finalPreview.style.backgroundSize = `${100 + adjustments.scale}%`;
+            finalPreview.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
             finalPreview.style.opacity = adjustments.opacity / 100;
             finalPreview.style.filter = `blur(${adjustments.blur}px)`;
             backgroundLayer.style.backgroundImage = 'none';
