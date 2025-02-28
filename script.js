@@ -67,6 +67,16 @@ let imageAdjustments = {
     threads: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 }
 };
 let defaultImageAdjustments = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
+let textBorder = {
+    youtube: { enabled: false, color: '#000000', opacity: 100, intensity: 1 },
+    facebook: { enabled: false, color: '#000000', opacity: 100, intensity: 1 },
+    instagram: { enabled: false, color: '#000000', opacity: 100, intensity: 1 },
+    tiktok: { enabled: false, color: '#000000', opacity: 100, intensity: 1 },
+    twitter: { enabled: false, color: '#000000', opacity: 100, intensity: 1 },
+    linkedin: { enabled: false, color: '#000000', opacity: 100, intensity: 1 },
+    threads: { enabled: false, color: '#000000', opacity: 100, intensity: 1 }
+};
+let defaultTextBorder = { enabled: false, color: '#000000', opacity: 100, intensity: 1 };
 let activePlatform = 'instagram'; // Default to Instagram for 4:5 aspect ratio
 let bgImage = null;
 let middleLayerActive = false;
@@ -113,7 +123,7 @@ function updatePreview() {
         postPreview.style.backgroundSize = '100%'; // Smaller preview size
         postPreview.style.backgroundPosition = 'center';
         postPreview.style.opacity = adjustments.opacity / 100;
-        postPreview.style.filter = `blur(${adjustments.blur}px)`;
+        postPreview.style.filter = `blur(${adjustments.blur}px) scale(${1 + adjustments.scale / 100})`; // Apply scale as a multiplier
     } else if (currentPreset) {
         postPreview.style.backgroundImage = 'none';
         postPreview.style.background = currentPreset.background;
@@ -143,32 +153,38 @@ function updatePreview() {
         previewHeading.style.color = currentPreset.heading.color;
         previewHeading.style.fontSize = fontValues.heading + 'px';
         previewHeading.style.marginBottom = spaceValues.h2c + 'px';
+        applyTextBorder(previewHeading, activePlatform);
 
         previewContent.style.fontFamily = currentPreset.content.font.split(' ')[0];
         previewContent.style.color = currentPreset.content.color;
         previewContent.style.fontSize = fontValues.content + 'px';
         previewContent.style.textAlign = 'center';
         previewContent.style.marginBottom = spaceValues.c2s + 'px';
+        applyTextBorder(previewContent, activePlatform);
 
         previewSubInfo.style.fontFamily = currentPreset.subInfo.font.split(' ')[0];
         previewSubInfo.style.color = currentPreset.subInfo.color;
         previewSubInfo.style.fontSize = fontValues.subInfo + 'px';
+        applyTextBorder(previewSubInfo, activePlatform);
     } else {
         previewHeading.style.fontFamily = 'Montserrat';
         previewHeading.style.fontWeight = 'bold';
         previewHeading.style.color = '#333';
         previewHeading.style.fontSize = fontValues.heading + 'px';
         previewHeading.style.marginBottom = spaceValues.h2c + 'px';
+        applyTextBorder(previewHeading, activePlatform);
 
         previewContent.style.fontFamily = 'Open Sans';
         previewContent.style.color = '#333';
         previewContent.style.fontSize = fontValues.content + 'px';
         previewContent.style.textAlign = 'center';
         previewContent.style.marginBottom = spaceValues.c2s + 'px';
+        applyTextBorder(previewContent, activePlatform);
 
         previewSubInfo.style.fontFamily = 'Roboto';
         previewSubInfo.style.color = '#A6A6A6';
         previewSubInfo.style.fontSize = fontValues.subInfo + 'px';
+        applyTextBorder(previewSubInfo, activePlatform);
     }
 }
 
@@ -208,7 +224,7 @@ function showSlider(type) {
         rangeSlider.value = getCurrentValue(type);
         document.getElementById('slider-value').textContent = rangeSlider.value + 'px';
         highlightButton(type);
-    } else {
+    } else if (type === 'opacity' || type === 'blur' || type === 'scale' || type === 'horizontal' || type === 'vertical' || type === 'border-opacity' || type === 'border-intensity') {
         imgSliderContainer.classList.remove('hidden');
         if (type === 'opacity') {
             imgRange.min = 0;
@@ -226,9 +242,19 @@ function showSlider(type) {
             imgRange.min = -100;
             imgRange.max = 100;
             imgRange.value = activePlatform ? imageAdjustments[activePlatform][type] : defaultImageAdjustments[type];
+        } else if (type === 'border-opacity') {
+            imgRange.min = 0;
+            imgRange.max = 100;
+            imgRange.value = activePlatform ? textBorder[activePlatform].opacity : defaultTextBorder.opacity;
+        } else if (type === 'border-intensity') {
+            imgRange.min = 1;
+            imgRange.max = 10;
+            imgRange.value = activePlatform ? textBorder[activePlatform].intensity : defaultTextBorder.intensity;
         }
-        document.getElementById('img-slider-value').textContent = imgRange.value + (type === 'opacity' ? '%' : 'px');
+        document.getElementById('img-slider-value').textContent = imgRange.value + (type === 'opacity' || type === 'border-opacity' ? '%' : (type === 'border-intensity' ? 'px' : 'px'));
         highlightButton(type);
+    } else {
+        console.warn(`Slider type '${type}' is not supported.`);
     }
 }
 
@@ -281,12 +307,20 @@ function adjustValue() {
 function adjustImage() {
     const value = document.getElementById('img-range').value;
     const type = activeButton.getAttribute('onclick').match(/'([^']+)'/)[1];
-    document.getElementById('img-slider-value').textContent = value + (type === 'opacity' ? '%' : 'px');
+    document.getElementById('img-slider-value').textContent = value + (type === 'opacity' || type === 'border-opacity' ? '%' : (type === 'border-intensity' ? 'px' : 'px'));
     if (activeButton) {
         if (activePlatform) {
-            imageAdjustments[activePlatform][type] = parseInt(value);
+            if (type === 'opacity' || type === 'blur' || type === 'scale' || type === 'horizontal' || type === 'vertical') {
+                imageAdjustments[activePlatform][type] = parseInt(value);
+            } else if (type === 'border-opacity' || type === 'border-intensity') {
+                textBorder[activePlatform][type.replace('border-', '')] = parseInt(value);
+            }
         } else {
-            defaultImageAdjustments[type] = parseInt(value);
+            if (type === 'opacity' || type === 'blur' || type === 'scale' || type === 'horizontal' || type === 'vertical') {
+                defaultImageAdjustments[type] = parseInt(value);
+            } else if (type === 'border-opacity' || type === 'border-intensity') {
+                defaultTextBorder[type.replace('border-', '')] = parseInt(value);
+            }
         }
         updateFinalPreview();
         updatePreview();
@@ -309,6 +343,7 @@ function updatePixelValues() {
     }
     if (imageTab) {
         const adj = activePlatform ? imageAdjustments[activePlatform] : defaultImageAdjustments;
+        const borderAdj = activePlatform ? textBorder[activePlatform] : defaultTextBorder;
         imageTab.querySelectorAll('.px-value').forEach(span => {
             const label = span.previousElementSibling.textContent.toLowerCase();
             if (label === 'opacity') span.textContent = `${adj.opacity}%`;
@@ -316,6 +351,8 @@ function updatePixelValues() {
             else if (label === 'scale') span.textContent = `${adj.scale}`;
             else if (label === 'horizontal') span.textContent = `${adj.horizontal}px`;
             else if (label === 'vertical') span.textContent = `${adj.vertical}px`;
+            else if (label === 'border opacity') span.textContent = `${borderAdj.opacity}%`;
+            else if (label === 'border intensity') span.textContent = `${borderAdj.intensity}px`;
         });
     }
 }
@@ -326,12 +363,55 @@ function resetAdjustments() {
     Object.keys(imageAdjustments).forEach(platform => {
         imageAdjustments[platform] = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
     });
+    Object.keys(textBorder).forEach(platform => {
+        textBorder[platform] = { enabled: false, color: '#000000', opacity: 100, intensity: 1 };
+    });
     defaultImageAdjustments = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
+    defaultTextBorder = { enabled: false, color: '#000000', opacity: 100, intensity: 1 };
     middleLayerActive = false;
     document.getElementById('middle-layer-btn').classList.remove('active');
     document.getElementById('middle-layer-btn').setAttribute('aria-pressed', 'false');
     document.getElementById('middle-layer').classList.remove('active');
     hideSlider();
+    updatePreview();
+    updateFinalPreview();
+    updatePixelValues();
+}
+
+function toggleTextBorder() {
+    const border = activePlatform ? textBorder[activePlatform] : defaultTextBorder;
+    border.enabled = !border.enabled;
+    updatePreview();
+    updateFinalPreview();
+    updatePixelValues();
+}
+
+function applyTextBorder(element, platform) {
+    const border = platform ? textBorder[platform] : defaultTextBorder;
+    if (border.enabled) {
+        const opacity = border.opacity / 100;
+        element.style.border = `${border.intensity}px solid ${border.color}`;
+        element.style.borderColor = `rgba(${hexToRgb(border.color).r}, ${hexToRgb(border.color).g}, ${hexToRgb(border.color).b}, ${opacity})`;
+    } else {
+        element.style.border = 'none';
+        element.style.borderColor = '';
+    }
+}
+
+function hexToRgb(hex) {
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : { r: 0, g: 0, b: 0 };
+}
+
+function updateBorderColor(color) {
+    const border = activePlatform ? textBorder[activePlatform] : defaultTextBorder;
+    border.color = color;
     updatePreview();
     updateFinalPreview();
     updatePixelValues();
@@ -425,6 +505,7 @@ function updateFinalPreview() {
     textLayer.innerHTML = postPreview.innerHTML;
 
     const adjustments = activePlatform ? imageAdjustments[activePlatform] : defaultImageAdjustments;
+    const borderAdj = activePlatform ? textBorder[activePlatform] : defaultTextBorder;
     if (bgImage && !middleLayerActive) {
         backgroundLayer.style.backgroundImage = `url(${bgImage})`;
         backgroundLayer.style.backgroundSize = 'cover'; // Fill the canvas fully
@@ -460,12 +541,17 @@ function updateFinalPreview() {
     if (heading) {
         heading.style.fontSize = fontValues.heading + 'px';
         heading.style.marginBottom = spaceValues.h2c + 'px';
+        applyTextBorder(heading, activePlatform);
     }
     if (content) {
         content.style.fontSize = fontValues.content + 'px';
         content.style.marginBottom = spaceValues.c2s + 'px';
+        applyTextBorder(content, activePlatform);
     }
-    if (subInfo) subInfo.style.fontSize = fontValues.subInfo + 'px';
+    if (subInfo) {
+        subInfo.style.fontSize = fontValues.subInfo + 'px';
+        applyTextBorder(subInfo, activePlatform);
+    }
 }
 
 function setAspectRatio(platform) {
@@ -513,6 +599,7 @@ async function exportPosts() {
 
         // Temporarily move background to finalPreview for export
         const adjustments = activePlatform ? imageAdjustments[activePlatform] : defaultImageAdjustments;
+        const borderAdj = activePlatform ? textBorder[activePlatform] : defaultTextBorder;
         if (bgImage && !middleLayerActive) {
             finalPreview.style.backgroundImage = backgroundLayer.style.backgroundImage;
             finalPreview.style.backgroundSize = 'cover'; // Fill the canvas fully
@@ -520,6 +607,30 @@ async function exportPosts() {
             finalPreview.style.opacity = adjustments.opacity / 100;
             finalPreview.style.filter = `blur(${adjustments.blur}px) scale(${1 + adjustments.scale / 100})`; // Apply scale
             backgroundLayer.style.backgroundImage = 'none';
+
+            // Apply text border to exported text
+            const heading = finalPreview.querySelector('h3');
+            const content = finalPreview.querySelector('p');
+            const subInfo = finalPreview.querySelector('span');
+            if (borderAdj.enabled) {
+                const opacity = borderAdj.opacity / 100;
+                if (heading) {
+                    heading.style.border = `${borderAdj.intensity}px solid ${borderAdj.color}`;
+                    heading.style.borderColor = `rgba(${hexToRgb(borderAdj.color).r}, ${hexToRgb(borderAdj.color).g}, ${hexToRgb(borderAdj.color).b}, ${opacity})`;
+                }
+                if (content) {
+                    content.style.border = `${borderAdj.intensity}px solid ${borderAdj.color}`;
+                    content.style.borderColor = `rgba(${hexToRgb(borderAdj.color).r}, ${hexToRgb(borderAdj.color).g}, ${hexToRgb(borderAdj.color).b}, ${opacity})`;
+                }
+                if (subInfo) {
+                    subInfo.style.border = `${borderAdj.intensity}px solid ${borderAdj.color}`;
+                    subInfo.style.borderColor = `rgba(${hexToRgb(borderAdj.color).r}, ${hexToRgb(borderAdj.color).g}, ${hexToRgb(borderAdj.color).b}, ${opacity})`;
+                }
+            } else {
+                if (heading) heading.style.border = 'none';
+                if (content) content.style.border = 'none';
+                if (subInfo) subInfo.style.border = 'none';
+            }
         }
 
         await new Promise(resolve => requestAnimationFrame(resolve));
@@ -537,12 +648,19 @@ async function exportPosts() {
             alert(`Failed to export for ${activePlatform}. Check console for details.`);
         }
 
-        // Revert background styling
+        // Revert background and text styling
         if (bgImage && !middleLayerActive) {
             backgroundLayer.style.backgroundImage = `url(${bgImage})`;
             finalPreview.style.backgroundImage = 'none';
             finalPreview.style.opacity = 1;
             finalPreview.style.filter = 'none';
+            // Revert text border
+            const heading = finalPreview.querySelector('h3');
+            const content = finalPreview.querySelector('p');
+            const subInfo = finalPreview.querySelector('span');
+            if (heading) heading.style.border = 'none';
+            if (content) content.style.border = 'none';
+            if (subInfo) subInfo.style.border = 'none';
         }
     }
     finalPreview.style.borderRadius = '15px'; // Restore border radius
@@ -573,6 +691,14 @@ function debounce(func, wait) {
     };
 }
 
+function updateBorderColor(color) {
+    const border = activePlatform ? textBorder[activePlatform] : defaultTextBorder;
+    border.color = color;
+    updatePreview();
+    updateFinalPreview();
+    updatePixelValues();
+}
+
 // Initialize on Load
 document.addEventListener('DOMContentLoaded', () => {
     updatePreview();
@@ -593,6 +719,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('bg-image').addEventListener('change', loadBackground);
     // Set default platform to Instagram for 4:5 aspect ratio
     setActivePlatform('instagram');
+
+    // Add event listener for text border button
+    document.getElementById('text-border-btn')?.addEventListener('click', toggleTextBorder);
+
+    // Add event listener for color picker
+    document.getElementById('border-color')?.addEventListener('change', (e) => updateBorderColor(e.target.value));
 });
 
 // Clean up on page unload
