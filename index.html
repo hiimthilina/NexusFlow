@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusFlow - Social Media Post Designer</title>
+    <link rel="icon" href="icon/NexusFlow.png" type="image/png">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans&family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <header>
+        <img src="icon/side.png" alt="Side Menu" class="icon side-icon" onclick="toggleSidebar()">
+        <img src="icon/NexusFlow.png" alt="NexusFlow Logo" class="logo">
+        <img src="icon/theme.png" alt="Theme Toggle" class="icon theme-icon" onclick="toggleTheme()">
+    </header>
+
+    <nav id="sidebar" class="sidebar hidden">
+        <img src="icon/close.png" alt="Close Sidebar" class="close-icon" onclick="hideSidebar()">
+        <ul>
+            <li onclick="showPage('designer'); hideSidebar()">Social Media Post Designer</li>
+            <li onclick="showPage('export'); hideSidebar()">Post Export</li>
+            <li onclick="showPage('improvements'); hideSidebar()">Improvements</li>
+            <li onclick="showPage('about'); hideSidebar()">About Us</li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="designer" class="page active">
+            <h1>Social Media Post Designer</h1>
+            <div class="container">
+                <div class="section post-details">
+                    <h2>Post Details</h2>
+                    <div class="input-group">
+                        <label class="input-label">Heading: <input type="text" id="headingInput" placeholder="Enter heading" value="🌱 Tip for a Better Life"></label>
+                        <label class="input-label">Description: <textarea id="descriptionInput" placeholder="Enter description" rows="4">Start your day with gratitude. Take 5 minutes every morning to write down 3 things you're grateful for. This simple practice can improve your mood and mindset throughout the day! ✨</textarea></label>
+                        <label class="input-label">Sub-info: <input type="text" id="hashtagsInput" placeholder="Enter sub-info" onkeypress="if(event.key === 'Enter') finishSubInfo()" value="#SelfImprovement #Gratitude #hiimthilina"></label>
+                        <button onclick="clearInputs()" class="clear-btn">Clear Inputs</button>
+                    </div>
+                </div>
+
+                <div class="section preset-details">
+                    <h2>Preset & Detail</h2>
+                    <select id="preset" onchange="updatePreset()">
+                        <option value="">Select a Preset</option>
+                        <option value="educational">Educational Facts</option>
+                        <option value="guidance">Helpful Guidance</option>
+                        <option value="filmmaking">Filmmaking</option>
+                        <option value="ai-tech">AI Technologies</option>
+                        <option value="myself">About Myself</option>
+                    </select>
+                    <div id="preset-info" class="preset-info">Select Preset to Display Details</div>
+                </div>
+
+                <div class="section preview">
+                    <h2>Preview</h2>
+                    <div id="postPreview">
+                        <h3 id="previewHeading"></h3>
+                        <p id="previewContent"></p>
+                        <span id="previewSubInfo"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="button-container">
+                <button onclick="showPage('export'); hideSlider()" class="next-btn">Next</button>
+            </div>
+        </section>
+
+        <section id="export" class="page">
+            <div class="export-header">
+                <img src="icon/back.png" alt="Back" class="icon back-icon" onclick="showPage('designer')">
+                <h1>Post Export</h1>
+            </div>
+            <div class="container">
+                <div class="section image-management">
+                    <h2>Image Management</h2>
+                    <div class="selection-area">
+                        <div class="drop-zone" ondragover="dragOver(event)" ondrop="dropHandler(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+                            Drag and drop an image here
+                        </div>
+                        <button onclick="document.getElementById('bg-image').click()" class="choose-file-btn">Select Image</button>
+                        <input type="file" id="bg-image" accept="image/*" onchange="loadBackground()" style="display: none;">
+                        <p class="note">For best quality across all platforms, use an image with resolution at least 1920x1080.</p>
+                    </div>
+                    <div class="layer-area">
+                        <label><button id="middle-layer-btn" onclick="toggleMiddleLayer()">Middle Layer</button></label>
+                        <button onclick="clearImage('background')" class="clear-btn">Clear Image</button>
+                    </div>
+                </div>
+
+                <div class="section final-preview">
+                    <h2>Final Preview</h2>
+                    <div id="final-preview-box">
+                        <div id="background-layer"></div>
+                        <div id="middle-layer" class="middle-layer"></div>
+                        <div id="text-layer"></div>
+                    </div>
+                </div>
+
+                <div class="section customize">
+                    <h2>Customize</h2>
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="switchCustomizeTab('platforms')">Platforms</button>
+                        <button class="tab-btn" onclick="switchCustomizeTab('image')">Image</button>
+                        <button class="tab-btn" onclick="switchCustomizeTab('font')">Font</button>
+                    </div>
+                    <div id="platforms-tab" class="tab-content active">
+                        <div class="platform-aspect">
+                            <span id="platform-info"></span>
+                        </div>
+                        <div class="platform-buttons">
+                            <div>
+                                <label><button onclick="setActivePlatform('youtube')"><img src="icon/youtube.png" class="platform-icon"></button><input type="checkbox" name="platform" value="youtube"></label>
+                                <label><button onclick="setActivePlatform('facebook')"><img src="icon/facebook.png" class="platform-icon"></button><input type="checkbox" name="platform" value="facebook"></label>
+                            </div>
+                            <div>
+                                <label><button onclick="setActivePlatform('instagram')"><img src="icon/instagram.png" class="platform-icon"></button><input type="checkbox" name="platform" value="instagram"></label>
+                                <label><button onclick="setActivePlatform('tiktok')"><img src="icon/tiktok.png" class="platform-icon"></button><input type="checkbox" name="platform" value="tiktok"></label>
+                            </div>
+                            <div>
+                                <label><button onclick="setActivePlatform('twitter')"><img src="icon/twitter.png" class="platform-icon"></button><input type="checkbox" name="platform" value="twitter"></label>
+                                <label><button onclick="setActivePlatform('linkedin')"><img src="icon/linkedin.png" class="platform-icon"></button><input type="checkbox" name="platform" value="linkedin"></label>
+                            </div>
+                            <div>
+                                <label><button onclick="setActivePlatform('threads')"><img src="icon/threads.png" class="platform-icon"></button><input type="checkbox" name="platform" value="threads"></label>
+                                <button onclick="toggleCheckAll()">All</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="image-tab" class="tab-content">
+                        <div class="button-group">
+                            <label><button onclick="showSlider('opacity')"><img src="icon/opacity.png" alt="Opacity"></button><span>Opacity</span><span class="px-value">100%</span></label>
+                            <label><button onclick="showSlider('blur')"><img src="icon/blur.png" alt="Blur"></button><span>Blur</span><span class="px-value">0px</span></label>
+                            <label><button onclick="showSlider('scale')"><img src="icon/scale.png" alt="Scale"></button><span>Scale</span><span class="px-value">0</span></label>
+                            <label><button onclick="showSlider('horizontal')"><img src="icon/rearrange.png" alt="Horizontal"></button><span>Horizontal</span><span class="px-value">0px</span></label>
+                            <label><button onclick="showSlider('vertical')"><img src="icon/rearrange.png" alt="Vertical"></button><span>Vertical</span><span class="px-value">0px</span></label>
+                        </div>
+                        <div id="img-slider-container" class="slider hidden">
+                            <input type="range" id="img-range" oninput="adjustImage()">
+                            <span id="img-slider-value"></span>
+                        </div>
+                    </div>
+                    <div id="font-tab" class="tab-content">
+                        <div class="button-group">
+                            <label><button onclick="showSlider('heading-size')"><img src="icon/heading.png" alt="Heading Size"></button><span>Heading</span><span class="px-value">24px</span></label>
+                            <label><button onclick="showSlider('content-size')"><img src="icon/content.png" alt="Content Size"></button><span>Content</span><span class="px-value">16px</span></label>
+                            <label><button onclick="showSlider('subinfo-size')"><img src="icon/sub-info.png" alt="Subinfo Size"></button><span>Sub-info</span><span class="px-value">12px</span></label>
+                            <label><button onclick="showSlider('h2c-space')"><img src="icon/h2c.png" alt="H2C Space"></button><span>H2C</span><span class="px-value">10px</span></label>
+                            <label><button onclick="showSlider('c2s-space')"><img src="icon/c2s.png" alt="C2S Space"></button><span>C2S</span><span class="px-value">10px</span></label>
+                        </div>
+                        <div id="slider-container" class="slider hidden">
+                            <input type="range" id="range-slider" oninput="adjustValue()">
+                            <span id="slider-value"></span>
+                        </div>
+                        <div class="button-container">
+                            <button onclick="resetAdjustments()" class="reset-btn">Reset</button>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="exportPosts()" class="export-btn">Export Posts</button>
+            </div>
+        </section>
+
+        <section id="improvements" class="page">
+            <h1>Improvements</h1>
+            <p>Share your feedback to help us improve NexusFlow! Contact us at <a href="/cdn-cgi/l/email-protection#50636267677c6167506871793e737f7d">[email&#160;protected]</a>.</p>
+            <form id="feedback-form">
+                <label>Name: <input type="text" name="name" required></label>
+                <label>Email: <input type="email" name="email" required></label>
+                <label>Feedback: <textarea name="feedback" required></textarea></label>
+                <button type="submit">Submit Feedback</button>
+            </form>
+        </section>
+
+        <section id="about" class="page">
+            <h1>About Us</h1>
+            <p>NexusFlow is a creative tool designed to simplify social media content creation. Our mission is to empower users with intuitive design tools for an effective online presence.</p>
+            <p>Follow us on <a href="https://twitter.com/xAI" target="_blank">Twitter</a> for updates!</p>
+        </section>
+    </main>
+    <script src="script.js" defer></script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+</body>
+</html>
