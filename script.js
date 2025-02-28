@@ -67,7 +67,7 @@ let imageAdjustments = {
     threads: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 }
 };
 let defaultImageAdjustments = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
-let activePlatform = null;
+let activePlatform = 'instagram'; // Default to Instagram for 4:5 aspect ratio
 let bgImage = null;
 let middleLayerActive = false;
 let activeButton = null;
@@ -94,9 +94,9 @@ function updatePreset() {
 }
 
 function updatePreview() {
-    const heading = document.getElementById('headingInput').value || 'Heading';
-    const description = document.getElementById('descriptionInput').value || 'Description';
-    const subInfo = document.getElementById('hashtagsInput').value || 'Sub-info';
+    const heading = document.getElementById('headingInput').value || 'Tip for a Better Life';
+    const description = document.getElementById('descriptionInput').value || 'Start your day with gratitude: Take 5 minutes every morning to write down 3 things you\'re grateful for. This simple practice can improve your mood and mindset throughout the day! 🌟';
+    const subInfo = document.getElementById('hashtagsInput').value || '#SelfImprovement #Gratitude #himthilina';
     
     const previewHeading = document.getElementById('previewHeading');
     const previewContent = document.getElementById('previewContent');
@@ -126,7 +126,7 @@ function updatePreview() {
         postPreview.style.filter = 'none';
     }
 
-    // Apply aspect ratio to preview
+    // Apply aspect ratio to preview (default to Instagram 4:5)
     if (activePlatform) {
         const ratios = {
             youtube: '16/9', facebook: '1/1', instagram: '4/5', tiktok: '9/16',
@@ -134,7 +134,7 @@ function updatePreview() {
         };
         postPreview.style.aspectRatio = ratios[activePlatform];
     } else {
-        postPreview.style.aspectRatio = '1/1';
+        postPreview.style.aspectRatio = '4/5'; // Default to Instagram
     }
 
     if (currentPreset) {
@@ -446,19 +446,24 @@ function updateFinalPreview() {
     if (activePlatform) {
         setAspectRatio(activePlatform);
     } else {
-        finalPreview.style.aspectRatio = '1/1';
+        finalPreview.style.aspectRatio = '4/5'; // Default to Instagram
     }
 
     finalPreview.style.width = '100%';
     finalPreview.style.height = 'auto';
+    finalPreview.style.borderRadius = '15px'; // Match rounded corners from screenshots
 
     const heading = textLayer.querySelector('h3');
     const content = textLayer.querySelector('p');
     const subInfo = textLayer.querySelector('span');
-    if (heading) heading.style.fontSize = fontValues.heading + 'px';
-    if (heading) heading.style.marginBottom = spaceValues.h2c + 'px';
-    if (content) content.style.fontSize = fontValues.content + 'px';
-    if (content) content.style.marginBottom = spaceValues.c2s + 'px';
+    if (heading) {
+        heading.style.fontSize = fontValues.heading + 'px';
+        heading.style.marginBottom = spaceValues.h2c + 'px';
+    }
+    if (content) {
+        content.style.fontSize = fontValues.content + 'px';
+        content.style.marginBottom = spaceValues.c2s + 'px';
+    }
     if (subInfo) subInfo.style.fontSize = fontValues.subInfo + 'px';
 }
 
@@ -496,10 +501,10 @@ async function exportPosts() {
     exportBtn.disabled = true;
     exportBtn.textContent = 'Exporting...';
     
-    const heading = document.getElementById('headingInput').value || 'post';
+    const heading = document.getElementById('headingInput').value || 'Tip for a Better Life';
     const finalPreview = document.getElementById('final-preview-box');
     const backgroundLayer = document.getElementById('background-layer');
-    finalPreview.style.borderRadius = '0';
+    finalPreview.style.borderRadius = '0'; // Remove border radius for export
 
     for (const cb of checkboxes) {
         activePlatform = cb.value;
@@ -539,7 +544,7 @@ async function exportPosts() {
             finalPreview.style.filter = 'none';
         }
     }
-    finalPreview.style.borderRadius = '15px';
+    finalPreview.style.borderRadius = '15px'; // Restore border radius
     exportBtn.disabled = false;
     exportBtn.textContent = 'Export Posts';
 }
@@ -585,6 +590,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('bg-image').addEventListener('change', loadBackground);
+    // Set default platform to Instagram for 4:5 aspect ratio
+    setActivePlatform('instagram');
 });
 
 // Clean up on page unload
