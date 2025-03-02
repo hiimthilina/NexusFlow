@@ -6,7 +6,7 @@ function showPage(pageId) {
     document.querySelector(`#sidebar ul li[onclick="showPage('${pageId}')"]`).classList.add('active');
     hideSidebar();
     updatePreview();
-    updateFinalPreview(); // Sync both previews on page switch
+    updateFinalPreview();
 }
 
 function toggleSidebar() {
@@ -91,13 +91,13 @@ let currentPreset = null;
 let fontValues = { heading: 24, content: 16, subInfo: 12 };
 let spaceValues = { h2c: 10, c2s: 10 };
 let imageAdjustments = {
-    youtube: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
-    facebook: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
-    instagram: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
-    tiktok: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
-    twitter: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
-    linkedin: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 },
-    threads: { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 }
+    youtube: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
+    facebook: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
+    instagram: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
+    tiktok: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
+    twitter: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
+    linkedin: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
+    threads: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 }
 };
 let activePlatform = null;
 let bgImage = null;
@@ -140,22 +140,15 @@ function updatePreview() {
     previewSubInfo.textContent = subInfo;
 
     if (bgImage) {
-        const adjustments = activePlatform ? imageAdjustments[activePlatform] : { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 };
         postPreview.style.backgroundImage = `url(${bgImage})`;
-        postPreview.style.backgroundSize = `${100 + adjustments.scale + adjustments.resize}%`;
-        postPreview.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
-        postPreview.style.opacity = adjustments.opacity / 100;
-        postPreview.style.filter = `blur(${adjustments.blur}px)`;
+        postPreview.style.backgroundSize = 'cover';
+        postPreview.style.backgroundPosition = 'center';
     } else if (currentPreset) {
         postPreview.style.backgroundImage = 'none';
         postPreview.style.background = currentPreset.background;
-        postPreview.style.opacity = 1;
-        postPreview.style.filter = 'none';
     } else {
         postPreview.style.backgroundImage = 'none';
         postPreview.style.background = '#fff';
-        postPreview.style.opacity = 1;
-        postPreview.style.filter = 'none';
     }
 
     if (currentPreset) {
@@ -233,10 +226,6 @@ function showSlider(type) {
         } else if (type === 'blur') {
             imgRange.min = 0;
             imgRange.max = 20;
-            imgRange.value = getImageValue(type, activePlatform);
-        } else if (type === 'resize') {
-            imgRange.min = -100;
-            imgRange.max = 100;
             imgRange.value = getImageValue(type, activePlatform);
         } else if (type === 'scale') {
             imgRange.min = -50;
@@ -337,7 +326,6 @@ function updateImagePixelValues() {
             const label = span.previousElementSibling.textContent.toLowerCase();
             if (label === 'opacity') span.textContent = `${adj.opacity}%`;
             else if (label === 'blur') span.textContent = `${adj.blur}px`;
-            else if (label === 'resize') span.textContent = `${adj.resize}px`;
             else if (label === 'scale') span.textContent = `${adj.scale}`;
             else if (label === 'horizontal') span.textContent = `${adj.horizontal}px`;
             else if (label === 'vertical') span.textContent = `${adj.vertical}px`;
@@ -349,7 +337,7 @@ function resetAdjustments() {
     fontValues = { heading: 24, content: 16, subInfo: 12 };
     spaceValues = { h2c: 10, c2s: 10 };
     Object.keys(imageAdjustments).forEach(platform => {
-        imageAdjustments[platform] = { opacity: 100, blur: 0, resize: 0, scale: 0, horizontal: 0, vertical: 0 };
+        imageAdjustments[platform] = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
     });
     middleLayerActive = false;
     document.getElementById('middle-layer-btn').classList.remove('active');
@@ -379,6 +367,15 @@ function loadBackground() {
         updatePreview();
         updateFinalPreview();
     }
+}
+
+function removeImage() {
+    if (bgImage) URL.revokeObjectURL(bgImage);
+    bgImage = null;
+    document.getElementById('bg-image').value = '';
+    document.getElementById('background-layer').style.backgroundImage = 'none';
+    updatePreview();
+    updateFinalPreview();
 }
 
 function dragOver(event) {
@@ -424,29 +421,7 @@ function toggleMiddleLayer() {
     const btn = document.getElementById('middle-layer-btn');
     middleLayer.classList.toggle('active', middleLayerActive);
     btn.classList.toggle('active', middleLayerActive);
-    updatePreview();
     updateFinalPreview();
-}
-
-function saveImageAdjustments() {
-    if (activePlatform && bgImage) {
-        const finalPreview = document.getElementById('final-preview-box');
-        updateFinalPreview();
-        html2canvas(finalPreview, { backgroundColor: null }).then(canvas => {
-            if (bgImage) URL.revokeObjectURL(bgImage);
-            bgImage = canvas.toDataURL('image/jpeg', 0.9);
-            middleLayerActive = false;
-            document.getElementById('middle-layer').classList.remove('active');
-            document.getElementById('middle-layer-btn').classList.remove('active');
-            updatePreview();
-            updateFinalPreview();
-        }).catch(error => {
-            console.error('Failed to save adjustments:', error);
-            alert('Failed to save image adjustments.');
-        });
-    } else {
-        alert('Please select a platform and upload a background image before saving adjustments.');
-    }
 }
 
 function updateFinalPreview() {
@@ -457,10 +432,10 @@ function updateFinalPreview() {
     
     textLayer.innerHTML = document.getElementById('postPreview').innerHTML;
     
-    if (bgImage && activePlatform) {
-        const adjustments = imageAdjustments[activePlatform];
+    if (bgImage) {
+        const adjustments = activePlatform ? imageAdjustments[activePlatform] : { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
         backgroundLayer.style.backgroundImage = `url(${bgImage})`;
-        backgroundLayer.style.backgroundSize = `${100 + adjustments.scale + adjustments.resize}%`;
+        backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`;
         backgroundLayer.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
         backgroundLayer.style.opacity = adjustments.opacity / 100;
         backgroundLayer.style.filter = `blur(${adjustments.blur}px)`;
