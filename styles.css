@@ -177,7 +177,7 @@ textarea {
     box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.clear-btn {
+.clear-btn, .reset-btn, .remove-btn {
     width: auto;
     padding: 8px 15px;
     background: #ff4444;
@@ -207,7 +207,7 @@ body.dark-theme button:hover {
     background: #004d99;
 }
 
-body.dark-theme .clear-btn {
+body.dark-theme .clear-btn, body.dark-theme .reset-btn, body.dark-theme .remove-btn {
     background: #cc3333;
 }
 
@@ -235,7 +235,7 @@ body.dark-theme .clear-btn {
 }
 
 body.dark-theme .preset-info {
-    color: #aaa;
+    color: #ccc;
 }
 
 .preset-info strong {
@@ -259,6 +259,10 @@ body.dark-theme .preset-info strong {
     align-items: center;
     justify-content: center;
     width: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    z-index: 1;
 }
 
 body.dark-theme #postPreview {
@@ -280,6 +284,7 @@ body.dark-theme #postPreview {
     width: 100%;
     overflow: hidden;
     background: #fff;
+    z-index: 1;
 }
 
 body.dark-theme #final-preview-box {
@@ -315,7 +320,7 @@ body.dark-theme #final-preview-box {
 }
 
 #text-layer {
-    z-index: 1;
+    z-index: 2;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -392,7 +397,7 @@ body.dark-theme .drop-zone {
 }
 
 body.dark-theme .note {
-    color: #aaa;
+    color: #ccc;
 }
 
 .button-group {
@@ -437,7 +442,7 @@ body.dark-theme .note {
 }
 
 body.dark-theme .px-value {
-    color: #aaa;
+    color: #ccc;
 }
 
 .slider {
@@ -520,13 +525,6 @@ body.dark-theme .image-management .selection-area, body.dark-theme .image-manage
     display: flex;
     gap: 10px;
     justify-content: space-between;
-}
-
-.reset-btn {
-    width: auto;
-    padding: 8px 15px;
-    background: #ff4444;
-    margin-top: 10px;
 }
 
 @media (max-width: 768px) {
