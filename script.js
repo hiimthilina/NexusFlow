@@ -87,7 +87,7 @@ const presets = {
     }
 };
 
-let currentPreset = null;
+let currentPreset = 'guidance'; // Default to guidance preset
 let fontValues = { heading: 24, content: 16, subInfo: 12 };
 let spaceValues = { h2c: 10, c2s: 10 };
 let imageAdjustments = {
@@ -99,15 +99,16 @@ let imageAdjustments = {
     linkedin: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 },
     threads: { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 }
 };
-let activePlatform = null;
+let defaultImageAdjustments = { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
+let activePlatform = 'instagram'; // Default to Instagram for 4:5 aspect ratio
 let bgImage = null;
 let middleLayerActive = false;
 let activeButton = null;
 
 // Preset and Preview Functions
 function updatePreset() {
-    const presetValue = document.getElementById('preset').value;
-    currentPreset = presetValue ? presets[presetValue] : null;
+    const presetValue = document.getElementById('preset').value || 'guidance'; // Default to guidance
+    currentPreset = presetValue ? presets[presetValue] : presets['guidance'];
     const presetInfo = document.getElementById('preset-info');
     
     if (currentPreset) {
@@ -126,9 +127,9 @@ function updatePreset() {
 }
 
 function updatePreview() {
-    const heading = document.getElementById('headingInput').value || 'Heading';
-    const description = document.getElementById('descriptionInput').value || 'Description';
-    const subInfo = document.getElementById('hashtagsInput').value || 'Sub-info';
+    const heading = document.getElementById('headingInput').value || '🌱 Tip for a Better Life';
+    const description = document.getElementById('descriptionInput').value || 'Start your day with gratitude. Take 5 minutes every morning to write down 3 things you\'re grateful for. This simple practice can improve your mood and mindset throughout the day! ✨';
+    const subInfo = document.getElementById('hashtagsInput').value || '#SelfImprovement #Gratitude #hiimthilina';
     
     const previewHeading = document.getElementById('previewHeading');
     const previewContent = document.getElementById('previewContent');
@@ -139,9 +140,10 @@ function updatePreview() {
     previewContent.textContent = description;
     previewSubInfo.textContent = subInfo;
 
+    const adjustments = activePlatform ? imageAdjustments[activePlatform] : defaultImageAdjustments;
     if (bgImage) {
         postPreview.style.backgroundImage = `url(${bgImage})`;
-        postPreview.style.backgroundSize = 'cover';
+        postPreview.style.backgroundSize = '100%'; // Smaller preview size
         postPreview.style.backgroundPosition = 'center';
     } else if (currentPreset) {
         postPreview.style.backgroundImage = 'none';
@@ -149,6 +151,17 @@ function updatePreview() {
     } else {
         postPreview.style.backgroundImage = 'none';
         postPreview.style.background = '#fff';
+    }
+
+    // Apply aspect ratio to preview (default to Instagram 4:5)
+    if (activePlatform) {
+        const ratios = {
+            youtube: '16/9', facebook: '1/1', instagram: '4/5', tiktok: '9/16',
+            twitter: '3/2', linkedin: '1/1', threads: '9/16'
+        };
+        postPreview.style.aspectRatio = ratios[activePlatform];
+    } else {
+        postPreview.style.aspectRatio = '4/5'; // Default to Instagram
     }
 
     if (currentPreset) {
@@ -202,7 +215,7 @@ function showSlider(type) {
     const imgRange = document.getElementById('img-range');
     const newButton = document.querySelector(`button[onclick="showSlider('${type}')"]`);
     
-    if (activeButton === newButton && (sliderContainer.classList.contains('hidden') === false || imgSliderContainer.classList.contains('hidden') === false)) {
+    if (activeButton === newButton && (!sliderContainer.classList.contains('hidden') || !imgSliderContainer.classList.contains('hidden'))) {
         hideSlider();
         return;
     }
@@ -222,19 +235,19 @@ function showSlider(type) {
         if (type === 'opacity') {
             imgRange.min = 0;
             imgRange.max = 100;
-            imgRange.value = getImageValue(type, activePlatform);
+            imgRange.value = activePlatform ? imageAdjustments[activePlatform].opacity : defaultImageAdjustments.opacity;
         } else if (type === 'blur') {
             imgRange.min = 0;
             imgRange.max = 20;
-            imgRange.value = getImageValue(type, activePlatform);
+            imgRange.value = activePlatform ? imageAdjustments[activePlatform].blur : defaultImageAdjustments.blur;
         } else if (type === 'scale') {
             imgRange.min = -50;
             imgRange.max = 50;
-            imgRange.value = getImageValue(type, activePlatform);
+            imgRange.value = activePlatform ? imageAdjustments[activePlatform].scale : defaultImageAdjustments.scale;
         } else if (type === 'horizontal' || type === 'vertical') {
             imgRange.min = -100;
             imgRange.max = 100;
-            imgRange.value = getImageValue(type, activePlatform);
+            imgRange.value = activePlatform ? imageAdjustments[activePlatform][type] : defaultImageAdjustments[type];
         }
         document.getElementById('img-slider-value').textContent = imgRange.value + (type === 'opacity' ? '%' : 'px');
         highlightButton(type);
@@ -263,11 +276,6 @@ function getCurrentValue(type) {
     if (type === 'subinfo-size') return fontValues.subInfo;
     if (type === 'h2c-space') return spaceValues.h2c;
     if (type === 'c2s-space') return spaceValues.c2s;
-}
-
-function getImageValue(type, platform) {
-    if (!platform) return type === 'opacity' ? 100 : 0;
-    return imageAdjustments[platform][type];
 }
 
 function highlightButton(type) {
@@ -432,18 +440,18 @@ function updateFinalPreview() {
     
     textLayer.innerHTML = document.getElementById('postPreview').innerHTML;
     
+    const adjustments = activePlatform ? imageAdjustments[activePlatform] : { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
     if (bgImage) {
-        const adjustments = activePlatform ? imageAdjustments[activePlatform] : { opacity: 100, blur: 0, scale: 0, horizontal: 0, vertical: 0 };
         backgroundLayer.style.backgroundImage = `url(${bgImage})`;
-        backgroundLayer.style.backgroundSize = `${100 + adjustments.scale}%`;
-        backgroundLayer.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`;
+        backgroundLayer.style.backgroundSize = 'cover'; // Ensure full coverage
+        backgroundLayer.style.backgroundPosition = `${adjustments.horizontal}px ${adjustments.vertical}px`; // Manual positioning
         backgroundLayer.style.opacity = adjustments.opacity / 100;
-        backgroundLayer.style.filter = `blur(${adjustments.blur}px)`;
-        middleLayer.style.backgroundColor = middleLayerActive && currentPreset ? currentPreset.background : 'transparent';
+        backgroundLayer.style.filter = `blur(${adjustments.blur}px) scale(${1 + adjustments.scale / 100})`; // Apply scale
+        middleLayer.style.backgroundColor = middleLayerActive && currentPreset ? currentPreset.background : 'rgba(255, 255, 255, 0.8)';
         finalPreview.style.background = 'none';
     } else {
         backgroundLayer.style.backgroundImage = 'none';
-        middleLayer.style.backgroundColor = middleLayerActive && currentPreset ? currentPreset.background : 'transparent';
+        middleLayer.style.backgroundColor = middleLayerActive && currentPreset ? currentPreset.background : 'rgba(255, 255, 255, 0.8)';
         finalPreview.style.background = currentPreset ? currentPreset.background : '#fff';
     }
     
@@ -470,15 +478,15 @@ function setAspectRatio(platform) {
     const finalPreview = document.getElementById('final-preview-box');
     const platformInfo = document.getElementById('platform-info');
     const ratios = {
-        youtube: { ratio: '16:9', resolution: '1920x1080' },
-        facebook: { ratio: '1:1', resolution: '1200x1200' },
-        instagram: { ratio: '4:5', resolution: '1080x1350' },
-        tiktok: { ratio: '9:16', resolution: '1080x1920' },
-        twitter: { ratio: '3:2', resolution: '1200x800' },
-        linkedin: { ratio: '1:1', resolution: '1200x1200' },
-        threads: { ratio: '9:16', resolution: '1080x1920' }
+        youtube: { ratio: '16/9', resolution: '1920x1080' },
+        facebook: { ratio: '1/1', resolution: '1200x1200' },
+        instagram: { ratio: '4/5', resolution: '1080x1350' },
+        tiktok: { ratio: '9/16', resolution: '1080x1920' },
+        twitter: { ratio: '3/2', resolution: '1200x800' },
+        linkedin: { ratio: '1/1', resolution: '1200x1200' },
+        threads: { ratio: '9/16', resolution: '1080x1920' }
     };
-    const [width, height] = ratios[platform].ratio.split(':');
+    const [width, height] = ratios[platform].ratio.split('/');
     finalPreview.style.aspectRatio = `${width}/${height}`;
     platformInfo.textContent = `Aspect Ratio: ${ratios[platform].ratio}, Resolution: ${ratios[platform].resolution}`;
 }
@@ -546,4 +554,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('bg-image').addEventListener('change', loadBackground);
+    // Set default platform to Instagram for 4:5 aspect ratio
+    setActivePlatform('instagram');
 });
