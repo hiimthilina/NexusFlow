@@ -1,0 +1,945 @@
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Be+Vietnam+Pro%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+    />
+
+    <title>NexusFlow</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #1e2124;
+        min-width: 250px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+        z-index: 20;
+        border-radius: 12px;
+        top: 120px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      
+      .dropdown-content.show {
+        display: block;
+      }
+      
+      .platform-card {
+        transition: all 0.3s ease;
+      }
+      
+      .platform-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      }
+      
+      .rank-badge {
+        border-radius: 8px;
+        padding: 2px 6px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      
+      .rank-1 {
+        background-color: #4ade80;
+        color: #111518;
+      }
+      
+      .rank-2 {
+        background-color: #facc15;
+        color: #111518;
+      }
+      
+      .rank-3 {
+        background-color: #fb923c;
+        color: #111518;
+      }
+      
+      .content-number {
+        background-color: #2c3135;
+        border-radius: 8px;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+      
+      .content-details {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+      
+      .content-details.expanded {
+        max-height: 500px;
+      }
+      
+      .platform-header {
+        display: flex;
+        margin-bottom: 10px;
+        font-weight: bold;
+        color: #9cabba;
+        border-bottom: 1px solid #283139;
+        padding-bottom: 8px;
+        font-size: 0.75rem;
+      }
+      
+      .platform-header-item {
+        flex: 1;
+        text-align: center;
+      }
+      
+      .platform-header-item:first-child {
+        flex: 2;
+        text-align: left;
+      }
+      
+      .platform-detail {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        padding: 5px 0;
+      }
+      
+      .platform-logo-small {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+        margin-right: 8px;
+      }
+      
+      .platform-name-container {
+        display: flex;
+        align-items: center;
+        flex: 2;
+      }
+      
+      .platform-name {
+        font-weight: bold;
+        margin-left: 5px;
+        color: white;
+      }
+      
+      .platform-metrics {
+        display: flex;
+        flex: 3;
+        justify-content: space-around;
+      }
+      
+      .platform-metrics .metric {
+        width: auto;
+        margin: 0;
+        flex: 1;
+        text-align: center;
+      }
+      
+      .curved-rectangle {
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+      }
+
+      /* Analytics section styles */
+      .analytics-card {
+        background-color: #1e2124;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        transition: all 0.3s ease;
+      }
+      
+      .analytics-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      }
+      
+      .platform-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      
+      .platform-logo {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+        margin-right: 16px;
+      }
+      
+      .metrics {
+        display: flex;
+        flex-grow: 1;
+        justify-content: space-around;
+      }
+      
+      .metric {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      
+      .metric i {
+        font-size: 18px;
+        margin-bottom: 5px;
+        color: #9cabba;
+      }
+      
+      .metric span {
+        font-weight: bold;
+        font-size: 14px;
+        color: white;
+        margin-bottom: 2px;
+      }
+      
+      .metric p {
+        font-size: 12px;
+        color: #9cabba;
+      }
+      
+      .platform-rank {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      
+      .platform-rank span {
+        font-weight: bold;
+        font-size: 12px;
+      }
+      
+      .view-btn {
+        background-color: #2c3135;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 12px;
+        color: #9cabba;
+        transition: all 0.3s;
+      }
+      
+      .view-btn:hover {
+        background-color: #3a3f45;
+        color: white;
+      }
+      
+      .see-all-btn {
+        background-color: #2c3135;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        display: block;
+        margin: 0 auto;
+        transition: all 0.3s;
+        width: auto;
+      }
+      
+      .see-all-btn:hover {
+        background-color: #3a3f45;
+      }
+
+      .nexus-flow-check {
+        margin-left: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="relative flex size-full min-h-screen flex-col bg-[#111518] dark justify-between group/design-root overflow-x-hidden"
+      style='font-family: "Be Vietnam Pro", "Noto Sans", sans-serif;'
+    >
+      <div>
+        <div class="flex items-center bg-[#111518] p-4 pb-2 justify-between fixed top-0 left-0 right-0 z-10">
+          <div class="text-white flex size-12 shrink-0 items-center" data-icon="ArrowLeft" data-size="24px" data-weight="regular">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+              <path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"></path>
+            </svg>
+          </div>
+          <h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Profile</h2>
+          <div class="flex w-12 items-center justify-end">
+            <button
+              class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 bg-transparent text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0"
+            >
+              <div class="text-white" data-icon="Gear" data-size="24px" data-weight="regular">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                  <path
+                    d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm88-29.84q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.21,107.21,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.71,107.71,0,0,0-26.25-10.87,8,8,0,0,0-7.06,1.49L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.21,107.21,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06Zm-16.1-6.5a73.93,73.93,0,0,1,0,8.68,8,8,0,0,0,1.74,5.48l14.19,17.73a91.57,91.57,0,0,1-6.23,15L187,173.11a8,8,0,0,0-5.1,2.64,74.11,74.11,0,0,1-6.14,6.14,8,8,0,0,0-2.64,5.1l-2.51,22.58a91.32,91.32,0,0,1-15,6.23l-17.74-14.19a8,8,0,0,0-5-1.75h-.48a73.93,73.93,0,0,1-8.68,0,8,8,0,0,0-5.48,1.74L100.45,215.8a91.57,91.57,0,0,1-15-6.23L82.89,187a8,8,0,0,0-2.64-5.1,74.11,74.11,0,0,1-6.14-6.14,8,8,0,0,0-5.1-2.64L46.43,170.6a91.32,91.32,0,0,1-6.23-15l14.19-17.74a8,8,0,0,0,1.74-5.48,73.93,73.93,0,0,1,0-8.68,8,8,0,0,0-1.74-5.48L40.2,100.45a91.57,91.57,0,0,1,6.23-15L69,82.89a8,8,0,0,0,5.1-2.64,74.11,74.11,0,0,1,6.14-6.14A8,8,0,0,0,82.89,69L85.4,46.43a91.32,91.32,0,0,1,15-6.23l17.74,14.19a8,8,0,0,0,5.48,1.74,73.93,73.93,0,0,1,8.68,0,8,8,0,0,0,5.48-1.74L155.55,40.2a91.57,91.57,0,0,1,15,6.23L173.11,69a8,8,0,0,0,2.64,5.1,74.11,74.11,0,0,1,6.14,6.14,8,8,0,0,0,5.1,2.64l22.58,2.51a91.32,91.32,0,0,1,6.23,15l-14.19,17.74A8,8,0,0,0,199.87,123.66Z"
+                  ></path>
+                </svg>
+              </div>
+            </button>
+          </div>
+        </div>
+        <div class="pt-14"></div>
+        
+        <!-- Profile section with left-aligned picture and centered brand name -->
+        <div class="flex p-4">
+          <div class="flex w-full flex-row items-center gap-4">
+            <!-- Profile Picture (aligned left) -->
+            <div
+              class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-20 w-20 flex-shrink-0"
+              style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDmimRf_qZCXwr7x0mb5zKqNLmUv5qgjxuOJZ5eNA-PUhIeVtArX8uZjFT4tu5A4djdBSIeSEzhC2Cymmakn8tpJvfVGT-s9eHmbUBGFahLlxPTn0UxbnCRtkN2urYWQsORsFrqJLQOR_H0nb68KOZs6RWHonzd5oRqeuF1NIDPy6UUi8WTrZezkqp5WIaJ04GBSk2ggDq8CMLhF_VBIDVj4zvqN7az4zNlwra9uGNyeJ5VVZ2h7B8TxTJA0G6D09V0M5GFAobMGWUp");'
+            ></div>
+            
+            <!-- Container for Brand Name + Arrow (centered in remaining space) -->
+            <div class="flex flex-grow flex-col items-center justify-center">
+              <div class="flex items-center gap-2 cursor-pointer" id="brand-dropdown-toggle">
+                <p class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em]">NexusFlow</p>
+                <div class="text-white flex size-5 items-center justify-center" data-icon="CaretDown" data-size="20px" data-weight="regular">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                    <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+                  </svg>
+                </div>
+              </div>
+              
+              <!-- Content below brand name -->
+              <div class="mt-1 text-sm text-[#9cabba]">
+                Social media management platform
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Dropdown menu for brand selection -->
+        <div id="brand-dropdown" class="dropdown-content">
+          <div class="p-4 border-b border-[#283139]">
+            <div class="flex items-center justify-between">
+              <p class="text-white text-lg font-bold">NexusFlow</p>
+              <div class="text-green-400 flex size-5 items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="p-4">
+            <button class="flex w-full items-center justify-center gap-2 bg-[#2c3135] text-white rounded-xl py-3 px-4">
+              <div class="text-white flex size-5 items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path>
+                </svg>
+              </div>
+              <span>Add Account</span>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Add Account Popup (hidden by default) -->
+        <div id="add-account-popup" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden flex items-center justify-center">
+          <div class="bg-[#1e2124] rounded-xl p-6 w-[90%] max-w-md">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-white text-lg font-bold">Add New Account</h3>
+              <button id="close-popup" class="text-[#9cabba]">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                  <path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="flex flex-col gap-4">
+              <div class="flex justify-center mb-2">
+                <div class="bg-[#2c3135] rounded-full h-20 w-20 flex items-center justify-center cursor-pointer">
+                  <div class="text-[#9cabba]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32px" height="32px" fill="currentColor" viewBox="0 0 256 256">
+                      <path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM48,48H208V152.89l-22.14-22.14a16,16,0,0,0-22.57-.15L93.2,200H48ZM208,208H115.55l58.07-58.07L208,194.31Z"></path>
+                      <circle cx="100" cy="92" r="12"></circle>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="block text-[#9cabba] text-sm mb-1">Handle</label>
+                <div class="flex items-center bg-[#2c3135] rounded-lg px-3 py-2">
+                  <span class="text-[#9cabba]">@</span>
+                  <input type="text" placeholder="username" class="bg-transparent border-none text-white w-full focus:outline-none ml-1">
+                </div>
+              </div>
+              <div>
+                <label class="block text-[#9cabba] text-sm mb-1">Brand Name</label>
+                <input type="text" placeholder="Enter brand name" class="w-full bg-[#2c3135] border-none rounded-lg px-3 py-2 text-white focus:outline-none">
+              </div>
+              <button class="bg-[#dce8f3] text-[#111518] font-bold py-3 rounded-lg mt-2">
+                Create Account
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Analytics</h3>
+        
+        <!-- Analytics Section (Implemented from index.html with dark theme) -->
+        <div class="px-4">
+          <!-- YouTube Card - #1 Platform -->
+          <div class="analytics-card">
+            <div class="platform-info">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/1280px-YouTube_full-color_icon_%282017%29.svg.png" alt="YouTube" class="platform-logo">
+              <div class="metrics">
+                <div class="metric">
+                  <i class="fas fa-users"></i>
+                  <span>12.5K</span>
+                  <p>Followers</p>
+                </div>
+                <div class="metric">
+                  <i class="fas fa-video"></i>
+                  <span>45</span>
+                  <p>Content</p>
+                </div>
+                <div class="metric">
+                  <i class="fas fa-chart-line"></i>
+                  <span>+15%</span>
+                  <p>Growth</p>
+                </div>
+              </div>
+            </div>
+            <div class="platform-rank">
+              <span class="rank-badge rank-1">#1 Platform is YouTube</span>
+              <button class="view-btn">View Profile</button>
+            </div>
+          </div>
+          
+          <!-- Facebook Card - #2 Platform -->
+          <div class="analytics-card">
+            <div class="platform-info">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1200px-Facebook_Logo_%282019%29.png" alt="Facebook" class="platform-logo">
+              <div class="metrics">
+                <div class="metric">
+                  <i class="fas fa-users"></i>
+                  <span>8.2K</span>
+                  <p>Followers</p>
+                </div>
+                <div class="metric">
+                  <i class="fas fa-file-alt"></i>
+                  <span>32</span>
+                  <p>Content</p>
+                </div>
+                <div class="metric">
+                  <i class="fas fa-chart-line"></i>
+                  <span>+8%</span>
+                  <p>Growth</p>
+                </div>
+              </div>
+            </div>
+            <div class="platform-rank">
+              <span class="rank-badge rank-2">#2 Platform is Facebook</span>
+              <button class="view-btn">View Profile</button>
+            </div>
+          </div>
+          
+          <!-- Instagram Card - #3 Platform -->
+          <div class="analytics-card">
+            <div class="platform-info">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/2048px-Instagram_icon.png" alt="Instagram" class="platform-logo">
+              <div class="metrics">
+                <div class="metric">
+                  <i class="fas fa-users"></i>
+                  <span>5.7K</span>
+                  <p>Followers</p>
+                </div>
+                <div class="metric">
+                  <i class="fas fa-image"></i>
+                  <span>28</span>
+                  <p>Content</p>
+                </div>
+                <div class="metric">
+                  <i class="fas fa-chart-line"></i>
+                  <span>+5%</span>
+                  <p>Growth</p>
+                </div>
+              </div>
+            </div>
+            <div class="platform-rank">
+              <span class="rank-badge rank-3">#3 Platform is Instagram</span>
+              <button class="view-btn">View Profile</button>
+            </div>
+          </div>
+          
+          <!-- See All Button -->
+          <div class="flex justify-center mt-2 mb-6">
+            <button class="see-all-btn">See All</button>
+          </div>
+        </div>
+        
+        <h3 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">Best Content</h3>
+        
+        <!-- Best Content Section with 3 containers -->
+        <div class="flex flex-col gap-3 px-4 mb-4">
+          <!-- Content Card #1 -->
+          <div class="bg-[#1e2124] rounded-lg p-3">
+            <div class="flex items-start gap-3">
+              <div class="content-number text-white">1</div>
+              <div class="flex-grow">
+                <div class="flex justify-between items-start">
+                  <p class="text-white font-medium text-sm line-clamp-1">How to increase your social media engagement</p>
+                  <button class="text-[#9cabba]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                      <path d="M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128Zm56-12a12,12,0,1,0,12,12A12,12,0,0,0,196,116ZM60,116a12,12,0,1,0,12,12A12,12,0,0,0,60,116Z"></path>
+                    </svg>
+                  </button>
+                </div>
+                
+                <div class="flex items-center justify-between mt-3">
+                  <div class="flex gap-4">
+                    <div class="flex items-center gap-1">
+                      <div class="text-[#9cabba]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                          <path d="M178,32c-20.65,0-38.73,8.88-50,23.89C116.73,40.88,98.65,32,78,32A62.07,62.07,0,0,0,16,94c0,70,103.79,126.66,108.21,129a8,8,0,0,0,7.58,0C136.21,220.66,240,164,240,94A62.07,62.07,0,0,0,178,32ZM128,206.8C109.74,196.16,32,147.69,32,94A46.06,46.06,0,0,1,78,48c19.45,0,35.78,10.36,42.6,27a8,8,0,0,0,14.8,0c6.82-16.67,23.15-27,42.6-27a46.06,46.06,0,0,1,46,46C224,147.61,146.24,196.15,128,206.8Z"></path>
+                        </svg>
+                      </div>
+                      <span class="text-white text-xs">1.2k</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <div class="text-[#9cabba]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                          <path d="M216,48H40A16,16,0,0,0,24,64V224a8,8,0,0,0,12.65,6.51L80,193.86l43.35,36.65A8,8,0,0,0,136,224V152a8,8,0,0,0-16,0v57.57L83.35,178.32a8,8,0,0,0-10.3.05L40,205.06V64H216V152a8,8,0,0,0,16,0V64A16,16,0,0,0,216,48Z"></path>
+                        </svg>
+                      </div>
+                      <span class="text-white text-xs">342</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <div class="text-green-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                          <path d="M213.66,122.34a8,8,0,0,1,0,11.32l-72,72a8,8,0,0,1-11.32,0l-40-40a8,8,0,0,1,11.32-11.32L136,188.69l66.34-66.35A8,8,0,0,1,213.66,122.34ZM42.34,138.34a8,8,0,0,0,11.32,11.32L88,115.31l34.34,34.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0Z"></path>
+                        </svg>
+                      </div>
+                      <span class="text-white text-xs">85%</span>
+                    </div>
+                  </div>
+                  
+                  <button class="content-toggle text-[#9cabba]" data-content-id="content-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                      <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Expandable Content Details -->
+            <div id="content-1" class="content-details mt-3 pl-9">
+              <div class="border-t border-[#283139] pt-3">
+                <div class="platform-header">
+                  <div class="platform-header-item">Platform</div>
+                  <div class="platform-header-item">Likes</div>
+                  <div class="platform-header-item">Comments</div>
+                  <div class="platform-header-item">Growth</div>
+                </div>
+                
+                <div class="platform-detail">
+                  <div class="platform-name-container">
+                    <div class="text-[#4267B2] flex h-5 w-5 items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                        <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm8,191.63V152h24a8,8,0,0,0,0-16H136V112a16,16,0,0,1,16-16h16a8,8,0,0,0,0-16H152a32,32,0,0,0-32,32v24H96a8,8,0,0,0,0,16h24v63.63a88,88,0,1,1,16,0Z"></path>
+                      </svg>
+                    </div>
+                    <span class="text-white text-xs ml-2">Facebook</span>
+                  </div>
+                  <div class="platform-metrics">
+                    <div class="metric">
+                      <span class="text-white text-xs">450</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">120</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">92%</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="platform-detail">
+                  <div class="platform-name-container">
+                    <div class="text-[#E1306C] flex h-5 w-5 items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                        <path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160ZM176,24H80A56.06,56.06,0,0,0,24,80v96a56.06,56.06,0,0,0,56,56h96a56.06,56.06,0,0,0,56-56V80A56.06,56.06,0,0,0,176,24Zm40,152a40,40,0,0,1-40,40H80a40,40,0,0,1-40-40V80A40,40,0,0,1,80,40h96a40,40,0,0,1,40,40ZM192,76a12,12,0,1,1-12-12A12,12,0,0,1,192,76Z"></path>
+                      </svg>
+                    </div>
+                    <span class="text-white text-xs ml-2">Instagram</span>
+                  </div>
+                  <div class="platform-metrics">
+                    <div class="metric">
+                      <span class="text-white text-xs">380</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">95</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">85%</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="platform-detail">
+                  <div class="platform-name-container">
+                    <div class="text-[#0077B5] flex h-5 w-5 items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                        <path d="M216,24H40A16,16,0,0,0,24,40V216a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V40A16,16,0,0,0,216,24Zm0,192H40V40H216V216ZM96,112v64a8,8,0,0,1-16,0V112a8,8,0,0,1,16,0Zm88,28v36a8,8,0,0,1-16,0V140a20,20,0,0,0-40,0v36a8,8,0,0,1-16,0V112a8,8,0,0,1,15.79-1.78A36,36,0,0,1,184,140ZM100,84A12,12,0,1,1,88,72,12,12,0,0,1,100,84Z"></path>
+                      </svg>
+                    </div>
+                    <span class="text-white text-xs ml-2">LinkedIn</span>
+                  </div>
+                  <div class="platform-metrics">
+                    <div class="metric">
+                      <span class="text-white text-xs">250</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">87</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">78%</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="platform-detail">
+                  <div class="platform-name-container">
+                    <div class="text-white flex h-5 w-5 items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                        <path d="M247.39,68.94A8,8,0,0,0,240,64H209.57A48.66,48.66,0,0,0,168.1,40a46.91,46.91,0,0,0-33.75,13.7A47.9,47.9,0,0,0,120,88v6.09C79.74,83.47,46.81,50.72,46.46,50.37a8,8,0,0,0-13.65,4.92c-4.31,47.79,9.57,79.77,22,98.18a110.93,110.93,0,0,0,21.88,24.2c-15.23,17.53-39.21,26.74-39.47,26.83a8,8,0,0,0-3.85,11.93c.75,1.12,3.75,5.05,11.08,8.72C53.51,229.7,65.48,232,80,232c70.67,0,129.72-54.42,135.75-124.44l29.91-29.9A8,8,0,0,0,247.39,68.94Zm-45,29.41a8,8,0,0,0-2.32,5.14C196,166.58,143.28,216,80,216c-10.56,0-18-1.4-23.22-3.08,11.51-6.25,27.56-17,37.88-32.48A8,8,0,0,0,92,169.08c-.47-.27-43.91-26.34-44-96,16,13,45.25,33.17,78.67,38.79A8,8,0,0,0,136,104V88a32,32,0,0,1,9.6-22.92A30.94,30.94,0,0,1,167.9,56c12.66.16,24.49,7.88,29.44,19.21A8,8,0,0,0,204.67,80h16Z"></path>
+                      </svg>
+                    </div>
+                    <span class="text-white text-xs ml-2">Twitter</span>
+                  </div>
+                  <div class="platform-metrics">
+                    <div class="metric">
+                      <span class="text-white text-xs">120</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">40</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">65%</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="platform-detail">
+                  <div class="platform-name-container">
+                    <div class="text-black flex h-5 w-5 items-center justify-center bg-white rounded-full">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12px" height="12px" fill="currentColor" viewBox="0 0 256 256">
+                        <path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160ZM176,24H80A56.06,56.06,0,0,0,24,80v96a56.06,56.06,0,0,0,56,56h96a56.06,56.06,0,0,0,56-56V80A56.06,56.06,0,0,0,176,24Zm40,152a40,40,0,0,1-40,40H80a40,40,0,0,1-40-40V80A40,40,0,0,1,80,40h96a40,40,0,0,1,40,40ZM192,76a12,12,0,1,1-12-12A12,12,0,0,1,192,76Z"></path>
+                      </svg>
+                    </div>
+                    <span class="text-white text-xs ml-2">Threads</span>
+                  </div>
+                  <div class="platform-metrics">
+                    <div class="metric">
+                      <span class="text-white text-xs">150</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">25</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">70%</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="platform-detail">
+                  <div class="platform-name-container">
+                    <div class="text-[#000000] flex h-5 w-5 items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 448 512">
+                        <path d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/>
+                      </svg>
+                    </div>
+                    <span class="text-white text-xs ml-2">TikTok</span>
+                  </div>
+                  <div class="platform-metrics">
+                    <div class="metric">
+                      <span class="text-white text-xs">420</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">78</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">90%</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="platform-detail">
+                  <div class="platform-name-container">
+                    <div class="text-[#FF0000] flex h-5 w-5 items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                        <path d="M234.33,69.52a24,24,0,0,0-14.49-16.4C185.56,39.88,131,40,128,40s-57.56-.12-91.84,13.12a24,24,0,0,0-14.49,16.4C19.08,79.5,16,97.74,16,128s3.08,48.5,5.67,58.48a24,24,0,0,0,14.49,16.4C69,215.56,120.4,216,127.34,216h1.32c6.94,0,58.37-.44,91.18-13.12a24,24,0,0,0,14.49-16.4c2.59-10,5.67-28.22,5.67-58.48S236.92,79.5,234.33,69.52Zm-72.11,61.81-48,32A4,4,0,0,1,108,160V96a4,4,0,0,1,6.22-3.33l48,32a4,4,0,0,1,0,6.66Z"></path>
+                      </svg>
+                    </div>
+                    <span class="text-white text-xs ml-2">YouTube</span>
+                  </div>
+                  <div class="platform-metrics">
+                    <div class="metric">
+                      <span class="text-white text-xs">1.2K</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">156</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">95%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Content Card #2 -->
+          <div class="bg-[#1e2124] rounded-lg p-3">
+            <div class="flex items-start gap-3">
+              <div class="content-number text-white">2</div>
+              <div class="flex-grow">
+                <div class="flex justify-between items-start">
+                  <p class="text-white font-medium text-sm line-clamp-1">10 tips for creating viral content in 2025</p>
+                  <button class="text-[#9cabba]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                      <path d="M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128Zm56-12a12,12,0,1,0,12,12A12,12,0,0,0,196,116ZM60,116a12,12,0,1,0,12,12A12,12,0,0,0,60,116Z"></path>
+                    </svg>
+                  </button>
+                </div>
+                
+                <div class="flex items-center justify-between mt-3">
+                  <div class="flex gap-4">
+                    <div class="flex items-center gap-1">
+                      <div class="text-[#9cabba]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                          <path d="M178,32c-20.65,0-38.73,8.88-50,23.89C116.73,40.88,98.65,32,78,32A62.07,62.07,0,0,0,16,94c0,70,103.79,126.66,108.21,129a8,8,0,0,0,7.58,0C136.21,220.66,240,164,240,94A62.07,62.07,0,0,0,178,32ZM128,206.8C109.74,196.16,32,147.69,32,94A46.06,46.06,0,0,1,78,48c19.45,0,35.78,10.36,42.6,27a8,8,0,0,0,14.8,0c6.82-16.67,23.15-27,42.6-27a46.06,46.06,0,0,1,46,46C224,147.61,146.24,196.15,128,206.8Z"></path>
+                        </svg>
+                      </div>
+                      <span class="text-white text-xs">950</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <div class="text-[#9cabba]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                          <path d="M216,48H40A16,16,0,0,0,24,64V224a8,8,0,0,0,12.65,6.51L80,193.86l43.35,36.65A8,8,0,0,0,136,224V152a8,8,0,0,0-16,0v57.57L83.35,178.32a8,8,0,0,0-10.3.05L40,205.06V64H216V152a8,8,0,0,0,16,0V64A16,16,0,0,0,216,48Z"></path>
+                        </svg>
+                      </div>
+                      <span class="text-white text-xs">285</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <div class="text-green-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                          <path d="M213.66,122.34a8,8,0,0,1,0,11.32l-72,72a8,8,0,0,1-11.32,0l-40-40a8,8,0,0,1,11.32-11.32L136,188.69l66.34-66.35A8,8,0,0,1,213.66,122.34ZM42.34,138.34a8,8,0,0,0,11.32,11.32L88,115.31l34.34,34.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0Z"></path>
+                        </svg>
+                      </div>
+                      <span class="text-white text-xs">78%</span>
+                    </div>
+                  </div>
+                  
+                  <button class="content-toggle text-[#9cabba]" data-content-id="content-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                      <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Expandable Content Details -->
+            <div id="content-2" class="content-details mt-3 pl-9">
+              <div class="border-t border-[#283139] pt-3">
+                <!-- Similar platform details as content-1 -->
+                <div class="platform-header">
+                  <div class="platform-header-item">Platform</div>
+                  <div class="platform-header-item">Likes</div>
+                  <div class="platform-header-item">Comments</div>
+                  <div class="platform-header-item">Growth</div>
+                </div>
+                
+                <!-- Platform details would be similar to content-1 -->
+                <div class="platform-detail">
+                  <div class="platform-name-container">
+                    <div class="text-[#FF0000] flex h-5 w-5 items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                        <path d="M234.33,69.52a24,24,0,0,0-14.49-16.4C185.56,39.88,131,40,128,40s-57.56-.12-91.84,13.12a24,24,0,0,0-14.49,16.4C19.08,79.5,16,97.74,16,128s3.08,48.5,5.67,58.48a24,24,0,0,0,14.49,16.4C69,215.56,120.4,216,127.34,216h1.32c6.94,0,58.37-.44,91.18-13.12a24,24,0,0,0,14.49-16.4c2.59-10,5.67-28.22,5.67-58.48S236.92,79.5,234.33,69.52Zm-72.11,61.81-48,32A4,4,0,0,1,108,160V96a4,4,0,0,1,6.22-3.33l48,32a4,4,0,0,1,0,6.66Z"></path>
+                      </svg>
+                    </div>
+                    <span class="text-white text-xs ml-2">YouTube</span>
+                  </div>
+                  <div class="platform-metrics">
+                    <div class="metric">
+                      <span class="text-white text-xs">950</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">120</span>
+                    </div>
+                    <div class="metric">
+                      <span class="text-white text-xs">85%</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Add other platforms similar to content-1 -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- Content Card #3 -->
+          <div class="bg-[#1e2124] rounded-lg p-3">
+            <div class="flex items-start gap-3">
+              <div class="content-number text-white">3</div>
+              <div class="flex-grow">
+                <div class="flex justify-between items-start">
+                  <p class="text-white font-medium text-sm line-clamp-1">The ultimate guide to social media analytics</p>
+                  <button class="text-[#9cabba]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                      <path d="M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128Zm56-12a12,12,0,1,0,12,12A12,12,0,0,0,196,116ZM60,116a12,12,0,1,0,12,12A12,12,0,0,0,60,116Z"></path>
+                    </svg>
+                  </button>
+                </div>
+                
+                <div class="flex items-center justify-between mt-3">
+                  <div class="flex gap-4">
+                    <div class="flex items-center gap-1">
+                      <div class="text-[#9cabba]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                          <path d="M178,32c-20.65,0-38.73,8.88-50,23.89C116.73,40.88,98.65,32,78,32A62.07,62.07,0,0,0,16,94c0,70,103.79,126.66,108.21,129a8,8,0,0,0,7.58,0C136.21,220.66,240,164,240,94A62.07,62.07,0,0,0,178,32ZM128,206.8C109.74,196.16,32,147.69,32,94A46.06,46.06,0,0,1,78,48c19.45,0,35.78,10.36,42.6,27a8,8,0,0,0,14.8,0c6.82-16.67,23.15-27,42.6-27a46.06,46.06,0,0,1,46,46C224,147.61,146.24,196.15,128,206.8Z"></path>
+                        </svg>
+                      </div>
+                      <span class="text-white text-xs">780</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <div class="text-[#9cabba]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                          <path d="M216,48H40A16,16,0,0,0,24,64V224a8,8,0,0,0,12.65,6.51L80,193.86l43.35,36.65A8,8,0,0,0,136,224V152a8,8,0,0,0-16,0v57.57L83.35,178.32a8,8,0,0,0-10.3.05L40,205.06V64H216V152a8,8,0,0,0,16,0V64A16,16,0,0,0,216,48Z"></path>
+                        </svg>
+                      </div>
+                      <span class="text-white text-xs">195</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <div class="text-green-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                          <path d="M213.66,122.34a8,8,0,0,1,0,11.32l-72,72a8,8,0,0,1-11.32,0l-40-40a8,8,0,0,1,11.32-11.32L136,188.69l66.34-66.35A8,8,0,0,1,213.66,122.34ZM42.34,138.34a8,8,0,0,0,11.32,11.32L88,115.31l34.34,34.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0Z"></path>
+                        </svg>
+                      </div>
+                      <span class="text-white text-xs">65%</span>
+                    </div>
+                  </div>
+                  
+                  <button class="content-toggle text-[#9cabba]" data-content-id="content-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+                      <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Expandable Content Details -->
+            <div id="content-3" class="content-details mt-3 pl-9">
+              <div class="border-t border-[#283139] pt-3">
+                <!-- Similar platform details as content-1 -->
+                <div class="platform-header">
+                  <div class="platform-header-item">Platform</div>
+                  <div class="platform-header-item">Likes</div>
+                  <div class="platform-header-item">Comments</div>
+                  <div class="platform-header-item">Growth</div>
+                </div>
+                
+                <!-- Platform details would be similar to content-1 -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- View All Button -->
+          <button class="bg-[#2c3135] text-white text-sm font-medium py-3 rounded-lg text-center">
+            View All (5)
+          </button>
+        </div>
+      </div>
+      <div>
+        <div class="flex gap-2 border-t border-[#283139] bg-[#1b2127] px-4 pb-3 pt-2 fixed bottom-0 left-0 right-0 z-10 curved-rectangle">
+          <a class="just flex flex-1 flex-col items-center justify-end gap-1 text-[#9cabba]" href="home.html">
+            <div class="text-[#9cabba] flex h-8 items-center justify-center" data-icon="House" data-size="24px" data-weight="regular">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                <path
+                  d="M218.83,103.77l-80-75.48a1.14,1.14,0,0,1-.11-.11,16,16,0,0,0-21.53,0l-.11.11L37.17,103.77A16,16,0,0,0,32,115.55V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V160h32v48a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V115.55A16,16,0,0,0,218.83,103.77ZM208,208H160V160a16,16,0,0,0-16-16H112a16,16,0,0,0-16,16v48H48V115.55l.11-.1L128,40l79.9,75.43.11.1Z"
+                ></path>
+              </svg>
+            </div>
+            <p class="text-[#9cabba] text-xs font-medium leading-normal tracking-[0.015em]">Home</p>
+          </a>
+          <a class="just flex flex-1 flex-col items-center justify-end gap-1 text-[#9cabba]" href="design.html">
+            <div class="text-[#9cabba] flex h-8 items-center justify-center" data-icon="Palette" data-size="24px" data-weight="regular">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                <path d="M200.77,53.89A103.27,103.27,0,0,0,128,24h-1.07A104,104,0,0,0,24,128c0,43,26.58,79.06,69.36,94.17A32,32,0,0,0,136,192a16,16,0,0,1,16-16h46.21a31.81,31.81,0,0,0,31.2-24.88,104.43,104.43,0,0,0,2.59-24A103.28,103.28,0,0,0,200.77,53.89Zm13,93.71A15.89,15.89,0,0,1,198.21,160H152a32,32,0,0,0-32,32,16,16,0,0,1-21.31,15.07C62.49,194.3,40,164,40,128a88,88,0,0,1,87.09-88h.9a88.35,88.35,0,0,1,88,88A88.86,88.86,0,0,1,213.81,147.6ZM140,76a12,12,0,1,1-12-12A12,12,0,0,1,140,76ZM96,100A12,12,0,1,1,84,88,12,12,0,0,1,96,100Zm0,56a12,12,0,1,1-12-12A12,12,0,0,1,96,156Zm88-56a12,12,0,1,1-12-12A12,12,0,0,1,184,100Z"></path>
+              </svg>
+            </div>
+            <p class="text-[#9cabba] text-xs font-medium leading-normal tracking-[0.015em]">Design</p>
+          </a>
+          <a class="just flex flex-1 flex-col items-center justify-end gap-1 text-[#9cabba]" href="post_gallery.html">
+            <div class="text-[#9cabba] flex h-8 items-center justify-center" data-icon="Image" data-size="24px" data-weight="regular">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                <path
+                  d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V158.75l-26.07-26.06a16,16,0,0,0-22.63,0l-20,20-44-44a16,16,0,0,0-22.62,0L40,149.37V56ZM40,172l52-52,80,80H40Zm176,28H194.63l-36-36,20-20L216,181.38V200ZM144,100a12,12,0,1,1,12,12A12,12,0,0,1,144,100Z"
+                ></path>
+              </svg>
+            </div>
+            <p class="text-[#9cabba] text-xs font-medium leading-normal tracking-[0.015em]">Gallery</p>
+          </a>
+          <a class="just flex flex-1 flex-col items-center justify-end gap-1 rounded-full text-white" href="#">
+            <div class="text-white flex h-8 items-center justify-center" data-icon="User" data-size="24px" data-weight="fill">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                <path
+                  d="M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z"
+                ></path>
+              </svg>
+            </div>
+            <p class="text-white text-xs font-medium leading-normal tracking-[0.015em]">Profile</p>
+          </a>
+        </div>
+        <div class="h-16 bg-[#1b2127]"></div>
+      </div>
+    </div>
+    
+    <script>
+      // Toggle dropdown when clicking on brand name
+      document.getElementById('brand-dropdown-toggle').addEventListener('click', function() {
+        document.getElementById('brand-dropdown').classList.toggle('show');
+      });
+      
+      // Close dropdown when clicking outside
+      window.addEventListener('click', function(event) {
+        if (!event.target.closest('#brand-dropdown-toggle') && !event.target.closest('#brand-dropdown')) {
+          document.getElementById('brand-dropdown').classList.remove('show');
+        }
+      });
+      
+      // Show Add Account popup
+      document.querySelector('#brand-dropdown button').addEventListener('click', function() {
+        document.getElementById('add-account-popup').classList.remove('hidden');
+        document.getElementById('brand-dropdown').classList.remove('show');
+      });
+      
+      // Close Add Account popup
+      document.getElementById('close-popup').addEventListener('click', function() {
+        document.getElementById('add-account-popup').classList.add('hidden');
+      });
+      
+      // Toggle content details
+      document.querySelectorAll('.content-toggle').forEach(function(button) {
+        button.addEventListener('click', function() {
+          const contentId = this.getAttribute('data-content-id');
+          document.getElementById(contentId).classList.toggle('expanded');
+          
+          // Rotate arrow icon
+          if (document.getElementById(contentId).classList.contains('expanded')) {
+            this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256"><path d="M213.66,154.34a8,8,0,0,1-11.32,0L128,80,53.66,154.34a8,8,0,0,1-11.32-11.32l80-80a8,8,0,0,1,11.32,0l80,80A8,8,0,0,1,213.66,154.34Z"></path></svg>';
+          } else {
+            this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path></svg>';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#121416">
+  <title>NexusFlow</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?display=swap&amp;family=Be+Vietnam+Pro%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+  />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <!-- KEEP THIS SCRIPT! -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <style>
+    :root {
+      --bg-primary: #121416;
+      --bg-secondary: #1e2124;
+      --border-color: #2c3135;
+      --text-primary: #ffffff;     
+      --text-secondary: #9cabba;
+      --accent-color: #dce8f3; /* Used for highlighting and accent */
+      --accent-hover: #c5d5e8;
+      --bottom-nav-height: 60px;
+      --header-height: 56px;
+      --toolbar-height: 48px;
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
+    * {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: "Be Vietnam Pro", "Noto Sans", sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
+      position: relative;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      touch-action: manipulation;
+    }
+    
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      position: relative;
+    }
+    
+    .header {
+      height: var(--header-height);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--bg-primary);
+      position: relative;
+      z-index: 20;
+    }
+    
+    .toolbar {
+      height: var(--toolbar-height);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px;
+      position: relative;
+    }
+    
+    .bottom-sheet {
+      position: absolute;
+      bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 8px);
+      left: 16px;
+      right: 16px;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+      transform-origin: bottom center;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    
+    .bottom-sheet-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .bottom-sheet-content {
+      padding: 12px;
+    }
+    
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
+      background-color: var(--bg-secondary);
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      border: 1px solid var(--border-color);
+      border-bottom: none;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+      z-index: 15;
+      padding-bottom: var(--safe-area-bottom);
+    }
+    
+    .bottom-nav-content {
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      height: var(--bottom-nav-height);
+    }
+    
+    .bottom-nav-content::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 64px;
+      height: 100%;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      user-select: none;
+    }
+    
+    .nav-item.active {
+      color: var(--accent-color);
+      border-bottom: 2px solid var(--accent-color);
+    }
+    
+    .nav-item:active {
+      opacity: 0.7;
+    }
+    
+    .nav-icon {
+      font-size: 24px;
+      margin-bottom: 2px;
+    }
+    
+    .nav-label {
+      font-size: 11px;
+      font-weight: 500;
+    }
+    
+    .btn {
+      border: none;
+      background: none;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      cursor: pointer;
+      touch-action: manipulation;
+      min-width: 40px;
+      min-height: 40px;
+    }
+    
+    .btn:active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: var(--bg-primary);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    .btn-primary:active {
+      background-color: var(--accent-hover);
+    }
+    
+    .btn-full {
+      width: 100%;
+      display: block;
+    }
+    
+    .preview-container {
+      aspect-ratio: 1/1;
+      background-color: var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      /* Add transition for highlight border */
+      transition: border 0.15s ease-in-out;
+    }
+
+    /* New class for highlighting */
+    .preview-container.highlight-border {
+      border: 2px dashed var(--accent-color);
+    }
+    
+    .preview-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      /* New styles for draggable image */
+      touch-action: none; /* Prevent default browser touch actions (scrolling/zooming) */
+      transform: translate(0px, 0px); /* Initialize transform for easier manipulation */
+    }
+    
+    .image-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    
+    .image-controls {
+      display: flex;
+      align-items: center;
+    }
+    
+    .image-name-input {
+      /* --- IMPORTANT CHANGE HERE --- */
+      background-color: var(--bg-secondary) !important; /* Force this background */
+      border: none;
+      color: var(--text-primary);
+      font-size: 14px;
+      padding: 4px 0;
+      flex-grow: 1;
+      outline: none;
+      cursor: pointer;
+      /* Force removal of default browser input styling and Tailwind forms plugin styling */
+      -webkit-appearance: none !important; 
+      -moz-appearance: none !important;    
+      appearance: none !important;         
+    }
+    
+    .image-name-input:focus {
+      border-bottom: 1px solid var(--accent-color);
+    }
+
+    /* Style for when input is readonly (not editable) */
+    .image-name-input[readonly] {
+      pointer-events: auto; /* Still clickable for highlight */
+      cursor: pointer;
+    }
+
+    /* Style for when input is editable */
+    .image-name-input:not([readonly]) {
+      cursor: text;
+    }
+  </style>
+  <script>
+  // Set the viewport height correctly for mobile browsers
+  function setViewportHeight() {
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }
+  
+  window.addEventListener('resize', setViewportHeight);
+  window.addEventListener('orientationchange', setViewportHeight);
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    setViewportHeight();
+    
+    // Toggle bottom sheet
+    const toggleBtn = document.getElementById('toggle-sheet');
+    const bottomSheet = document.getElementById('bottom-sheet');
+    const sheetIcon = document.getElementById('sheet-icon');
+    
+    let isExpanded = true;
+    
+    toggleBtn.addEventListener('click', function() {
+      isExpanded = !isExpanded;
+      
+      if (isExpanded) {
+        bottomSheet.style.transform = 'translateY(0)';
+        sheetIcon.textContent = 'expand_less';
+      } else {
+        bottomSheet.style.transform = 'translateY(calc(100% - 48px))'; /* - header height */
+        sheetIcon.textContent = 'expand_more';
+      }
+    });
+    
+    // Toggle visibility
+    const visibilityBtn = document.getElementById('visibility-toggle');
+    const visibilityIcon = document.getElementById('visibility-icon');
+    
+    let isVisible = false;
+    
+    visibilityBtn.addEventListener('click', function() {
+      isVisible = !isVisible;
+      
+      if (isVisible) {
+        visibilityIcon.textContent = 'visibility';
+      } else {
+        visibilityIcon.textContent = 'visibility_off';
+      }
+    });
+
+    // --- New Functionality ---
+    const imageNameInput = document.querySelector('.image-name-input');
+    const previewContainer = document.querySelector('.preview-container');
+    const previewImage = document.querySelector('.preview-image');
+    const bottomNav = document.querySelector('.bottom-nav'); // Get reference to bottom nav
+
+    // 1. Highlight around the image on click (focus)
+    imageNameInput.readOnly = true; // Ensure readonly state initially in JS
+
+    imageNameInput.addEventListener('focus', function() {
+      previewContainer.classList.add('highlight-border');
+    });
+
+    // Modified blur listener to prevent highlight removal when clicking toggle button or bottom nav items
+    imageNameInput.addEventListener('blur', function() {
+      // Always restore readonly state on blur
+      this.readOnly = true;
+
+      // Use a short timeout to allow the browser to process the focus change.
+      // This lets us check which element has now received focus.
+      setTimeout(() => {
+        // Check if the newly focused element is a related control (toggle, visibility, image controls, or bottom nav)
+        const isRelatedControl = (
+          document.activeElement === toggleBtn ||
+          document.activeElement === visibilityBtn ||
+          document.activeElement.closest('.image-controls') ||
+          bottomNav.contains(document.activeElement) // NEW: Check if active element is within the bottomNav
+        );
+
+        if (!isRelatedControl) {
+          previewContainer.classList.remove('highlight-border');
+        }
+      }, 0);
+    });
+
+
+    // 2. Rename on double click
+    imageNameInput.addEventListener('dblclick', function() {
+      this.readOnly = false; // Make input editable
+      this.focus();
+      this.select(); // Select all text for easy renaming
+    });
+
+    // 3. Move selected image around the preview area using finger (pan)
+    let isDragging = false;
+    let startX, startY; // Touch start coordinates on the screen
+    let currentX = 0, currentY = 0; // Current pan offsets for the image
+    let minPanX = 0, maxPanX = 0; // Horizontal panning limits
+    let minPanY = 0, maxPanY = 0; // Vertical panning limits
+
+    // Helper to calculate image's scaled dimensions when object-fit: cover is applied
+    function getImageScaledDimensions(img, container) {
+      if (!img.naturalWidth || !img.naturalHeight) {
+        return { scaledWidth: container.clientWidth, scaledHeight: container.clientHeight }; // Fallback
+      }
+      const imgAspect = img.naturalWidth / img.naturalHeight;
+      const containerAspect = container.clientWidth / container.clientHeight;
+
+      let scaledWidth, scaledHeight;
+
+      if (imgAspect > containerAspect) {
+        // Image is wider than container aspect ratio (e.g., container 1:1, img 16:9)
+        // Height will match container, width will overflow
+        scaledHeight = container.clientHeight;
+        scaledWidth = scaledHeight * imgAspect;
+      } else {
+        // Image is taller than or same as container aspect ratio (e.g., container 1:1, img 3:4)
+        // Width will match container, height will overflow
+        scaledWidth = container.clientWidth;
+        scaledHeight = scaledWidth / imgAspect;
+      }
+      return { scaledWidth, scaledHeight };
+    }
+
+    // Update panning limits based on image and container size
+    function updatePanLimits() {
+      // Ensure image has loaded to get naturalWidth/Height
+      if (!previewImage.naturalWidth || !previewImage.naturalHeight) {
+          // If image is not loaded, set up a listener and exit
+          if (!previewImage._loadListenerAdded) {
+              previewImage.addEventListener('load', updatePanLimits);
+              previewImage._loadListenerAdded = true;
+          }
+          return;
+      }
+
+      // Remove listener once image is loaded and limits are calculated
+      if (previewImage._loadListenerAdded) {
+          previewImage.removeEventListener('load', updatePanLimits);
+          previewImage._loadListenerAdded = false;
+      }
+
+      const { scaledWidth, scaledHeight } = getImageScaledDimensions(previewImage, previewContainer);
+
+      // Calculate min/max pan limits for X and Y
+      minPanX = Math.min(0, previewContainer.clientWidth - scaledWidth);
+      maxPanX = 0;
+
+      minPanY = Math.min(0, previewContainer.clientHeight - scaledHeight);
+      maxPanY = 0;
+
+      // Clamp current position to new limits if window resized
+      currentX = Math.min(Math.max(currentX, minPanX), maxPanX);
+      currentY = Math.min(Math.max(currentY, minPanY), maxPanY);
+      previewImage.style.transform = `translate(${currentX}px, ${currentY}px)`;
+    }
+
+    // Initialize limits and update on resize/orientation change
+    window.addEventListener('resize', updatePanLimits);
+    window.addEventListener('orientationchange', updatePanLimits);
+    previewImage.addEventListener('load', updatePanLimits); // Ensure limits are calculated after image loads
+    updatePanLimits(); // Initial call
+
+    previewImage.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        e.preventDefault();
+        isDragging = true;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+
+        const transformMatrix = window.getComputedStyle(previewImage).transform;
+        if (transformMatrix && transformMatrix !== 'none') {
+          const matrix = transformMatrix.match(/matrix.*\((.+)\)/);
+          if (matrix && matrix[1]) {
+              const values = matrix[1].split(', ').map(Number);
+              currentX = values[4];
+              currentY = values[5];
+          }
+        } else {
+          currentX = 0;
+          currentY = 0;
+        }
+      }
+    }, { passive: false });
+
+    previewImage.addEventListener('touchmove', (e) => {
+      if (isDragging && e.touches.length === 1) {
+        e.preventDefault();
+        const deltaX = e.touches[0].clientX - startX;
+        const deltaY = e.touches[0].clientY - startY;
+
+        let newX = currentX + deltaX;
+        let newY = currentY + deltaY;
+
+        newX = Math.min(Math.max(newX, minPanX), maxPanX);
+        newY = Math.min(Math.max(newY, minPanY), maxPanY);
+
+        previewImage.style.transform = `translate(${newX}px, ${newY}px)`;
+      }
+    }, { passive: false });
+
+    previewImage.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    // Optional: Add mouse events for desktop testing
+    let isMouseDown = false;
+    let mouseStartX, mouseStartY;
+    let mouseCurrentX = 0, mouseCurrentY = 0;
+
+    previewImage.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      isMouseDown = true;
+      mouseStartX = e.clientX;
+      mouseStartY = e.clientY;
+
+      const transformMatrix = window.getComputedStyle(previewImage).transform;
+      if (transformMatrix && transformMatrix !== 'none') {
+          const matrix = transformMatrix.match(/matrix.*\((.+)\)/);
+          if (matrix && matrix[1]) {
+              const values = matrix[1].split(', ').map(Number);
+              mouseCurrentX = values[4];
+              mouseCurrentY = values[5];
+          }
+      } else {
+          mouseCurrentX = 0;
+          mouseCurrentY = 0;
+      }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (isMouseDown) {
+        e.preventDefault();
+        const deltaX = e.clientX - mouseStartX;
+        const deltaY = e.clientY - mouseStartY;
+
+        let newX = mouseCurrentX + deltaX;
+        let newY = mouseCurrentY + deltaY;
+
+        newX = Math.min(Math.max(newX, minPanX), maxPanX);
+        newY = Math.min(Math.max(newY, minPanY), maxPanY);
+
+        previewImage.style.transform = `translate(${newX}px, ${newY}px)`;
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      isMouseDown = false;
+    });
+
+  });
+</script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="w-8"></div>
+      <h1 class="text-lg font-bold tracking-tight text-center">NexusFlow</h1>
+      <button class="btn">
+        <span class="material-icons">dark_mode</span>
+      </button>
+    </header>
+    
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="flex items-center space-x-1">
+        <button class="btn">
+          <span class="material-icons-outlined text-sm">undo</span>
+        </button>
+        <button class="btn">
+          <span class="material-icons-outlined text-sm">redo</span>
+        </button>
+      </div>
+      <button class="btn-primary">Save</button>
+    </div>
+    
+    <!-- Main Content Area -->
+    <div class="content-area">
+      <h2 class="text-base font-medium mb-2">Preview</h2>
+      <div class="preview-container">
+        <img class="preview-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPrxqU2RKV8ayZ4-MVg6w_oy92QhH2HrZ5LhAGcpIf-vPAQXMD70_2YWHOaXCHcmzs0CHemoyDTbI7ZNd8tMD-YlbDb181i8yNHIU_M3XeM6IqsvAJHGy0Z8mHbs68X-079IrbHtN1pcKup8eE_AanGphGTN_FqbmvM0vUPP3LFg_lPBHAumNmbA2VECK2f3sRFOR2vuKlNHFrXdkdFesyzN0_7ZFEjEWCOrQ8yxlrT186KVYx_75X31lLGHT1p_zAWIMnOMBwwSEy" alt="Selected image preview">
+      </div>
+    </div>
+    
+    <!-- Bottom Sheet - Import Image -->
+    <div id="bottom-sheet" class="bottom-sheet">
+      <div class="bottom-sheet-header">
+        <h3 class="text-sm font-medium">Import Image</h3>
+        <button id="toggle-sheet" class="btn">
+          <span id="sheet-icon" class="material-icons-outlined text-sm">expand_less</span>
+        </button>
+      </div>
+      <div class="bottom-sheet-content">
+        <div class="image-item">
+          <div class="image-controls">
+            <button class="btn mr-1" title="Rearrange">
+              <span class="material-icons-outlined text-sm">swap_vert</span>
+            </button>
+            <button id="visibility-toggle" class="btn mr-1" title="Hide/Show">
+              <span id="visibility-icon" class="material-icons-outlined text-sm">visibility_off</span>
+            </button>
+            <!-- Added 'readonly' attribute to HTML input -->
+            <input class="image-name-input" type="text" value="img_001.jpg" placeholder="Image name" readonly>
+          </div>
+          <button class="btn" title="Delete">
+            <span class="material-icons-outlined text-sm text-red-500">delete</span>
+          </button>
+        </div>
+        <button class="btn-primary btn-full py-2">Insert Image</button>
+      </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <div class="bottom-nav-content justify-around">
+        <a href="#" class="nav-item active">
+          <span class="material-icons nav-icon">image</span>
+          <span class="nav-label">Image</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">format_align_center</span>
+          <span class="nav-label">Align</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons-outlined nav-icon">filter_none</span>
+          <span class="nav-label">BG</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">devices</span>
+          <span class="nav-label">Platform</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">opacity</span>
+          <span class="nav-label">Opacity</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">photo_size_select_large</span>
+          <span class="nav-label">Scale</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">layers</span>
+          <span class="nav-label">Blend</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">title</span>
+          <span class="nav-label">Heading</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

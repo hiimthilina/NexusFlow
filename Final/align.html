@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#121416">
+  <title>NexusFlow - Align</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?display=swap&amp;family=Be+Vietnam+Pro%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+  />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <style>
+    :root {
+      --bg-primary: #121416;
+      --bg-secondary: #1e2124;
+      --border-color: #2c3135;
+      --text-primary: #ffffff;
+      --text-secondary: #9cabba;
+      --accent-color: #dce8f3;
+      --accent-hover: #c5d5e8;
+      --bottom-nav-height: 60px;
+      --header-height: 56px;
+      --toolbar-height: 48px;
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
+    * {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: "Be Vietnam Pro", "Noto Sans", sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
+      position: relative;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      touch-action: manipulation;
+    }
+    
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      position: relative;
+    }
+    
+    .header {
+      height: var(--header-height);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--bg-primary);
+      position: relative;
+      z-index: 20;
+    }
+    
+    .toolbar {
+      height: var(--toolbar-height);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .content-area {
+      flex: 1;
+      overflow: hidden;
+      padding: 16px;
+      position: relative;
+    }
+    
+    .preview-container {
+      aspect-ratio: 1/1;
+      background-color: var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    
+    .preview-image {
+      width: 70%;
+      height: 70%;
+      object-fit: cover;
+      position: absolute;
+      transition: all 0.3s ease;
+    }
+    
+    .bottom-sheet {
+      position: absolute;
+      bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 8px);
+      left: 16px;
+      right: 16px;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+      padding: 16px;
+    }
+    
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
+      background-color: var(--bg-secondary);
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      border: 1px solid var(--border-color);
+      border-bottom: none;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+      z-index: 15;
+      padding-bottom: var(--safe-area-bottom);
+    }
+    
+    .bottom-nav-content {
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      height: var(--bottom-nav-height);
+    }
+    
+    .bottom-nav-content::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 64px;
+      height: 100%;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      user-select: none;
+    }
+    
+    .nav-item.active {
+      color: var(--accent-color);
+      border-bottom: 2px solid var(--accent-color);
+    }
+    
+    .nav-item:active {
+      opacity: 0.7;
+    }
+    
+    .nav-icon {
+      font-size: 24px;
+      margin-bottom: 2px;
+    }
+    
+    .nav-label {
+      font-size: 11px;
+      font-weight: 500;
+    }
+    
+    .btn {
+      border: none;
+      background: none;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      cursor: pointer;
+      touch-action: manipulation;
+      min-width: 40px;
+      min-height: 40px;
+    }
+    
+    .btn:active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: var(--bg-primary);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    .btn-primary:active {
+      background-color: var(--accent-hover);
+    }
+    
+    .align-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 16px;
+    }
+    
+    .align-tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    
+    .align-tab.active {
+      color: var(--accent-color);
+    }
+    
+    .align-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--accent-color);
+    }
+    
+    .align-content {
+      display: none;
+    }
+    
+    .align-content.active {
+      display: flex;
+      justify-content: space-around;
+    }
+    
+    .align-btn {
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+      margin: 0 8px;
+    }
+    
+    .align-btn.active {
+      background-color: var(--accent-color);
+      color: var(--bg-primary);
+      border-color: var(--accent-color);
+    }
+    
+    .align-btn:active {
+      opacity: 0.8;
+    }
+  </style>
+  <script>
+    // Set the viewport height correctly for mobile browsers
+    function setViewportHeight() {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    
+    window.addEventListener('resize', setViewportHeight);
+    window.addEventListener('orientationchange', setViewportHeight);
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      setViewportHeight();
+      
+      // Tab switching
+      const tabs = document.querySelectorAll('.align-tab');
+      const contents = document.querySelectorAll('.align-content');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          // Remove active class from all tabs and contents
+          tabs.forEach(t => t.classList.remove('active'));
+          contents.forEach(c => c.classList.remove('active'));
+          
+          // Add active class to clicked tab and corresponding content
+          this.classList.add('active');
+          const target = this.getAttribute('data-target');
+          document.getElementById(target).classList.add('active');
+        });
+      });
+      
+      // Horizontal alignment controls
+      const hAlignBtns = document.querySelectorAll('.h-align-btn');
+      const previewImage = document.querySelector('.preview-image');
+      
+      hAlignBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          // Remove active class from all buttons
+          hAlignBtns.forEach(b => b.classList.remove('active'));
+          
+          // Add active class to clicked button
+          this.classList.add('active');
+          
+          // Get alignment value
+          const align = this.getAttribute('data-align');
+          
+          // Apply alignment to preview image
+          switch(align) {
+            case 'left':
+              previewImage.style.left = '0';
+              previewImage.style.right = 'auto';
+              previewImage.style.transform = 'translateX(0)';
+              break;
+            case 'center':
+              previewImage.style.left = '50%';
+              previewImage.style.right = 'auto';
+              previewImage.style.transform = 'translateX(-50%)';
+              break;
+            case 'right':
+              previewImage.style.left = 'auto';
+              previewImage.style.right = '0';
+              previewImage.style.transform = 'translateX(0)';
+              break;
+          }
+        });
+      });
+      
+      // Vertical alignment controls
+      const vAlignBtns = document.querySelectorAll('.v-align-btn');
+      
+      vAlignBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          // Remove active class from all buttons
+          vAlignBtns.forEach(b => b.classList.remove('active'));
+          
+          // Add active class to clicked button
+          this.classList.add('active');
+          
+          // Get alignment value
+          const align = this.getAttribute('data-align');
+          
+          // Apply alignment to preview image
+          switch(align) {
+            case 'top':
+              previewImage.style.top = '0';
+              previewImage.style.bottom = 'auto';
+              previewImage.style.transform = 'translateY(0)';
+              break;
+            case 'middle':
+              previewImage.style.top = '50%';
+              previewImage.style.bottom = 'auto';
+              previewImage.style.transform = 'translateY(-50%)';
+              break;
+            case 'bottom':
+              previewImage.style.top = 'auto';
+              previewImage.style.bottom = '0';
+              previewImage.style.transform = 'translateY(0)';
+              break;
+          }
+        });
+      });
+      
+      // Initialize with horizontal alignment tab
+      document.querySelector('.align-tab[data-target="horizontal-align"]').click();
+      document.querySelector('.h-align-btn[data-align="center"]').click();
+    });
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="w-8"></div>
+      <h1 class="text-lg font-bold tracking-tight text-center">NexusFlow</h1>
+      <button class="btn">
+        <span class="material-icons">dark_mode</span>
+      </button>
+    </header>
+    
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="flex items-center space-x-1">
+        <button class="btn">
+          <span class="material-icons-outlined text-sm">undo</span>
+        </button>
+        <button class="btn">
+          <span class="material-icons-outlined text-sm">redo</span>
+        </button>
+      </div>
+      <button class="btn-primary">Save</button>
+    </div>
+    
+    <!-- Main Content Area -->
+    <div class="content-area">
+      <h2 class="text-base font-medium mb-2">Preview</h2>
+      <div class="preview-container">
+        <img class="preview-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPrxqU2RKV8ayZ4-MVg6w_oy92QhH2HrZ5LhAGcpIf-vPAQXMD70_2YWHOaXCHcmzs0CHemoyDTbI7ZNd8tMD-YlbDb181i8yNHIU_M3XeM6IqsvAJHGy0Z8mHbs68X-079IrbHtN1pcKup8eE_AanGphGTN_FqbmvM0vUPP3LFg_lPBHAumNmbA2VECK2f3sRFOR2vuKlNHFrXdkdFesyzN0_7ZFEjEWCOrQ8yxlrT186KVYx_75X31lLGHT1p_zAWIMnOMBwwSEy" alt="Selected image preview">
+      </div>
+    </div>
+    
+    <!-- Bottom Sheet - Simplified Alignment Controls -->
+    <div class="bottom-sheet">
+      <!-- Tabs -->
+      <div class="align-tabs">
+        <div class="align-tab" data-target="horizontal-align">Horizontal</div>
+        <div class="align-tab" data-target="vertical-align">Vertical</div>
+      </div>
+      
+      <!-- Horizontal Alignment Options -->
+      <div id="horizontal-align" class="align-content">
+        <button class="align-btn h-align-btn" data-align="left" title="Align Left">
+          <span class="material-icons">align_horizontal_left</span>
+        </button>
+        <button class="align-btn h-align-btn" data-align="center" title="Align Center">
+          <span class="material-icons">align_horizontal_center</span>
+        </button>
+        <button class="align-btn h-align-btn" data-align="right" title="Align Right">
+          <span class="material-icons">align_horizontal_right</span>
+        </button>
+      </div>
+      
+      <!-- Vertical Alignment Options -->
+      <div id="vertical-align" class="align-content">
+        <button class="align-btn v-align-btn" data-align="top" title="Align Top">
+          <span class="material-icons">vertical_align_top</span>
+        </button>
+        <button class="align-btn v-align-btn" data-align="middle" title="Align Middle">
+          <span class="material-icons">vertical_align_center</span>
+        </button>
+        <button class="align-btn v-align-btn" data-align="bottom" title="Align Bottom">
+          <span class="material-icons">vertical_align_bottom</span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <div class="bottom-nav-content justify-around">
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">image</span>
+          <span class="nav-label">Image</span>
+        </a>
+        <a href="#" class="nav-item active">
+          <span class="material-icons nav-icon">format_align_center</span>
+          <span class="nav-label">Align</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons-outlined nav-icon">filter_none</span>
+          <span class="nav-label">BG</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">devices</span>
+          <span class="nav-label">Platform</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">opacity</span>
+          <span class="nav-label">Opacity</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">photo_size_select_large</span>
+          <span class="nav-label">Scale</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">layers</span>
+          <span class="nav-label">Blend</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">title</span>
+          <span class="nav-label">Heading</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>

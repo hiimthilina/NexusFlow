@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#121416">
+  <title>NexusFlow Heading</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?display=swap&amp;family=Be+Vietnam+Pro%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Roboto%3Awght%40400%3B500%3B700&amp;family=Montserrat%3Awght%40400%3B500%3B700&amp;family=Open+Sans%3Awght%40400%3B600%3B700&amp;family=Lato%3Awght%40400%3B700&amp;family=Poppins%3Awght%40400%3B500%3B600&amp;family=Raleway%3Awght%40400%3B500%3B600&amp;family=Playfair+Display%3Awght%40400%3B500%3B700&amp;family=Merriweather%3Awght%40400%3B700&amp;family=Source+Sans+Pro%3Awght%40400%3B600&amp;family=PT+Sans%3Awght%40400%3B700&amp;family=Nunito%3Awght%40400%3B600%3B700&amp;family=Oswald%3Awght%40400%3B500%3B600&amp;family=Ubuntu%3Awght%40400%3B500%3B700&amp;family=Quicksand%3Awght%40400%3B500%3B600&amp;family=Rubik%3Awght%40400%3B500%3B600&amp;family=Work+Sans%3Awght%40400%3B500%3B600&amp;family=Mulish%3Awght%40400%3B500%3B600&amp;family=Inter%3Awght%40400%3B500%3B600"
+  />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <style>
+    :root {
+      --bg-primary: #121416;
+      --bg-secondary: #1e2124;
+      --border-color: #2c3135;
+      --text-primary: #ffffff;
+      --text-secondary: #9cabba;
+      --accent-color: #dce8f3;
+      --accent-hover: #c5d5e8;
+      --bottom-nav-height: 60px;
+      --header-height: 56px;
+      --toolbar-height: 48px;
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    
+    * {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: "Be Vietnam Pro", "Noto Sans", sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
+      position: relative;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      touch-action: manipulation;
+    }
+    
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      position: relative;
+    }
+    
+    .header {
+      height: var(--header-height);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--bg-primary);
+      position: relative;
+      z-index: 20;
+    }
+    
+    .toolbar {
+      height: var(--toolbar-height);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 8px;
+    }
+    
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px;
+      position: relative;
+      padding-bottom: calc(var(--bottom-nav-height) + 120px);
+    }
+    
+    .icon-selected {
+      border-bottom: 2px solid var(--accent-color);
+      color: var(--accent-color);
+    }
+    
+    .icon-selected .material-icons-outlined,
+    .icon-selected .material-icons {
+      color: var(--accent-color);
+    }
+    
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
+      background-color: var(--bg-secondary);
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      border: 1px solid var(--border-color);
+      border-bottom: none;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+      z-index: 15;
+      padding-bottom: var(--safe-area-bottom);
+    }
+    
+    .bottom-nav-content {
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      height: var(--bottom-nav-height);
+    }
+    
+    .bottom-nav-content::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 64px;
+      height: 100%;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      user-select: none;
+    }
+    
+    .nav-item.active {
+      color: var(--accent-color);
+      border-bottom: 2px solid var(--accent-color);
+    }
+    
+    .nav-item:active {
+      opacity: 0.7;
+    }
+    
+    .nav-icon {
+      font-size: 24px;
+      margin-bottom: 2px;
+    }
+    
+    .nav-label {
+      font-size: 11px;
+      font-weight: 500;
+    }
+    
+    .btn {
+      border: none;
+      background: none;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      cursor: pointer;
+      touch-action: manipulation;
+      min-width: 40px;
+      min-height: 40px;
+    }
+    
+    .btn:active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: var(--bg-primary);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    .btn-primary:active {
+      background-color: var(--accent-hover);
+    }
+    
+    .heading-tools {
+      background-color: var(--bg-secondary);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    
+    .tool-active {
+      color: var(--accent-color);
+    }
+    
+    .tool-inactive {
+      color: var(--text-secondary);
+    }
+    
+    .font-option {
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    
+    .font-option:hover {
+      background-color: var(--border-color);
+    }
+    
+    .font-option.selected {
+      background-color: var(--border-color);
+      color: var(--accent-color);
+    }
+    
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 5px;
+      background: var(--border-color);
+      outline: none;
+    }
+    
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent-color);
+      cursor: pointer;
+    }
+    
+    .slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent-color);
+      cursor: pointer;
+      border: none;
+    }
+    
+    .color-picker-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: var(--bg-secondary);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+      z-index: 100;
+      padding: 16px;
+      width: 90%;
+      max-width: 320px;
+      display: none;
+    }
+    
+    .color-picker-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 99;
+      display: none;
+    }
+    
+    .size-spacing-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    
+    .size-spacing-value {
+      font-size: 13px;
+      color: var(--accent-color);
+    }
+    
+    /* Formatting menu styles */
+    .formatting-menu {
+      position: fixed;
+      bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 8px);
+      left: 16px;
+      right: 16px;
+      background-color: var(--bg-secondary);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+      z-index: 14;
+      overflow: hidden;
+      transition: height 0.3s ease;
+      height: auto;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+    
+    .formatting-menu.minimized {
+      height: 50px;
+      overflow-y: hidden;
+    }
+    
+    /* Color palette horizontal layout */
+    .color-palette-horizontal {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      width: 100%;
+    }
+    
+    .color-button {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--border-color);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+    
+    .color-button.selected {
+      border-color: var(--accent-color);
+      transform: scale(1.1);
+    }
+    
+    /* Hide main menu when keyboard is open */
+    .keyboard-open .bottom-nav {
+      display: none;
+    }
+    
+    .keyboard-open .formatting-menu {
+      display: none;
+    }
+    
+    /* Font selection styles */
+    .font-selection {
+      padding: 12px;
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      gap: 12px;
+      scroll-behavior: smooth;
+      padding-bottom: 20px;
+      max-height: 300px;
+    }
+    
+    .font-selection::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .font-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 100px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    
+    .font-item:hover, .font-item.selected {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .font-item.selected {
+      color: var(--accent-color);
+    }
+    
+    .font-item-name {
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    
+    .font-item-check {
+      color: var(--accent-color);
+      margin-top: 4px;
+    }
+    
+    /* Font size and line spacing styles */
+    .size-spacing-control {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border-color);
+    }
+    
+    /* Preview container with 1:1 aspect ratio */
+    .preview-container {
+      aspect-ratio: 1/1;
+      background-color: var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    
+    /* Editable preview text */
+    .editable-text {
+      outline: none;
+      cursor: text;
+      min-height: 1em;
+    }
+    
+    /* Text editing controls */
+    .text-editing-controls {
+      position: fixed;
+      bottom: 50%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--bg-secondary);
+      border-radius: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      z-index: 20;
+      display: none;
+      padding: 4px;
+    }
+    
+    .text-editing-controls.visible {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="w-8">
+        <button class="btn">
+          <span class="material-icons">arrow_back</span>
+        </button>
+      </div>
+      <h1 class="text-lg font-bold tracking-tight text-center">NexusFlow</h1>
+      <div class="w-8">
+        <button class="btn">
+          <span class="material-icons">dark_mode</span>
+        </button>
+      </div>
+    </header>
+    
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="flex items-center space-x-1">
+        <button class="btn" id="undo-btn">
+          <span class="material-icons-outlined text-sm">undo</span>
+        </button>
+        <button class="btn" id="redo-btn">
+          <span class="material-icons-outlined text-sm">redo</span>
+        </button>
+      </div>
+      <button class="btn-primary" id="save-btn">Save</button>
+    </div>
+    
+    <!-- Main Content Area -->
+    <div class="content-area">
+      <h2 class="text-base font-medium mb-2">Preview</h2>
+      <div class="preview-container">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30">
+          <img alt="Yellow textured background" class="w-full h-full object-cover opacity-50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABjpT_XrMVrff6H7pi9TEOk7Cxxdrj0hgjMRxHVMaqnbTJ5p-msezqBmQTV0JX030a3mAZDjn18MG2hdMrPTAdcuQa_8J5KFj2SP31OHN_0PPhDQf06A5PRNYssXJ7_Krm_bsYwt1vrgL04E1acDR_8mppcOI2613IvyWh8XvOp_YJhva9sqBj-CUYDCPbtVJJ7YAht4DWmtJaHoYdDoQ0ui8PR-OODDOzAq4rGd9e10OdVy2sKQan3NGeccYi6-5LvpGkXAK4Gzag"/>
+        </div>
+        <div class="absolute inset-x-0 bottom-0 h-1/3 bg-black/40">
+          <img alt="Dark textured background" class="w-full h-full object-cover opacity-50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHmX402RqgT1CvfjZbytGrj5k5WGb_hp0N-9w4ol_AuIWgeGKKt3XBOLuY6LbDeyAnF88BMIptKhf6knLASn9SAumO6u18dIaoTjHcmXEgvPrxXqvtBaO6MF2TFM9y0TFb0MWtZ2zbghX4Oq6K-c0fkyOiuNEncnPIcP2gSvf9T8puQ3fa0Vi-SxR0aRxz4vjXDq4nobP2ghS3KELyQTjaGKR8ylwx_FrN9fRtclj2R7dn8LdjvrzrS0GhR_1CedUjJ1YyuA74ULSe"/>
+        </div>
+        <div class="absolute inset-0 flex items-end justify-center p-4 pb-8">
+          <p class="text-white text-xl font-medium text-center editable-text" id="preview-text" contenteditable="false">Streamline Your Social Media Workflow with NexusFlow</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Text Editing Controls -->
+    <div class="text-editing-controls" id="textEditingControls">
+      <button class="btn" id="cancelEditingBtn">
+        <span class="material-icons-outlined">close</span>
+      </button>
+      <button class="btn" id="saveEditingBtn">
+        <span class="material-icons-outlined">check</span>
+      </button>
+    </div>
+    
+    <!-- Color Picker Popup -->
+    <div class="color-picker-overlay" id="colorPickerOverlay"></div>
+    <div class="color-picker-popup" id="colorPickerPopup">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-base font-medium">Custom Color</h3>
+        <button class="btn" id="closeColorPicker">
+          <span class="material-icons-outlined text-sm">close</span>
+        </button>
+      </div>
+      <div class="mb-4">
+        <label class="text-[#9cabba] text-sm mb-1 block" for="hexColorInput">Hex Color</label>
+        <input type="text" id="hexColorInput" class="w-full p-2 bg-[#2c3135] border border-[#3d4550] rounded-lg text-white focus:ring-[#dce8f3] focus:border-[#dce8f3]" placeholder="#FFFFFF" value="#FFFFFF">
+      </div>
+      <div class="mb-4">
+        <label class="text-[#9cabba] text-sm mb-1 block">Color Preview</label>
+        <div id="colorPreview" class="w-full h-12 rounded-lg border border-[#3d4550] bg-white"></div>
+      </div>
+      <div class="flex justify-end">
+        <button class="btn-primary" id="applyCustomColor">OK</button>
+      </div>
+    </div>
+    
+    <!-- Formatting Menu (Second Menu) -->
+    <div class="formatting-menu" id="formattingMenu">
+      <div class="flex justify-between items-center py-2 px-4">
+        <span class="text-sm font-medium">Formatting Tools</span>
+        <button class="p-1 rounded-full hover:bg-[#2c3135]" id="toggleFormattingBtn">
+          <span class="material-icons-outlined text-sm" id="toggleFormattingIcon">expand_less</span>
+        </button>
+      </div>
+      
+      <!-- Tool Buttons -->
+      <div id="formattingToolsContainer">
+        <div class="flex justify-around items-center py-3 border-t border-[#2c3135]">
+          <button class="p-2 rounded-full hover:bg-[#2c3135] tool-active" id="color-tool">
+            <span class="material-icons-outlined" style="color: #FFFFFF;">format_color_fill</span>
+          </button>
+          <button class="p-2 rounded-full hover:bg-[#2c3135] tool-inactive" id="bold-tool">
+            <span class="material-icons-outlined">format_bold</span>
+          </button>
+          <button class="p-2 rounded-full hover:bg-[#2c3135] tool-inactive" id="italic-tool">
+            <span class="material-icons-outlined">format_italic</span>
+          </button>
+          <button class="p-2 rounded-full hover:bg-[#2c3135] tool-inactive" id="font-tool">
+            <span class="material-icons-outlined">font_download</span>
+          </button>
+          <button class="p-2 rounded-full hover:bg-[#2c3135] tool-inactive" id="size-tool">
+            <span class="material-icons-outlined">format_size</span>
+          </button>
+          <button class="p-2 rounded-full hover:bg-[#2c3135] tool-inactive" id="spacing-tool">
+            <span class="material-icons-outlined">format_line_spacing</span>
+          </button>
+          <button class="p-2 rounded-full hover:bg-[#2c3135] tool-inactive" id="keyboard-tool">
+            <span class="material-icons-outlined">keyboard</span>
+          </button>
+        </div>
+        
+        <!-- Tool Sections Container -->
+        <div id="formattingToolSections">
+          <!-- Color Selection Section -->
+          <div id="color-section" class="border-t border-[#2c3135]">
+            <!-- Horizontal Color Palette -->
+            <div class="color-palette-horizontal" id="colorPalette">
+              <button class="color-button selected" style="background-color: #FFFFFF;"></button>
+              <button class="color-button" style="background-color: #9cabba;"></button>
+              <button class="color-button" style="background-color: #ef4444;"></button>
+              <button class="color-button" style="background-color: #f97316;"></button>
+              <button class="color-button" style="background-color: #FACC15;"></button>
+              <button class="color-button" style="background-color: #22c55e;"></button>
+              <button class="color-button" style="background-color: #3b82f6;"></button>
+              <button class="color-button" style="background-color: #a855f7;"></button>
+              <button class="color-button" style="background-color: #000000;"></button>
+              <button class="color-button bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500" id="customColorBtn"></button>
+            </div>
+          </div>
+          
+          <!-- Font Selection Section -->
+          <div id="font-section" class="hidden border-t border-[#2c3135]">
+            <div class="font-selection">
+              <div class="font-item selected" data-font="'Be Vietnam Pro', sans-serif">
+                <span class="font-item-name" style="font-family: 'Be Vietnam Pro', sans-serif;">Be Vietnam Pro</span>
+              </div>
+              <div class="font-item" data-font="'Noto Sans', sans-serif">
+                <span class="font-item-name" style="font-family: 'Noto Sans', sans-serif;">Noto Sans</span>
+              </div>
+              <div class="font-item" data-font="'Roboto', sans-serif">
+                <span class="font-item-name" style="font-family: 'Roboto', sans-serif;">Roboto</span>
+              </div>
+              <div class="font-item" data-font="'Montserrat', sans-serif">
+                <span class="font-item-name" style="font-family: 'Montserrat', sans-serif;">Montserrat</span>
+              </div>
+              <div class="font-item" data-font="'Open Sans', sans-serif">
+                <span class="font-item-name" style="font-family: 'Open Sans', sans-serif;">Open Sans</span>
+              </div>
+              <div class="font-item" data-font="'Lato', sans-serif">
+                <span class="font-item-name" style="font-family: 'Lato', sans-serif;">Lato</span>
+              </div>
+              <div class="font-item" data-font="'Poppins', sans-serif">
+                <span class="font-item-name" style="font-family: 'Poppins', sans-serif;">Poppins</span>
+              </div>
+              <div class="font-item" data-font="'Raleway', sans-serif">
+                <span class="font-item-name" style="font-family: 'Raleway', sans-serif;">Raleway</span>
+              </div>
+              <div class="font-item" data-font="'Playfair Display', serif">
+                <span class="font-item-name" style="font-family: 'Playfair Display', serif;">Playfair</span>
+              </div>
+              <div class="font-item" data-font="'Merriweather', serif">
+                <span class="font-item-name" style="font-family: 'Merriweather', serif;">Merriweather</span>
+              </div>
+              <div class="font-item" data-font="'Source Sans Pro', sans-serif">
+                <span class="font-item-name" style="font-family: 'Source Sans Pro', sans-serif;">Source Sans</span>
+              </div>
+              <div class="font-item" data-font="'PT Sans', sans-serif">
+                <span class="font-item-name" style="font-family: 'PT Sans', sans-serif;">PT Sans</span>
+              </div>
+              <div class="font-item" data-font="'Nunito', sans-serif">
+                <span class="font-item-name" style="font-family: 'Nunito', sans-serif;">Nunito</span>
+              </div>
+              <div class="font-item" data-font="'Oswald', sans-serif">
+                <span class="font-item-name" style="font-family: 'Oswald', sans-serif;">Oswald</span>
+              </div>
+              <div class="font-item" data-font="'Ubuntu', sans-serif">
+                <span class="font-item-name" style="font-family: 'Ubuntu', sans-serif;">Ubuntu</span>
+              </div>
+              <div class="font-item" data-font="'Quicksand', sans-serif">
+                <span class="font-item-name" style="font-family: 'Quicksand', sans-serif;">Quicksand</span>
+              </div>
+              <div class="font-item" data-font="'Rubik', sans-serif">
+                <span class="font-item-name" style="font-family: 'Rubik', sans-serif;">Rubik</span>
+              </div>
+              <div class="font-item" data-font="'Work Sans', sans-serif">
+                <span class="font-item-name" style="font-family: 'Work Sans', sans-serif;">Work Sans</span>
+              </div>
+              <div class="font-item" data-font="'Mulish', sans-serif">
+                <span class="font-item-name" style="font-family: 'Mulish', sans-serif;">Mulish</span>
+              </div>
+              <div class="font-item" data-font="'Inter', sans-serif">
+                <span class="font-item-name" style="font-family: 'Inter', sans-serif;">Inter</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Font Size Section -->
+          <div id="size-section" class="hidden size-spacing-control">
+            <div class="size-spacing-label mb-2">
+              <span>Font Size</span>
+              <span class="size-spacing-value" id="fontSizeValue">24px (100%)</span>
+            </div>
+            <input type="range" min="12" max="48" value="24" class="slider" id="fontSizeSlider">
+          </div>
+          
+          <!-- Line Spacing Section -->
+          <div id="spacing-section" class="hidden size-spacing-control">
+            <div class="size-spacing-label mb-2">
+              <span>Line Spacing</span>
+              <span class="size-spacing-value" id="lineSpacingValue">1.5 (150%)</span>
+            </div>
+            <input type="range" min="10" max="30" value="15" class="slider" id="lineSpacingSlider">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Bottom Menu -->
+    <nav class="bottom-nav" id="mainBottomMenu">
+      <div class="bottom-nav-content justify-around">
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">image</span>
+          <span class="nav-label">Image</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">format_align_center</span>
+          <span class="nav-label">Align</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons-outlined nav-icon">filter_none</span>
+          <span class="nav-label">BG</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">devices</span>
+          <span class="nav-label">Platform</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">opacity</span>
+          <span class="nav-label">Opacity</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">photo_size_select_large</span>
+          <span class="nav-label">Scale</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">layers</span>
+          <span class="nav-label">Blend</span>
+        </a>
+        <a href="#" class="nav-item active" id="headingButton">
+          <span class="material-icons nav-icon">title</span>
+          <span class="nav-label">Heading</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+  
+  <script>
+    // Set the viewport height correctly for mobile browsers
+    function setViewportHeight() {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    
+    window.addEventListener('resize', setViewportHeight);
+    window.addEventListener('orientationchange', setViewportHeight);
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      setViewportHeight();
+      
+      // Get elements
+      const previewText = document.getElementById('preview-text');
+      
+      // Menu elements
+      const mainBottomMenu = document.getElementById('mainBottomMenu');
+      const headingButton = document.getElementById('headingButton');
+      
+      // Formatting menu elements
+      const formattingMenu = document.getElementById('formattingMenu');
+      const toggleFormattingBtn = document.getElementById('toggleFormattingBtn');
+      const toggleFormattingIcon = document.getElementById('toggleFormattingIcon');
+      const formattingToolsContainer = document.getElementById('formattingToolsContainer');
+      
+      // Text editing controls
+      const textEditingControls = document.getElementById('textEditingControls');
+      const cancelEditingBtn = document.getElementById('cancelEditingBtn');
+      const saveEditingBtn = document.getElementById('saveEditingBtn');
+      
+      // Tool buttons
+      const colorTool = document.getElementById('color-tool');
+      const boldTool = document.getElementById('bold-tool');
+      const italicTool = document.getElementById('italic-tool');
+      const fontTool = document.getElementById('font-tool');
+      const sizeTool = document.getElementById('size-tool');
+      const spacingTool = document.getElementById('spacing-tool');
+      const keyboardTool = document.getElementById('keyboard-tool');
+      
+      // Section elements
+      const colorSection = document.getElementById('color-section');
+      const fontSection = document.getElementById('font-section');
+      const sizeSection = document.getElementById('size-section');
+      const spacingSection = document.getElementById('spacing-section');
+      
+      // Font size and line spacing elements
+      const fontSizeSlider = document.getElementById('fontSizeSlider');
+      const fontSizeValue = document.getElementById('fontSizeValue');
+      const lineSpacingSlider = document.getElementById('lineSpacingSlider');
+      const lineSpacingValue = document.getElementById('lineSpacingValue');
+      
+      // Color picker elements
+      const colorPalette = document.getElementById('colorPalette');
+      const customColorBtn = document.getElementById('customColorBtn');
+      const colorPickerPopup = document.getElementById('colorPickerPopup');
+      const colorPickerOverlay = document.getElementById('colorPickerOverlay');
+      const closeColorPicker = document.getElementById('closeColorPicker');
+      const hexColorInput = document.getElementById('hexColorInput');
+      const colorPreview = document.getElementById('colorPreview');
+      const applyCustomColor = document.getElementById('applyCustomColor');
+      
+      // Undo, redo, save buttons
+      const undoBtn = document.getElementById('undo-btn');
+      const redoBtn = document.getElementById('redo-btn');
+      const saveBtn = document.getElementById('save-btn');
+      
+      // Text state
+      let textState = {
+        color: '#FFFFFF',
+        bold: false,
+        italic: false,
+        font: "'Be Vietnam Pro', sans-serif",
+        size: '24px',
+        lineHeight: '1.5',
+        history: [],
+        historyIndex: -1,
+        customColors: [],
+        formattedRanges: [], // Store formatting for different text ranges
+        originalText: previewText.textContent, // Store original text for canceling edits
+        isEditing: false
+      };
+      
+      // Initialize history with current text
+      function saveToHistory() {
+        // Remove any forward history if we're not at the end
+        if (textState.historyIndex < textState.history.length - 1) {
+          textState.history = textState.history.slice(0, textState.historyIndex + 1);
+        }
+        
+        // Save current state
+        textState.history.push({
+          text: previewText.textContent,
+          color: textState.color,
+          bold: textState.bold,
+          italic: textState.italic,
+          font: textState.font,
+          size: textState.size,
+          lineHeight: textState.lineHeight,
+          formattedRanges: JSON.parse(JSON.stringify(textState.formattedRanges))
+        });
+        
+        // Update history index
+        textState.historyIndex = textState.history.length - 1;
+        
+        // Enable/disable undo/redo buttons
+        updateUndoRedoButtons();
+      }
+      
+      function updateUndoRedoButtons() {
+        undoBtn.disabled = textState.historyIndex <= 0;
+        redoBtn.disabled = textState.historyIndex >= textState.history.length - 1;
+        
+        undoBtn.style.opacity = undoBtn.disabled ? '0.5' : '1';
+        redoBtn.style.opacity = redoBtn.disabled ? '0.5' : '1';
+      }
+      
+      // Undo function
+      function undo() {
+        if (textState.historyIndex > 0) {
+          textState.historyIndex--;
+          const historyItem = textState.history[textState.historyIndex];
+          previewText.textContent = historyItem.text;
+          textState.color = historyItem.color;
+          textState.bold = historyItem.bold;
+          textState.italic = historyItem.italic;
+          textState.font = historyItem.font;
+          textState.size = historyItem.size;
+          textState.lineHeight = historyItem.lineHeight;
+          textState.formattedRanges = JSON.parse(JSON.stringify(historyItem.formattedRanges));
+          updatePreviewText();
+          updateUndoRedoButtons();
+        }
+      }
+      
+      // Redo function
+      function redo() {
+        if (textState.historyIndex < textState.history.length - 1) {
+          textState.historyIndex++;
+          const historyItem = textState.history[textState.historyIndex];
+          previewText.textContent = historyItem.text;
+          textState.color = historyItem.color;
+          textState.bold = historyItem.bold;
+          textState.italic = historyItem.italic;
+          textState.font = historyItem.font;
+          textState.size = historyItem.size;
+          textState.lineHeight = historyItem.lineHeight;
+          textState.formattedRanges = JSON.parse(JSON.stringify(historyItem.formattedRanges));
+          updatePreviewText();
+          updateUndoRedoButtons();
+        }
+      }
+      
+      // Save initial state
+      saveToHistory();
+      
+      // Toggle formatting menu expand/collapse
+      function toggleFormattingMenu() {
+        const isMinimized = formattingMenu.classList.toggle('minimized');
+        toggleFormattingIcon.textContent = isMinimized ? 'expand_more' : 'expand_less';
+        
+        if (!isMinimized) {
+          formattingToolsContainer.classList.remove('hidden');
+          
+          // Force scroll to top of page first to ensure consistent positioning
+          window.scrollTo({
+            top: 0,
+            behavior: 'auto'
+          });
+          
+          // Use setTimeout to ensure DOM has updated before scrolling
+          setTimeout(() => {
+            // Scroll to preview area with 'end' option to show bottom of element
+            document.querySelector('.preview-container').scrollIntoView({
+              behavior: 'smooth',
+              block: 'center' // Center the preview in the viewport
+            });
+          }, 100);
+        } else {
+          formattingToolsContainer.classList.add('hidden');
+        }
+      }
+      
+      toggleFormattingBtn.addEventListener('click', toggleFormattingMenu);
+      
+      // Toggle between main menu and heading options
+      headingButton.addEventListener('click', function() {
+        // Show the formatting menu
+        formattingMenu.style.display = 'block';
+        
+        // Expand the formatting menu
+        formattingMenu.classList.remove('minimized');
+        toggleFormattingIcon.textContent = 'expand_less';
+        formattingToolsContainer.classList.remove('hidden');
+        
+        // Force scroll to top of page first to ensure consistent positioning
+        window.scrollTo({
+          top: 0,
+          behavior: 'auto'
+        });
+        
+        // Use setTimeout to ensure DOM has updated before scrolling
+        setTimeout(() => {
+          // Scroll to preview area with center option to ensure visibility
+          document.querySelector('.preview-container').scrollIntoView({
+            behavior: 'smooth',
+            block: 'center' // Center the preview in the viewport
+          });
+        }, 100);
+        
+        // Auto-scroll through fonts every 2 seconds
+        let currentIndex = 0;
+        const fontItems = document.querySelectorAll('.font-item');
+        const fontSection = document.querySelector('.font-selection');
+        
+        // Show font section
+        document.getElementById('font-section').classList.remove('hidden');
+        
+        // Hide other sections
+        document.getElementById('color-section').classList.add('hidden');
+        document.getElementById('size-section').classList.add('hidden');
+        document.getElementById('spacing-section').classList.add('hidden');
+        
+        // Update tool buttons
+        document.getElementById('color-tool').classList.remove('tool-active');
+        document.getElementById('color-tool').classList.add('tool-inactive');
+        document.getElementById('bold-tool').classList.remove('tool-active');
+        document.getElementById('bold-tool').classList.add('tool-inactive');
+        document.getElementById('italic-tool').classList.remove('tool-active');
+        document.getElementById('italic-tool').classList.add('tool-inactive');
+        document.getElementById('size-tool').classList.remove('tool-active');
+        document.getElementById('size-tool').classList.add('tool-inactive');
+        document.getElementById('spacing-tool').classList.remove('tool-active');
+        document.getElementById('spacing-tool').classList.add('tool-inactive');
+        
+        // Activate font tool
+        document.getElementById('font-tool').classList.remove('tool-inactive');
+        document.getElementById('font-tool').classList.add('tool-active');
+        
+        // Auto-scroll function
+        function autoScrollFonts() {
+          if (currentIndex < fontItems.length) {
+            fontItems[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            currentIndex++;
+            setTimeout(autoScrollFonts, 2000);
+          } else {
+            currentIndex = 0;
+            setTimeout(autoScrollFonts, 1000);
+          }
+        }
+        
+        // Start auto-scrolling
+        autoScrollFonts();
+      });
+      
+      // Get selected text from preview
+      function getSelectedText() {
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+        const selectedText = selection.toString();
+        
+        return {
+          text: selectedText,
+          range: range,
+          hasSelection: selectedText.length > 0
+        };
+      }
+      
+      // Apply formatting to selected text
+      function applyFormatting(type, value) {
+        if (textState.isEditing) return; // Don't apply formatting during editing
+        
+        const selection = getSelectedText();
+        
+        if (selection.hasSelection) {
+          // Store the formatting for this range
+          textState.formattedRanges.push({
+            text: selection.text,
+            type: type,
+            value: value
+          });
+          
+          // Apply formatting directly to the selected text
+          if (type === 'color') {
+            const span = document.createElement('span');
+            span.style.color = value;
+            selection.range.surroundContents(span);
+          } else if (type === 'bold') {
+            const strong = document.createElement('strong');
+            selection.range.surroundContents(strong);
+          } else if (type === 'italic') {
+            const em = document.createElement('em');
+            selection.range.surroundContents(em);
+          }
+          
+          // Save to history after formatting
+          saveToHistory();
+        } else {
+          // Apply to all text if no selection
+          if (type === 'color') {
+            textState.color = value;
+            previewText.style.color = value;
+          } else if (type === 'font') {
+            textState.font = value;
+            previewText.style.fontFamily = value;
+          } else if (type === 'size') {
+            textState.size = value;
+            previewText.style.fontSize = value;
+          } else if (type === 'lineHeight') {
+            textState.lineHeight = value;
+            previewText.style.lineHeight = value;
+          } else if (type === 'bold') {
+            textState.bold = !textState.bold;
+            previewText.style.fontWeight = textState.bold ? 'bold' : 'normal';
+            boldTool.classList.toggle('tool-active');
+            boldTool.classList.toggle('tool-inactive');
+          } else if (type === 'italic') {
+            textState.italic = !textState.italic;
+            previewText.style.fontStyle = textState.italic ? 'italic' : 'normal';
+            italicTool.classList.toggle('tool-active');
+            italicTool.classList.toggle('tool-inactive');
+          }
+          
+          saveToHistory();
+        }
+      }
+      
+      // Update preview text with current formatting
+      function updatePreviewText() {
+        previewText.style.color = textState.color;
+        previewText.style.fontFamily = textState.font;
+        previewText.style.fontSize = textState.size;
+        previewText.style.lineHeight = textState.lineHeight;
+        
+        if (textState.bold) {
+          previewText.style.fontWeight = 'bold';
+        } else {
+          previewText.style.fontWeight = 'normal';
+        }
+        
+        if (textState.italic) {
+          previewText.style.fontStyle = 'italic';
+        } else {
+          previewText.style.fontStyle = 'normal';
+        }
+      }
+      
+      // Enable text editing mode
+      function enableTextEditing() {
+        textState.isEditing = true;
+        textState.originalText = previewText.textContent;
+        
+        // Hide menus
+        mainBottomMenu.style.display = 'none';
+        formattingMenu.style.display = 'none';
+        
+        // Make preview text editable
+        previewText.contentEditable = true;
+        previewText.focus();
+        
+        // Show editing controls
+        textEditingControls.classList.add('visible');
+      }
+      
+      // Disable text editing mode
+      function disableTextEditing(save) {
+        textState.isEditing = false;
+        
+        // If not saving, revert to original text
+        if (!save) {
+          previewText.textContent = textState.originalText;
+          updatePreviewText();
+        } else {
+          // Save the edited text to history
+          saveToHistory();
+        }
+        
+        // Make preview text non-editable
+        previewText.contentEditable = false;
+        
+        // Show menus
+        mainBottomMenu.style.display = 'block';
+        formattingMenu.style.display = 'block';
+        
+        // Hide editing controls
+        textEditingControls.classList.remove('visible');
+      }
+      
+      // Keyboard tool click handler
+      keyboardTool.addEventListener('click', enableTextEditing);
+      
+      // Cancel editing button
+      cancelEditingBtn.addEventListener('click', function() {
+        disableTextEditing(false);
+      });
+      
+      // Save editing button
+      saveEditingBtn.addEventListener('click', function() {
+        disableTextEditing(true);
+      });
+      
+      // Color button click handlers
+      const colorButtons = colorPalette.querySelectorAll('.color-button');
+      colorButtons.forEach(button => {
+        if (button.id !== 'customColorBtn') {
+          button.addEventListener('click', function() {
+            // Remove selected class from all buttons
+            colorButtons.forEach(btn => btn.classList.remove('selected'));
+            
+            // Add selected class to clicked button
+            this.classList.add('selected');
+            
+            // Get the background color
+            const color = getComputedStyle(this).backgroundColor;
+            
+            // Apply color to text
+            applyFormatting('color', color);
+            
+            // Update color tool icon
+            colorTool.querySelector('.material-icons-outlined').style.color = color;
+          });
+        }
+      });
+      
+      // Custom color button
+      customColorBtn.addEventListener('click', function() {
+        colorPickerPopup.style.display = 'block';
+        colorPickerOverlay.style.display = 'block';
+      });
+      
+      // Close color picker
+      closeColorPicker.addEventListener('click', function() {
+        colorPickerPopup.style.display = 'none';
+        colorPickerOverlay.style.display = 'none';
+      });
+      
+      // Color picker overlay click
+      colorPickerOverlay.addEventListener('click', function() {
+        colorPickerPopup.style.display = 'none';
+        colorPickerOverlay.style.display = 'none';
+      });
+      
+      // Hex color input
+      hexColorInput.addEventListener('input', function() {
+        const color = this.value;
+        if (/^#[0-9A-F]{6}$/i.test(color)) {
+          colorPreview.style.backgroundColor = color;
+        }
+      });
+      
+      // Apply custom color
+      applyCustomColor.addEventListener('click', function() {
+        const color = hexColorInput.value;
+        if (/^#[0-9A-F]{6}$/i.test(color)) {
+          // Apply color to text
+          applyFormatting('color', color);
+          
+          // Update color tool icon
+          colorTool.querySelector('.material-icons-outlined').style.color = color;
+          
+          // Add to custom colors if not already in list
+          if (!textState.customColors.includes(color)) {
+            textState.customColors.push(color);
+          }
+          
+          // Close color picker
+          colorPickerPopup.style.display = 'none';
+          colorPickerOverlay.style.display = 'none';
+        }
+      });
+      
+      // Bold tool click handler
+      boldTool.addEventListener('click', function() {
+        applyFormatting('bold', true);
+      });
+      
+      // Italic tool click handler
+      italicTool.addEventListener('click', function() {
+        applyFormatting('italic', true);
+      });
+      
+      // Font tool click handler
+      fontTool.addEventListener('click', function() {
+        // Hide all sections
+        colorSection.classList.add('hidden');
+        sizeSection.classList.add('hidden');
+        spacingSection.classList.add('hidden');
+        
+        // Show font section
+        fontSection.classList.remove('hidden');
+        
+        // Update tool buttons
+        colorTool.classList.remove('tool-active');
+        colorTool.classList.add('tool-inactive');
+        boldTool.classList.remove('tool-active');
+        boldTool.classList.add('tool-inactive');
+        italicTool.classList.remove('tool-active');
+        italicTool.classList.add('tool-inactive');
+        sizeTool.classList.remove('tool-active');
+        sizeTool.classList.add('tool-inactive');
+        spacingTool.classList.remove('tool-active');
+        spacingTool.classList.add('tool-inactive');
+        
+        // Activate font tool
+        fontTool.classList.remove('tool-inactive');
+        fontTool.classList.add('tool-active');
+      });
+      
+      // Font item click handlers
+      const fontItems = document.querySelectorAll('.font-item');
+      fontItems.forEach(item => {
+        item.addEventListener('click', function() {
+          // Remove selected class from all items
+          fontItems.forEach(i => {
+            i.classList.remove('selected');
+          });
+          
+          // Add selected class to clicked item
+          this.classList.add('selected');
+          
+          // Get the font family
+          const font = this.getAttribute('data-font');
+          
+          // Apply font to text
+          applyFormatting('font', font);
+        });
+      });
+      
+      // Size tool click handler
+      sizeTool.addEventListener('click', function() {
+        // Hide all sections
+        colorSection.classList.add('hidden');
+        fontSection.classList.add('hidden');
+        spacingSection.classList.add('hidden');
+        
+        // Show size section
+        sizeSection.classList.remove('hidden');
+        
+        // Update tool buttons
+        colorTool.classList.remove('tool-active');
+        colorTool.classList.add('tool-inactive');
+        boldTool.classList.remove('tool-active');
+        boldTool.classList.add('tool-inactive');
+        italicTool.classList.remove('tool-active');
+        italicTool.classList.add('tool-inactive');
+        fontTool.classList.remove('tool-active');
+        fontTool.classList.add('tool-inactive');
+        spacingTool.classList.remove('tool-active');
+        spacingTool.classList.add('tool-inactive');
+        
+        // Activate size tool
+        sizeTool.classList.remove('tool-inactive');
+        sizeTool.classList.add('tool-active');
+      });
+      
+      // Spacing tool click handler
+      spacingTool.addEventListener('click', function() {
+        // Hide all sections
+        colorSection.classList.add('hidden');
+        fontSection.classList.add('hidden');
+        sizeSection.classList.add('hidden');
+        
+        // Show spacing section
+        spacingSection.classList.remove('hidden');
+        
+        // Update tool buttons
+        colorTool.classList.remove('tool-active');
+        colorTool.classList.add('tool-inactive');
+        boldTool.classList.remove('tool-active');
+        boldTool.classList.add('tool-inactive');
+        italicTool.classList.remove('tool-active');
+        italicTool.classList.add('tool-inactive');
+        fontTool.classList.remove('tool-active');
+        fontTool.classList.add('tool-inactive');
+        sizeTool.classList.remove('tool-active');
+        sizeTool.classList.add('tool-inactive');
+        
+        // Activate spacing tool
+        spacingTool.classList.remove('tool-inactive');
+        spacingTool.classList.add('tool-active');
+      });
+      
+      // Color tool click handler
+      colorTool.addEventListener('click', function() {
+        // Hide all sections
+        fontSection.classList.add('hidden');
+        sizeSection.classList.add('hidden');
+        spacingSection.classList.add('hidden');
+        
+        // Show color section
+        colorSection.classList.remove('hidden');
+        
+        // Update tool buttons
+        boldTool.classList.remove('tool-active');
+        boldTool.classList.add('tool-inactive');
+        italicTool.classList.remove('tool-active');
+        italicTool.classList.add('tool-inactive');
+        fontTool.classList.remove('tool-active');
+        fontTool.classList.add('tool-inactive');
+        sizeTool.classList.remove('tool-active');
+        sizeTool.classList.add('tool-inactive');
+        spacingTool.classList.remove('tool-active');
+        spacingTool.classList.add('tool-inactive');
+        
+        // Activate color tool
+        colorTool.classList.remove('tool-inactive');
+        colorTool.classList.add('tool-active');
+      });
+      
+      // Font size slider
+      fontSizeSlider.addEventListener('input', function() {
+        const size = this.value;
+        const percentage = Math.round((size / 24) * 100);
+        fontSizeValue.textContent = `${size}px (${percentage}%)`;
+        applyFormatting('size', `${size}px`);
+      });
+      
+      // Line spacing slider
+      lineSpacingSlider.addEventListener('input', function() {
+        const spacing = this.value / 10;
+        const percentage = Math.round(spacing * 100);
+        lineSpacingValue.textContent = `${spacing} (${percentage}%)`;
+        applyFormatting('lineHeight', `${spacing}`);
+      });
+      
+      // Undo button click handler
+      undoBtn.addEventListener('click', undo);
+      
+      // Redo button click handler
+      redoBtn.addEventListener('click', redo);
+      
+      // Save button click handler
+      saveBtn.addEventListener('click', function() {
+        // Show save confirmation
+        alert('Heading saved successfully!');
+      });
+    });
+  </script>
+</body>
+</html>

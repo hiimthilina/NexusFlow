@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#121416">
+  <title>NexusFlow Scale</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?display=swap&amp;family=Be+Vietnam+Pro%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+  />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <style>
+    :root {
+      --bg-primary: #121416;
+      --bg-secondary: #1e2124;
+      --border-color: #2c3135;
+      --text-primary: #ffffff;
+      --text-secondary: #9cabba;
+      --accent-color: #dce8f3;
+      --accent-hover: #c5d5e8;
+      --bottom-nav-height: 60px;
+      --header-height: 56px;
+      --toolbar-height: 48px;
+      --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+      --scale-panel-height: 160px;
+    }
+    
+    * {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: "Be Vietnam Pro", "Noto Sans", sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
+      position: relative;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      touch-action: manipulation;
+    }
+    
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      position: relative;
+    }
+    
+    .header {
+      height: var(--header-height);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--bg-primary);
+      position: relative;
+      z-index: 20;
+    }
+    
+    .toolbar {
+      height: var(--toolbar-height);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px;
+      position: relative;
+      padding-bottom: calc(var(--scale-panel-height) + var(--bottom-nav-height) + var(--safe-area-bottom));
+    }
+    
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
+      background-color: var(--bg-secondary);
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      border: 1px solid var(--border-color);
+      border-bottom: none;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+      z-index: 15;
+      padding-bottom: var(--safe-area-bottom);
+    }
+    
+    .bottom-nav-content {
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      height: var(--bottom-nav-height);
+    }
+    
+    .bottom-nav-content::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 64px;
+      height: 100%;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+      user-select: none;
+    }
+    
+    .nav-item.active {
+      color: var(--accent-color);
+      border-bottom: 2px solid var(--accent-color);
+    }
+    
+    .nav-item:active {
+      opacity: 0.7;
+    }
+    
+    .nav-icon {
+      font-size: 24px;
+      margin-bottom: 2px;
+    }
+    
+    .nav-label {
+      font-size: 11px;
+      font-weight: 500;
+    }
+    
+    .btn {
+      border: none;
+      background: none;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      cursor: pointer;
+      touch-action: manipulation;
+      min-width: 40px;
+      min-height: 40px;
+    }
+    
+    .btn:active {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: var(--bg-primary);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    .btn-primary:active {
+      background-color: var(--accent-hover);
+    }
+    
+    .scale-panel {
+      position: fixed;
+      bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
+      left: 16px;
+      right: 16px;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+      z-index: 10;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
+      margin-bottom: 8px;
+    }
+    
+    .preview-container {
+      aspect-ratio: 1/1;
+      background-color: var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    
+    .preview-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* Slider styling */
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 4px;
+      background: var(--border-color);
+      outline: none;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-color);
+      cursor: pointer;
+    }
+    
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-color);
+      cursor: pointer;
+      border: none;
+    }
+    
+    .btn-scale {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+    
+    .btn-scale-active {
+      background-color: var(--accent-color);
+      color: var(--bg-primary);
+    }
+    
+    .btn-scale-inactive {
+      background-color: var(--border-color);
+      color: var(--text-secondary);
+    }
+    
+    .btn-scale-inactive:active {
+      background-color: rgba(44, 49, 53, 0.8);
+    }
+    
+    .btn-reset {
+      background-color: transparent;
+      color: var(--accent-color);
+      border: 1px solid var(--accent-color);
+      border-radius: 8px;
+      padding: 4px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-reset:active {
+      background-color: rgba(220, 232, 243, 0.1);
+    }
+  </style>
+  <script>
+    // Set the viewport height correctly for mobile browsers
+    function setViewportHeight() {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    
+    window.addEventListener('resize', setViewportHeight);
+    window.addEventListener('orientationchange', setViewportHeight);
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      setViewportHeight();
+      
+      // Update scale value display
+      const scaleSlider = document.getElementById('scale-slider');
+      const scaleValue = document.getElementById('scale-value');
+      
+      scaleSlider.addEventListener('input', function() {
+        scaleValue.textContent = `Scale: ${this.value}%`;
+      });
+      
+      // Undo/Redo functionality
+      const undoBtn = document.getElementById('undo-btn');
+      const redoBtn = document.getElementById('redo-btn');
+      const saveBtn = document.getElementById('save-btn');
+      
+      let history = [];
+      let currentStep = -1;
+      
+      // Example history tracking
+      function addToHistory(action) {
+        // Remove any future history if we're not at the end
+        if (currentStep < history.length - 1) {
+          history = history.slice(0, currentStep + 1);
+        }
+        
+        history.push(action);
+        currentStep = history.length - 1;
+        
+        updateButtons();
+      }
+      
+      function undo() {
+        if (currentStep > 0) {
+          currentStep--;
+          updateButtons();
+          // Apply the state from history[currentStep]
+          console.log('Undo to step', currentStep);
+        }
+      }
+      
+      function redo() {
+        if (currentStep < history.length - 1) {
+          currentStep++;
+          updateButtons();
+          // Apply the state from history[currentStep]
+          console.log('Redo to step', currentStep);
+        }
+      }
+      
+      function updateButtons() {
+        undoBtn.disabled = currentStep <= 0;
+        redoBtn.disabled = currentStep >= history.length - 1;
+        
+        undoBtn.style.opacity = undoBtn.disabled ? '0.5' : '1';
+        redoBtn.style.opacity = redoBtn.disabled ? '0.5' : '1';
+      }
+      
+      undoBtn.addEventListener('click', undo);
+      redoBtn.addEventListener('click', redo);
+      saveBtn.addEventListener('click', function() {
+        console.log('Saving current state');
+        // Save implementation
+      });
+      
+      // Initialize with a default action
+      addToHistory({ type: 'init', scale: 50 });
+      
+      // Track scale changes
+      scaleSlider.addEventListener('change', function() {
+        addToHistory({ type: 'scale', value: this.value });
+      });
+      
+      // Scale direction buttons
+      const horizontalBtn = document.getElementById('horizontal-btn');
+      const verticalBtn = document.getElementById('vertical-btn');
+      
+      horizontalBtn.addEventListener('click', function() {
+        horizontalBtn.classList.add('btn-scale-active');
+        horizontalBtn.classList.remove('btn-scale-inactive');
+        verticalBtn.classList.add('btn-scale-inactive');
+        verticalBtn.classList.remove('btn-scale-active');
+        addToHistory({ type: 'direction', value: 'horizontal' });
+      });
+      
+      verticalBtn.addEventListener('click', function() {
+        verticalBtn.classList.add('btn-scale-active');
+        verticalBtn.classList.remove('btn-scale-inactive');
+        horizontalBtn.classList.add('btn-scale-inactive');
+        horizontalBtn.classList.remove('btn-scale-active');
+        addToHistory({ type: 'direction', value: 'vertical' });
+      });
+      
+      // Reset button functionality
+      const resetBtn = document.getElementById('reset-btn');
+      resetBtn.addEventListener('click', function() {
+        // Reset scale to 50%
+        scaleSlider.value = 50;
+        scaleValue.textContent = 'Scale: 50%';
+        
+        // Reset direction to horizontal
+        horizontalBtn.classList.add('btn-scale-active');
+        horizontalBtn.classList.remove('btn-scale-inactive');
+        verticalBtn.classList.add('btn-scale-inactive');
+        verticalBtn.classList.remove('btn-scale-active');
+        
+        // Add to history
+        addToHistory({ type: 'reset', scale: 50, direction: 'horizontal' });
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="w-8"></div>
+      <h1 class="text-lg font-bold tracking-tight text-center">NexusFlow</h1>
+      <button class="btn">
+        <span class="material-icons">dark_mode</span>
+      </button>
+    </header>
+    
+    <!-- Toolbar with Undo, Redo, Save -->
+    <div class="toolbar">
+      <div class="flex items-center space-x-1">
+        <button id="undo-btn" class="btn">
+          <span class="material-icons-outlined text-sm">undo</span>
+        </button>
+        <button id="redo-btn" class="btn">
+          <span class="material-icons-outlined text-sm">redo</span>
+        </button>
+      </div>
+      <button id="save-btn" class="btn-primary">Save</button>
+    </div>
+    
+    <!-- Main Content Area -->
+    <div class="content-area">
+      <h2 class="text-base font-medium mb-2">Preview</h2>
+      <div class="preview-container">
+        <img class="preview-image" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB93WPfgXBgbnIB_XIhuBObcIKf0DIzSaA5W18bIy9EvRWGvjsxVbw2JR5lh4PEQ3KhcPBhfWHOizpLhaJDjmfgNizPAktqFuCaM86EgeUdhbL-de7-asLVrdfIV7T2JCV_JCG-BJSxDhuI_ryZpvOtVtWsHY4rP6fVLyAJ95aE6CFBeof3g8y2HVGzQK1nbGBXiMz4tvFqrB2kQ0UfK32zzgpHntVRztptCZnoC-mTt_HslGPb_Wwp7YsQsJI_sujWc1kXrfHN-kE" alt="Selected image preview">
+      </div>
+    </div>
+    
+    <!-- Scale Panel - Fixed above bottom menu -->
+    <div class="scale-panel">
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="text-md font-medium">Scale Image</h3>
+        <button id="reset-btn" class="btn-reset">Reset</button>
+      </div>
+      <div class="flex justify-center space-x-4 mb-4">
+        <button id="horizontal-btn" class="btn-scale btn-scale-active">
+          <span class="material-icons mr-2">swap_horiz</span>
+          <span>Horizontal</span>
+        </button>
+        <button id="vertical-btn" class="btn-scale btn-scale-inactive">
+          <span class="material-icons mr-2">swap_vert</span>
+          <span>Vertical</span>
+        </button>
+      </div>
+      <div class="flex flex-col items-center">
+        <span id="scale-value" class="text-sm text-[#dce8f3] mb-2 font-medium">Scale: 50%</span>
+        <input id="scale-slider" class="w-full" type="range" min="0" max="100" value="50" />
+      </div>
+    </div>
+    
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <div class="bottom-nav-content justify-around">
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">image</span>
+          <span class="nav-label">Image</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">format_align_center</span>
+          <span class="nav-label">Align</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons-outlined nav-icon">filter_none</span>
+          <span class="nav-label">BG</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">devices</span>
+          <span class="nav-label">Platform</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">opacity</span>
+          <span class="nav-label">Opacity</span>
+        </a>
+        <a href="#" class="nav-item active">
+          <span class="material-icons nav-icon">photo_size_select_large</span>
+          <span class="nav-label">Scale</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">layers</span>
+          <span class="nav-label">Blend</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="material-icons nav-icon">title</span>
+          <span class="nav-label">Heading</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+</body>
+</html>
